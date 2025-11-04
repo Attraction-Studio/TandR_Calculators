@@ -1,1 +1,1 @@
-thi sis a test of the scripting awomeness
+thi sis a test of the scripting awomeness new version new purpge
