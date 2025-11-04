@@ -1,1 +1,1 @@
-testing script
+thi sis a test of the scripting awomeness
