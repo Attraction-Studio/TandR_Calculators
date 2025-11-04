@@ -1,118 +1,240 @@
-$(function () {
-  $("#results").hide();
+(function () {
+  "use strict";
 
-  $("#calc").click(function (event) {
-    event.preventDefault();
-    var height = $("#height").val();
-    var width = $("#width").val();
-    var area = height * width;
-    $("#area").html(area);
+  // Wait for DOM to be ready
+  document.addEventListener("DOMContentLoaded", function () {
+    // Get all elements
+    const results = document.getElementById("cce_results");
+    const calcBtn = document.getElementById("cce_calc");
+    const lengthInput = document.getElementById("cce_length");
+    const widthInput = document.getElementById("cce_width");
+    const areaDisplay = document.getElementById("cce_area");
+    const varianceInput = document.getElementById("cce_varianceInput");
+    const vdownBtn = document.getElementById("cce_vdown");
+    const vupBtn = document.getElementById("cce_vup");
 
-    var opts = $("input[name='opts']:checked").val();
+    // Result elements
+    const r1 = document.getElementById("cce_r1");
+    const r2 = document.getElementById("cce_r2");
+    const r3 = document.getElementById("cce_r3");
+    const r4 = document.getElementById("cce_r4");
+    const r6 = document.getElementById("cce_r6");
+    const r7 = document.getElementById("cce_r7");
+    const r7a = document.getElementById("cce_r7a");
+    const r8 = document.getElementById("cce_r8");
 
-    if (opts == 1) {
-      $("#r1,#zr1").html("Ceiling Tiles (1200mm x 600mm)");
-      $("#r2,#zr2").html(Math.ceil(area / 0.72));
-      $("#r3,#zr3").html(Math.ceil(area * 0.694));
-      $("#r4,#zr4").html(Math.ceil(area * 0.694));
-      $("#r5,#zr5").html(Math.ceil(area * 0.694));
-      $("#r6,#zr6").html(Math.ceil((area * 0.833) / 3.6));
-      $("#r7,#zr7").html(Math.ceil((area * 1.666) / 1.2));
-      $("#r8,#zr8").html(Math.ceil((width * 2 + height * 2) / 3));
+    // Hidden result elements (for variance calculations)
+    const zr1 = document.getElementById("cce_zr1");
+    const zr2 = document.getElementById("cce_zr2");
+    const zr3 = document.getElementById("cce_zr3");
+    const zr4 = document.getElementById("cce_zr4");
+    const zr6 = document.getElementById("cce_zr6");
+    const zr7 = document.getElementById("cce_zr7");
+    const zr7a = document.getElementById("cce_zr7a");
+    const zr8 = document.getElementById("cce_zr8");
 
-      $(".ct2").hide();
-    } else {
-      $("#r1,#zr1").html("Ceiling Tiles (600mm x 600mm)");
-      $("#r2,#zr2").html(Math.ceil(area / 0.36));
-      $("#r3,#zr3").html(Math.ceil(area * 0.694));
-      $("#r4,#zr4").html(Math.ceil(area * 0.694));
-      $("#r5,#zr5").html(Math.ceil(area * 0.694));
-      $("#r6,#zr6").html(Math.ceil((area * 0.833) / 3.6));
-      $("#r7,#zr7").html(Math.ceil((area * 1.666) / 1.2));
-      $("#r7a,#zr7a").html(Math.ceil((area * 0.833) / 0.6));
-      $("#r8,#zr8").html(Math.ceil((width * 2 + height * 2) / 3));
-      $(".ct2").show();
+    // Conditional display elements
+    const ct2Elements = document.querySelectorAll(".cce_ct2");
+
+    // Helper function to show/hide elements
+    function hideElement(element) {
+      if (element) {
+        element.style.display = "none";
+      }
     }
 
-    var r2 = Number($("#zr2").text());
-    var r3 = Number($("#zr3").text());
-    var r4 = Number($("#zr4").text());
-    var r5 = Number($("#zr5").text());
-    var r6 = Number($("#zr6").text());
-    var r7 = Number($("#zr7").text());
-    var r7a = Number($("#zr7a").text());
-    var r8 = Number($("#zr8").text());
+    function showElement(element) {
+      if (element) {
+        element.style.display = "";
+      }
+    }
 
-    //$('#b2').html(Math.ceil(r2/20));
-    //$('#b3').html(Math.ceil(r3/20));
-    //$('#b4').html(Math.ceil(r4/20));
-    //$('#b5').html(Math.ceil(r5/20));
-    $("#b6").html(Math.ceil(r6 / 20));
-    $("#b7").html(Math.ceil(r7 / 60));
-    $("#b7a").html(Math.ceil(r7a / 60));
-    //$('#b8').html(Math.ceil(r8/20));
+    function hideElements(elements) {
+      elements.forEach(function (el) {
+        if (el) {
+          el.style.display = "none";
+        }
+      });
+    }
 
-    $("#varianceInput").val(0);
-    $("#results").show("slow");
+    function showElements(elements) {
+      elements.forEach(function (el) {
+        if (el) {
+          el.style.display = "";
+        }
+      });
+    }
+
+    // Initialize: hide results on load
+    if (results) {
+      hideElement(results);
+    }
+
+    // Calculate function
+    function calculate() {
+      const length = parseFloat(lengthInput.value) || 0;
+      const width = parseFloat(widthInput.value) || 0;
+      const area = length * width;
+
+      if (areaDisplay) {
+        areaDisplay.textContent = area;
+      }
+
+      // Get selected option
+      const selectedOpt = document.querySelector(
+        'input[name="cce_opts"]:checked'
+      );
+      const opts = selectedOpt ? selectedOpt.value : "1";
+
+      if (opts == "1") {
+        // Option 1: 1200mm x 600mm tiles
+        const tileText = "Ceiling Tiles (1200mm x 600mm)";
+        if (r1) r1.textContent = tileText;
+        if (zr1) zr1.textContent = tileText;
+
+        if (r2) r2.textContent = Math.ceil(area / 0.72);
+        if (zr2) zr2.textContent = Math.ceil(area / 0.72);
+
+        if (r3) r3.textContent = Math.ceil(area * 0.694);
+        if (zr3) zr3.textContent = Math.ceil(area * 0.694);
+
+        if (r4) r4.textContent = Math.ceil(area * 0.694);
+        if (zr4) zr4.textContent = Math.ceil(area * 0.694);
+
+        if (r6) r6.textContent = Math.ceil((area * 0.833) / 3.6);
+        if (zr6) zr6.textContent = Math.ceil((area * 0.833) / 3.6);
+
+        if (r7) r7.textContent = Math.ceil((area * 1.666) / 1.2);
+        if (zr7) zr7.textContent = Math.ceil((area * 1.666) / 1.2);
+
+        if (r8) r8.textContent = Math.ceil((width * 2 + length * 2) / 3);
+        if (zr8) zr8.textContent = Math.ceil((width * 2 + length * 2) / 3);
+
+        // Hide conditional element
+        hideElements(ct2Elements);
+      } else {
+        // Option 2: 600mm x 600mm tiles
+        const tileText = "Ceiling Tiles (600mm x 600mm)";
+        if (r1) r1.textContent = tileText;
+        if (zr1) zr1.textContent = tileText;
+
+        if (r2) r2.textContent = Math.ceil(area / 0.36);
+        if (zr2) zr2.textContent = Math.ceil(area / 0.36);
+
+        if (r3) r3.textContent = Math.ceil(area * 0.694);
+        if (zr3) zr3.textContent = Math.ceil(area * 0.694);
+
+        if (r4) r4.textContent = Math.ceil(area * 0.694);
+        if (zr4) zr4.textContent = Math.ceil(area * 0.694);
+
+        if (r6) r6.textContent = Math.ceil((area * 0.833) / 3.6);
+        if (zr6) zr6.textContent = Math.ceil((area * 0.833) / 3.6);
+
+        if (r7) r7.textContent = Math.ceil((area * 1.666) / 1.2);
+        if (zr7) zr7.textContent = Math.ceil((area * 1.666) / 1.2);
+
+        if (r7a) r7a.textContent = Math.ceil((area * 0.833) / 0.6);
+        if (zr7a) zr7a.textContent = Math.ceil((area * 0.833) / 0.6);
+
+        if (r8) r8.textContent = Math.ceil((width * 2 + length * 2) / 3);
+        if (zr8) zr8.textContent = Math.ceil((width * 2 + length * 2) / 3);
+
+        // Show conditional element
+        showElements(ct2Elements);
+      }
+
+      // Calculate box quantities
+      const r2Val = zr2 ? Number(zr2.textContent) : 0;
+      const r3Val = zr3 ? Number(zr3.textContent) : 0;
+      const r4Val = zr4 ? Number(zr4.textContent) : 0;
+      const r6Val = zr6 ? Number(zr6.textContent) : 0;
+      const r7Val = zr7 ? Number(zr7.textContent) : 0;
+      const r7aVal = zr7a ? Number(zr7a.textContent) : 0;
+      const r8Val = zr8 ? Number(zr8.textContent) : 0;
+
+      // Reset variance and show results
+      if (varianceInput) {
+        varianceInput.value = 0;
+      }
+
+      if (results) {
+        showElement(results);
+        // Add smooth transition class if needed
+        results.style.transition = "opacity 0.3s ease-in-out";
+      }
+    }
+
+    // Variance function
+    function vary(variance) {
+      const r2Val = zr2 ? Number(zr2.textContent) : 0;
+      const r3Val = zr3 ? Number(zr3.textContent) : 0;
+      const r4Val = zr4 ? Number(zr4.textContent) : 0;
+      const r6Val = zr6 ? Number(zr6.textContent) : 0;
+      const r7Val = zr7 ? Number(zr7.textContent) : 0;
+      const r7aVal = zr7a ? Number(zr7a.textContent) : 0;
+      const r8Val = zr8 ? Number(zr8.textContent) : 0;
+
+      if (r2) r2.textContent = Math.round((r2Val / 100) * variance + r2Val);
+      if (r3) r3.textContent = Math.round((r3Val / 100) * variance + r3Val);
+      if (r4) r4.textContent = Math.round((r4Val / 100) * variance + r4Val);
+      if (r6) r6.textContent = Math.round((r6Val / 100) * variance + r6Val);
+      if (r7) r7.textContent = Math.round((r7Val / 100) * variance + r7Val);
+      if (r7a) r7a.textContent = Math.round((r7aVal / 100) * variance + r7aVal);
+      if (r8) r8.textContent = Math.round((r8Val / 100) * variance + r8Val);
+    }
+
+    // Event listeners
+    if (calcBtn) {
+      calcBtn.addEventListener("click", function (event) {
+        event.preventDefault();
+        calculate();
+      });
+    }
+
+    if (vdownBtn) {
+      vdownBtn.addEventListener("click", function (event) {
+        event.preventDefault();
+        let variance = Number(varianceInput ? varianceInput.value : 0);
+        variance -= 1;
+        if (variance < 0) {
+          variance = 0;
+        }
+        if (variance > 5) {
+          variance = 5;
+        }
+        vary(variance);
+        if (varianceInput) {
+          varianceInput.value = variance;
+        }
+      });
+    }
+
+    if (vupBtn) {
+      vupBtn.addEventListener("click", function (event) {
+        event.preventDefault();
+        let variance = Number(varianceInput ? varianceInput.value : 0);
+        variance += 1;
+        if (variance < 0) {
+          variance = 0;
+        }
+        if (variance > 5) {
+          variance = 5;
+        }
+        vary(variance);
+        if (varianceInput) {
+          varianceInput.value = variance;
+        }
+      });
+    }
+
+    // Hide results when inputs change
+    const changeHandlers = document.querySelectorAll(".cce_ch");
+    changeHandlers.forEach(function (element) {
+      element.addEventListener("change", function () {
+        if (results) {
+          hideElement(results);
+        }
+      });
+    });
   });
-
-  $("#vdown").click(function (event) {
-    event.preventDefault();
-    var variance = Number($("#varianceInput").val());
-    variance -= 1;
-    if (variance < 0) {
-      variance = 0;
-    }
-    if (variance > 5) {
-      variance = 5;
-    }
-    vary(variance);
-    $("#varianceInput").val(variance);
-  });
-  $("#vup").click(function (event) {
-    event.preventDefault();
-    var variance = Number($("#varianceInput").val());
-    variance += 1;
-    if (variance < 0) {
-      variance = 0;
-    }
-    if (variance > 5) {
-      variance = 5;
-    }
-    vary(variance);
-    $("#varianceInput").val(variance);
-  });
-
-  $(".ch").change(function () {
-    $("#results").hide("slow");
-  });
-});
-
-function vary(variance) {
-  var r2 = Number($("#zr2").text());
-  var r3 = Number($("#zr3").text());
-  var r4 = Number($("#zr4").text());
-  var r5 = Number($("#zr5").text());
-  var r6 = Number($("#zr6").text());
-  var r7 = Number($("#zr7").text());
-  var r7a = Number($("#zr7a").text());
-  var r8 = Number($("#zr8").text());
-
-  $("#r2").html(Math.round((r2 / 100) * variance + r2));
-  $("#r3").html(Math.round((r3 / 100) * variance + r3));
-  $("#r4").html(Math.round((r4 / 100) * variance + r4));
-  $("#r5").html(Math.round((r5 / 100) * variance + r5));
-  $("#r6").html(Math.round((r6 / 100) * variance + r6));
-  $("#r7").html(Math.round((r7 / 100) * variance + r7));
-  $("#r7a").html(Math.round((r7a / 100) * variance + r7a));
-  $("#r8").html(Math.round((r8 / 100) * variance + r8));
-
-  //$('#b2').html(Math.ceil(Number($('#r2').text())/20));
-  //$('#b3').html(Math.ceil(Number($('#r3').text())/20));
-  //$('#b4').html(Math.ceil(Number($('#r4').text())/20));
-  //$('#b5').html(Math.ceil(Number($('#r5').text())/20));
-  $("#b6").html(Math.ceil(Number($("#r6").text()) / 20));
-  $("#b7").html(Math.ceil(Number($("#r7").text()) / 60));
-  $("#b7a").html(Math.ceil(Number($("#r7a").text()) / 60));
-  //$('#b8').html(Math.ceil(Number($('#r8').text())/20));
-}
+})();
