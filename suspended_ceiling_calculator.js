@@ -1,1 +1,1 @@
-thi sis a test of the scripting awomeness new version new purpge
+console.log("Hello World");
