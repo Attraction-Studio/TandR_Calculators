@@ -1,29 +1,8 @@
-import pdfMake from 'pdfmake/build/pdfmake'
-
-// Initialize vfs - must be an object for pdfmake to work
-if (!pdfMake.vfs) {
-  pdfMake.vfs = {}
-}
-
-// Try to import fonts - use both static and dynamic approaches
+// Lazy load pdfmake - only import when PDF generation is needed
+// This prevents pdfmake from being bundled into the main app
+let pdfMake = null
 let fontsLoaded = false
-
-// Static import - Vite will bundle this
-let pdfFonts
-try {
-  // Use dynamic import to handle module loading issues
-  import('pdfmake/build/vfs_fonts').then(fontModule => {
-    pdfFonts = fontModule.default || fontModule
-    // Try to load fonts immediately if available
-    if (pdfFonts && !fontsLoaded) {
-      loadFontsFromModule(pdfFonts)
-    }
-  }).catch(() => {
-    // Will try dynamic import in loadFonts function
-  })
-} catch (e) {
-  pdfFonts = null
-}
+let pdfFonts = null
 
 // Helper to load fonts from a module
 function loadFontsFromModule(fontModule) {
@@ -56,37 +35,59 @@ function loadFontsFromModule(fontModule) {
   return false
 }
 
-// Load fonts function
-async function loadFonts() {
-  if (fontsLoaded) return
+// Initialize pdfmake and fonts - load from CDN to reduce bundle size
+async function initializePdfMake() {
+  if (pdfMake) return pdfMake
   
-  // Try already loaded module first
-  if (pdfFonts) {
-    if (loadFontsFromModule(pdfFonts)) {
-      return
+  // Load pdfmake from CDN (reduces main bundle size by ~2MB)
+  if (typeof window !== 'undefined' && window.pdfMake) {
+    // Already loaded via CDN
+    pdfMake = window.pdfMake
+  } else {
+    // Try to load from CDN
+    try {
+      await loadScript('https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.20/pdfmake.min.js')
+      await loadScript('https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.20/vfs_fonts.min.js')
+      pdfMake = window.pdfMake
+    } catch (error) {
+      // Fallback to bundled version
+      console.warn('CDN load failed, using bundled pdfmake:', error)
+      const pdfMakeModule = await import('pdfmake/build/pdfmake')
+      pdfMake = pdfMakeModule.default || pdfMakeModule
+      
+      // Load fonts
+      try {
+        const pdfFontsModule = await import('pdfmake/build/vfs_fonts')
+        pdfFonts = pdfFontsModule.default || pdfFontsModule
+        loadFontsFromModule(pdfFonts)
+      } catch (e) {
+        console.warn('Could not load bundled fonts:', e)
+      }
     }
   }
   
-  // Fallback to dynamic import
-  try {
-    const dynamicFonts = await import('pdfmake/build/vfs_fonts')
-    const fontModule = dynamicFonts.default || dynamicFonts
-    
-    if (loadFontsFromModule(fontModule)) {
-      console.log('pdfmake fonts loaded successfully')
-    } else {
-      console.warn('pdfmake fonts not found in expected structure')
-    }
-  } catch (error) {
-    console.warn('Could not load pdfmake fonts dynamically:', error)
-    throw new Error('Fonts not available - PDF generation may fail')
+  // Initialize vfs
+  if (pdfMake && !pdfMake.vfs) {
+    pdfMake.vfs = pdfMake.vfs || {}
   }
+  
+  return pdfMake
 }
 
-// Try to load fonts immediately (non-blocking)
-loadFonts().catch(() => {
-  // Fonts will be loaded when PDF is generated if needed
-})
+// Helper to load script from CDN
+function loadScript(src) {
+  return new Promise((resolve, reject) => {
+    if (document.querySelector(`script[src="${src}"]`)) {
+      resolve()
+      return
+    }
+    const script = document.createElement('script')
+    script.src = src
+    script.onload = resolve
+    script.onerror = reject
+    document.head.appendChild(script)
+  })
+}
 
 // Helper function to create section header with badge
 function createSectionHeader(badgeColor, badgeText, title, value) {
@@ -147,10 +148,8 @@ function createSectionHeader(badgeColor, badgeText, title, value) {
 }
 
 export async function generatePDF(data) {
-  // Ensure fonts are loaded before generating PDF
-  if (!fontsLoaded) {
-    await loadFonts()
-  }
+  // Initialize pdfmake and fonts (lazy loaded)
+  await initializePdfMake()
   
   // If fonts still aren't loaded, log warning but continue
   if (!fontsLoaded && Object.keys(pdfMake.vfs).length === 0) {

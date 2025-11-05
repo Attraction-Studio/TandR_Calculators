@@ -15,9 +15,14 @@ export default defineConfig({
       formats: ['iife']
     },
     rollupOptions: {
+      external: ['pdfmake/build/pdfmake', 'pdfmake/build/vfs_fonts'], // Don't bundle pdfmake
       output: {
         assetFileNames: 'seismic-calculator-baffle.[ext]',
-        inlineDynamicImports: true
+        inlineDynamicImports: true, // Required for IIFE format
+        globals: {
+          'pdfmake/build/pdfmake': 'pdfMake',
+          'pdfmake/build/vfs_fonts': 'pdfFonts'
+        }
       }
     },
     cssCodeSplit: false,
