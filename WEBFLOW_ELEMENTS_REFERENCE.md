@@ -127,16 +127,16 @@ These elements store the base values and should be hidden in Webflow (display: n
 
 ## Implementation Checklist
 
-- [ ] Create form with length and width inputs (IDs: `cce_length`, `cce_width`)
-- [ ] Add radio button options for tile size (name: `cce_opts`, values: `1` and `2`)
-- [ ] Add calculate button (ID: `cce_calc`)
-- [ ] Create results container (ID: `cce_results`, initially hidden)
-- [ ] Add area display element (ID: `cce_area`)
-- [ ] Add all result display elements (IDs: `cce_r1`, `cce_r2`, `cce_r3`, `cce_r4`, `cce_r6`, `cce_r7`, `cce_r7a`, `cce_r8`)
-- [ ] Add hidden result elements (IDs: `cce_zr1`, `cce_zr2`, `cce_zr3`, `cce_zr4`, `cce_zr6`, `cce_zr7`, `cce_zr7a`, `cce_zr8`)
-- [ ] Add variance controls (IDs: `cce_varianceInput`, `cce_vdown`, `cce_vup`)
-- [ ] Add conditional display element (class: `cce_ct2`, initially hidden)
-- [ ] Add `cce_ch` class to length, width inputs, and radio buttons
+- [x] Create form with length and width inputs (IDs: `cce_length`, `cce_width`)
+- [x] Add radio button options for tile size (name: `cce_opts`, values: `1` and `2`)
+- [x] Add calculate button (ID: `cce_calc`)
+- [x] Create results container (ID: `cce_results`, initially hidden)
+- [x] Add area display element (ID: `cce_area`)
+- [x] Add all result display elements (IDs: `cce_r1`, `cce_r2`, `cce_r3`, `cce_r4`, `cce_r6`, `cce_r7`, `cce_r7a`, `cce_r8`)
+- [x] Add hidden result elements (IDs: `cce_zr1`, `cce_zr2`, `cce_zr3`, `cce_zr4`, `cce_zr6`, `cce_zr7`, `cce_zr7a`, `cce_zr8`)
+- [x] Add variance controls (IDs: `cce_varianceInput`, `cce_vdown`, `cce_vup`)
+- [x] Add conditional display element (class: `cce_ct2`, initially hidden)
+- [x] Add `cce_ch` class to length, width inputs, and radio buttons
 - [ ] Set all hidden elements (`cce_zr*`) to display: none in Webflow
 
 ---

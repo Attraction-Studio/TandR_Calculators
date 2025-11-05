@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom styles for the calculator */
+#ceiling-components-estimator-app {
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
