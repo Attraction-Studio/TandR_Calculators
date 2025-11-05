@@ -1,0 +1,1099 @@
+<div
+  id="carouselcalc"
+  class="carousel slide"
+  data-ride="carousel"
+  data-interval="false"
+>
+  <!-- Wrapper for slides -->
+  <div class="carousel-inner" role="listbox">
+    <div class="carousel-item active">
+      <h2>T&amp;R Seismic Calculator - Baffle Ceilings</h2>
+      <p>
+        Because every building is different, there is no standard seismic
+        restraint solution to address site, location, form and function. The
+        scope of seismic restraint and related engineering work that will be
+        required will not be known until the ceiling design is completed. The
+        T&amp;R Seismic System will provide a solution for buildings with an
+        Importance Level of 3 and below. A suitably qualified Chartered
+        Professional Engineer will be required for Importance Levels 4 &amp; 5.
+        It is imperative that mechanical services, sprinkler systems, electrical
+        and suspended ceiling design are all co-ordinated at appropriate stages.
+      </p>
+      <p>
+        While full compliance with seismic requirements will add cost, it will
+        limit damage, reduce repair costs and reduce the time to re-occupy post
+        event. Furthermore it is now a legislative requirement for Code of
+        Compliance Certificates and Health and Safety Laws. The new laws, affect
+        those who are upstream from the workplace (for example designers,
+        engineers, manufacturers, suppliers or installers). Specifically they
+        have a duty to ensure, so far as is reasonably practicable, that the
+        work they do or the things they provide to the workplace don't create
+        health and safety risks.
+      </p>
+
+      <p class="text-center">
+        <a
+          class="btn btn-dark btn-lg"
+          href="#carouselcalc"
+          role="button"
+          data-slide="next"
+          id="begin"
+          >Begin
+          <i class="fas fa-chevron-right" aria-hidden="true"></i>
+        </a>
+      </p>
+      <h4>Usage Notes:</h4>
+      <p>
+        <i
+          >This guide allows a designer to calculate required bracing for
+          suspended baffle ceilings. The calculations are based on conservative
+          assumptions. Reduced seismic bracing designs for individual sites may
+          be possible if a suitably qualified Chartered Professional Engineer
+          carries out a site-specific design. This guide should not be used as a
+          calculation template for a PS-1; specific seismic design should be
+          carried out for these cases.</i
+        >
+      </p>
+      <p>
+        <i
+          >This guide has been prepared by JSK Consulting Engineers for T&amp;R
+          Interior Systems with the usual care and thoroughness of the
+          consulting profession. Interpretation and application of this guide is
+          outside the control of the engineer and therefore is the users'
+          responsibility. This guide does not constitute a producer statement or
+          engineer's certification, and is not for use with trafficable ceilings
+          or ceilings which support partition walls or any other service
+          load.</i
+        >
+      </p>
+      <p>
+        <i
+          >Allowance for relative motion between the ceiling and structure must
+          be provided by floating edges. Back bracing to the above structure
+          will be used as the primary load path to structure, therefore all
+          edges must be floating. Floating edges must also be provided around
+          rigid or separately braced items that pass through the ceiling. The
+          amount of clearance should be checked by an engineer on a case-by-case
+          basis.</i
+        >
+      </p>
+      <p>
+        See the
+        <a data-toggle="modal" data-target="#Modalass"
+          >assumptions and limitations</a
+        >
+        notes.
+      </p>
+      <p>
+        <i
+          >Consult a structural engineer for the expected earthquake deflections
+          of the structure.
+        </i>
+      </p>
+
+      <p>
+        © The T&amp;R Seismic System has been developed in conjunction with JSK
+        Consulting Engineers and T&amp;R Interior Systems.
+      </p>
+
+      <p>
+        It remains the intellectual property of T&amp;R Interior Systems and may
+        not be used with other products.
+      </p>
+    </div>
+    <div class="carousel-item">
+      <h4>Step One - Limit State Type</h4>
+      <p>Determine the type of design for the installation.</p>
+      <hr />
+
+      <div id="div1-0">
+        <p>
+          <b
+            >Is the suspended ceiling and/or elements which directly interact
+            with the ceiling required to be returned to an operational state
+            within an acceptably short time frame in order for the structure to
+            be occupied?</b
+          >
+        </p>
+        <p></p>
+        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+          <label class="btn btn-dark" id="st1d">
+            <input type="radio" autocomplete="off" value="SLS2" /> Yes
+          </label>
+          <label class="btn btn-dark" id="st2d">
+            <input type="radio" autocomplete="off" /> No
+          </label>
+        </div>
+        <p></p>
+        <p>
+          <i
+            >As per the suppliment to NZS 1170.5, this category can apply to
+            ceilings which interact with fire suppression systems, emergency
+            lighting installations and other parts.</i
+          >
+        </p>
+        <p>
+          <i
+            >Note that this applies for all parts and components that are
+            essential for a building to be occupied. These would include; fire
+            protection systems, critical plumbing systems, electrical systems
+            and lifts. For all structures these will be elements required to be
+            returned to an operational state within an acceptably short time
+            frame (hours or days rather than weeks) in order for the structure
+            to be reoccupied.</i
+          >
+        </p>
+        <p>
+          <i
+            >For example reinstatement of lightweight fallen tiles may be
+            considered a viable option within the time frame indicated to allow
+            reoccupation of a office but may be unsuitable for an operating
+            theatre</i
+          >
+        </p>
+        <hr />
+      </div>
+
+      <div id="div1-1" style="display: none">
+        <p>
+          <b
+            >Does the suspended ceiling, when considered as a whole, weigh more
+            than 7.5kg?</b
+          >
+        </p>
+        <p></p>
+        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+          <label class="btn btn-dark" id="st1a">
+            <input type="radio" autocomplete="off" value="ULS" /> Yes
+          </label>
+          <label class="btn btn-dark" id="st2a">
+            <input type="radio" autocomplete="off" /> No
+          </label>
+        </div>
+        <p></p>
+        <p>
+          <i
+            >For the ceiling to not be considered ULS design it must weigh less
+            than 7.5kg</i
+          >
+        </p>
+        <hr />
+      </div>
+
+      <div id="div1-2" style="display: none">
+        <p>
+          <b
+            >Is the suspended ceiling installation at a height of 3m or
+            greater?</b
+          >
+        </p>
+        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+          <label class="btn btn-dark" id="st1b">
+            <input type="radio" autocomplete="off" value="ULS" /> Yes
+          </label>
+          <label class="btn btn-dark" id="st2b">
+            <input type="radio" autocomplete="off" /> No
+          </label>
+        </div>
+        <p>
+          <i
+            >For the ceiling to not be considered ULS design, it must be
+            installed at a height less than 3m</i
+          >
+        </p>
+        <hr />
+      </div>
+
+      <div id="div1-3" style="display: none">
+        <p>
+          <b
+            >Would collapse of the suspended ceiling block emergency egress
+            routes?</b
+          >
+        </p>
+        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+          <label class="btn btn-dark" id="st1c">
+            <input type="radio" autocomplete="off" value="ULS" /> Yes
+          </label>
+          <label class="btn btn-dark" id="st2c">
+            <input type="radio" autocomplete="off" /> No
+          </label>
+        </div>
+        <p><i>Could fallen ceiling tiles block emergency egress routes?</i></p>
+        <hr />
+      </div>
+
+      <div id="div1-4" style="display: none">
+        <p>
+          <b
+            >Does the ceiling comply with all of the
+            <a data-toggle="modal" data-target="#Modalass">
+              assumptions and limitations</a
+            >?</b
+          >
+        </p>
+
+        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+          <label class="btn btn-dark" id="st1e">
+            <input type="radio" autocomplete="off" value="SLS" /> Yes
+          </label>
+          <label class="btn btn-dark" id="st2e">
+            <input type="radio" autocomplete="off" /> No
+          </label>
+        </div>
+        <hr />
+      </div>
+
+      <div id="div1-5" style="display: none">
+        <div class="alert alert-danger">
+          <p>
+            Obtain site specific design advice from an appropriately qualified
+            engineer
+          </p>
+          <p>&nbsp;</p>
+        </div>
+      </div>
+
+      <div id="div1-7" style="display: none">
+        <div class="alert alert-success">
+          <!-- Button trigger modal -->
+          <button
+            type="button"
+            class="btn btn-outline-dark btn-sm float-right"
+            data-toggle="modal"
+            data-target="#Modal4"
+          >
+            more info
+          </button>
+          <p>
+            Your Limit State Type is <span class="total0"></span>
+            <span class="total0a"></span>
+          </p>
+          <p id="multistate" style="display: none">
+            <small
+              >As there are two limit states which apply to the ceiling in this
+              instance, the most stringent state which results in the shortest
+              allowable lengths will apply.</small
+            >
+          </p>
+        </div>
+      </div>
+
+      <input type="hidden" name="lst" value="" />
+      <div id="div1-6" style="display: none">
+        <p>
+          <a
+            class="btn btn-dark"
+            href="#carouselcalc"
+            role="button"
+            data-slide="prev"
+            ><i class="fas fa-chevron-left" aria-hidden="true"></i>
+            <span>Previous</span></a
+          >
+          <a
+            class="btn btn-dark float-right"
+            href="#carouselcalc"
+            role="button"
+            data-slide="next"
+            ><span>Next</span>
+            <i class="fas fa-chevron-right" aria-hidden="true"></i
+          ></a>
+        </p>
+      </div>
+    </div>
+
+    <div class="carousel-item">
+      <h4>Step Two - Suspended Baffle Ceiling Weight</h4>
+      <p>
+        Calculate the total seismic weight based on the ceiling and service
+        weights.
+      </p>
+      <p>
+        Enter or select the corresponding values in the column on the right and
+        sum all the component weights to get a total seismic weight. This value
+        will be used in the following steps this worksheet.
+      </p>
+
+      <table class="table">
+        <tbody>
+          <tr>
+            <td>Profile</td>
+            <td>
+              <select
+                name="gridmass"
+                id="gridmass"
+                class="form-control calctxt"
+              >
+                <option value="1.3" selected="">
+                  100mm by 30mm (Gridlux compatible)
+                </option>
+                <option value="1.7" data-note="1">135mm by 30mm</option>
+                <option value="1.8" data-note="2">150mm by 25mm</option>
+                <option value="2.4">150mm by 30mm (Gridlux compatible)</option>
+              </select>
+            </td>
+            <td><div id="gridmass-txt" class="text-right">1.3</div></td>
+          </tr>
+          <tr>
+            <td>Baffle Spacing (m)</td>
+            <td>
+              <small id="baffleerror">Minimum 0.1m - Maximum 1.0m </small>
+              <div id="baffleerror2" style="color: red; display: none">
+                Alternatively contact a suitably qualified chartered
+                professional engineer for specific design.
+              </div>
+            </td>
+            <td>
+              <input
+                type="number"
+                step="0.1"
+                name="bafflespace"
+                value="0.1"
+                id="bafflespace"
+                min="0.1"
+                max="1"
+                class="form-control calctxt"
+              />
+            </td>
+          </tr>
+          <tr>
+            <td>Baffle Mass (kg/m<sup>2</sup>)</td>
+            <td></td>
+            <td><div id="bafflemass" class="text-right">13</div></td>
+          </tr>
+          <tr>
+            <td>Strongback Mass (kg/m<sup>2</sup>)</td>
+            <td><span id="strongbackmasst">41x21x1.2 PST Channel</span></td>
+            <td><div id="strongbackmass" class="text-right">1.27</div></td>
+          </tr>
+          <tr>
+            <td rowspan="3">Services</td>
+            <td>Luminaires incl. Gridlux (kg/m<sup>2</sup>)</td>
+            <td>
+              <input
+                type="number"
+                step="0.1"
+                name="luminaries"
+                value="0.2"
+                id="luminaries"
+                class="form-control calctxt"
+              />
+            </td>
+          </tr>
+          <tr>
+            <td>Services Allowance (kg/m<sup>2</sup>)</td>
+            <td>
+              <input
+                type="number"
+                step="0.1"
+                name="insulation"
+                value="3"
+                id="insulation"
+                class="form-control calctxt"
+              />
+            </td>
+          </tr>
+          <tr>
+            <td>Other (kg/m<sup>2</sup>)</td>
+            <td>
+              <input
+                type="number"
+                step="0.1"
+                name="other"
+                value=""
+                id="other"
+                class="form-control calctxt"
+              />
+            </td>
+          </tr>
+
+          <tr class="success">
+            <td colspan="2" class="text-right">
+              Total Seismic Weight <span class="badge c1">Sw</span>
+            </td>
+            <td>
+              <div class="text-right">
+                <b><span class="total1"></span></b> kg/m<sup>2</sup>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <p>
+        Strongback and hanger rod spacing for M10 Hanger Rod or 41x21x1.2 PST
+        Channel is 1.2m
+      </p>
+      <p>
+        <b>Note:</b> If Gridlux is to be used as the primary lighting, allow 1
+        kg per 1200mm unit and 0.5 kg per 600mm unit. An average Gridlux layout
+        would have a 1200mm unit every 5m 2 , resulting in a luminaire allowance
+        of 0.2kg/m 2 . Note that Gridlux is only compatible with the 150x30mm
+        aluminium baffle.
+      </p>
+      <p>
+        <a
+          class="btn btn-dark"
+          href="#carouselcalc"
+          role="button"
+          data-slide="prev"
+          ><i class="fas fa-chevron-left" aria-hidden="true"></i>
+          <span>Previous</span></a
+        >
+        <a
+          class="btn btn-dark float-right"
+          href="#carouselcalc"
+          role="button"
+          data-slide="next"
+          ><span>Next</span>
+          <i class="fas fa-chevron-right" aria-hidden="true"></i
+        ></a>
+      </p>
+      <p></p>
+    </div>
+    <div class="carousel-item">
+      <h4>Step Three - Seismic Actions</h4>
+      <p>
+        Calculate seismic force based on
+        <a
+          data-toggle="collapse"
+          href="#collapsezonemap"
+          aria-expanded="false"
+          aria-controls="collapsezonemap"
+          class="mapshow"
+          >seismic zone</a
+        >, height above ground level, and building importance level.
+      </p>
+
+      <div class="collapse" id="collapsezonemap">
+        <div class="thumbnail">
+          <p>
+            Locate the area for which the suspended ceiling will be installed.
+            Find the Site Specific Zone Factor by locating the line closest to
+            the area of installation, or the shaded area it is within, and
+            tapping it to show the rating.
+          </p>
+
+          <div id="mapdiv"></div>
+        </div>
+      </div>
+      <table class="table">
+        <tbody>
+          <tr>
+            <td>
+              Zone Factor<br />
+              <small
+                ><a
+                  data-toggle="collapse"
+                  href="#collapsezonemap"
+                  aria-expanded="false"
+                  aria-controls="collapsezonemap"
+                  class="mapshow"
+                >
+                  Show Zones
+                </a></small
+              >
+            </td>
+            <td>
+              <select
+                name="zonefactor"
+                id="zonefactor"
+                class="form-control calctxt"
+              >
+                <option value="0.1">Kaitaia</option>
+                <option value="0.1">Paihia/Russell</option>
+                <option value="0.1">Kaikohe</option>
+                <option value="0.1">Whangarei</option>
+                <option value="0.1">Dargaville</option>
+                <option value="0.13">Warkworth</option>
+                <option value="0.13">Auckland</option>
+                <option value="0.13">Manukau City</option>
+                <option value="0.13">Waiuku</option>
+                <option value="0.13">Pukekohe</option>
+                <option value="0.16">Thames</option>
+                <option value="0.18">Paeroa</option>
+                <option value="0.18">Waihi</option>
+                <option value="0.15">Huntly</option>
+                <option value="0.15">Ngaruawahia</option>
+                <option value="0.18">Morrinsville</option>
+                <option value="0.18">Te Aroha</option>
+                <option value="0.2">Tauranga</option>
+                <option value="0.2">Mount Maunganui</option>
+                <option value="0.16">Hamilton</option>
+                <option value="0.18">Cambridge</option>
+                <option value="0.17">Te Awamutu</option>
+                <option value="0.19">Matamata</option>
+                <option value="0.22">Te Puke</option>
+                <option value="0.21">Putaruru</option>
+                <option value="0.21">Tokoroa</option>
+                <option value="0.17">Otorohanga</option>
+                <option value="0.18">Te Kuiti</option>
+                <option value="0.21">Mangakino</option>
+                <option value="0.24">Rotorua</option>
+                <option value="0.29">Kawerau</option>
+                <option value="0.3">Whakatane</option>
+                <option value="0.3">Opotiki</option>
+                <option value="0.33">Ruatoria</option>
+                <option value="0.3">Murupara</option>
+                <option value="0.28">Taupo</option>
+                <option value="0.21">Taumarunui</option>
+                <option value="0.27">Turangi</option>
+                <option value="0.36">Gisborne</option>
+                <option value="0.37">Wairoa</option>
+                <option value="0.18">Waitara</option>
+                <option value="0.18">New Plymouth</option>
+                <option value="0.18">Inglewood</option>
+                <option value="0.18">Stratford</option>
+                <option value="0.18">Opunake</option>
+                <option value="0.18">Hawera</option>
+                <option value="0.19">Patea</option>
+                <option value="0.26">Raetihi</option>
+                <option value="0.27">Ohakune</option>
+                <option value="0.29">Waiouru</option>
+                <option value="0.38">Napier</option>
+                <option value="0.39">Hastings</option>
+                <option value="0.25">Wanganui</option>
+                <option value="0.41">Waipawa</option>
+                <option value="0.41">Waipukurau</option>
+                <option value="0.33">Taihape</option>
+                <option value="0.3">Marton</option>
+                <option value="0.31">Bulls</option>
+                <option value="0.37">Feilding</option>
+                <option value="0.38">Palmerston North</option>
+                <option value="0.42">Dannevirke</option>
+                <option value="0.41">Woodville</option>
+                <option value="0.42">Pahiatua</option>
+                <option value="0.36">Foxton/Foxton Beach</option>
+                <option value="0.4">Levin</option>
+                <option value="0.4">Otaki</option>
+                <option value="0.4">Waikanae</option>
+                <option value="0.4">Paraparaumu</option>
+                <option value="0.42">Masterton</option>
+                <option value="0.4">Porirua</option>
+                <option value="0.4">
+                  Wellington CBD (North of Basin Reserve)
+                </option>
+                <option value="0.4">Wellington</option>
+                <option value="0.4">Hutt Valley (South of Taita Gorge)</option>
+                <option value="0.42">Upper Hutt</option>
+                <option value="0.4">Eastborne - Point Howard</option>
+                <option value="0.4">Wainuiomata</option>
+                <option value="0.23">Takaka</option>
+                <option value="0.26">Motueka</option>
+                <option value="0.27">Nelson</option>
+                <option value="0.3">Picton</option>
+                <option value="0.33">Blenheim</option>
+                <option value="0.36">St Arnaud</option>
+                <option value="0.3">Westport</option>
+                <option value="0.37">Reefton</option>
+                <option value="0.34">Murchison</option>
+                <option value="0.45">Springs Junction</option>
+                <option value="0.55">Hanmer Springs</option>
+                <option value="0.4">Seddon</option>
+                <option value="0.4">Ward</option>
+                <option value="0.4">Cheviot</option>
+                <option value="0.37">Greymouth</option>
+                <option value="0.42">Kaikoura</option>
+                <option value="0.46">Harihari</option>
+                <option value="0.45">Hokitika</option>
+                <option value="0.44">Fox Glacier</option>
+                <option value="0.44">Franz Josef</option>
+                <option value="0.6">Otira</option>
+                <option value="0.6">Arthurs Pass</option>
+                <option value="0.33">Rangiora</option>
+                <option value="0.3">Darfield</option>
+                <option value="0.3">Akaroa</option>
+                <option value="0.3">Christchurch</option>
+                <option value="0.19">Geraldine</option>
+                <option value="0.2">Ashburton</option>
+                <option value="0.24">Fairlie</option>
+                <option value="0.17">Temuka</option>
+                <option value="0.15">Timaru</option>
+                <option value="0.38">Mt Cook</option>
+                <option value="0.27">Twizel</option>
+                <option value="0.14">Waimate</option>
+                <option value="0.24">Cromwell</option>
+                <option value="0.3">Wanaka</option>
+                <option value="0.3">Arrowtown</option>
+                <option value="0.21">Alexandra</option>
+                <option value="0.32">Queenstown</option>
+                <option value="0.54">Milford Sound</option>
+                <option value="0.13">Palmerston</option>
+                <option value="0.13">Oamaru</option>
+                <option value="0.13">Dunedin</option>
+                <option value="0.13">Mosgiel</option>
+                <option value="0.2">Riverton</option>
+                <option value="0.36">Te Anau</option>
+                <option value="0.18">Gore</option>
+                <option value="0.2">Winton</option>
+                <option value="0.13">Balclutha</option>
+                <option value="0.17">Mataura</option>
+                <option value="0.15">Bluff</option>
+                <option value="0.17">Invercargill</option>
+                <option value="0.14">Oban</option>
+              </select>
+            </td>
+            <td style="width: 100px">
+              <div id="zonefactor-txt" class="text-right">0.01</div>
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+              Importance Level<br /><small
+                ><i>Anything above IL3 will require a design by an engineer</i
+                ><br />
+                <!-- Button trigger modal --><a
+                  href="#"
+                  data-toggle="modal"
+                  data-target="#Modal5"
+                  >more info</a
+                ></small
+              >
+            </td>
+            <td>
+              <select
+                name="insttype"
+                id="insttype"
+                class="form-control calctxt"
+              >
+                <option value="1" id="imp1">Importance Level 1</option>
+                <option value="2" selected="">Importance Level 2</option>
+                <option value="3">Importance Level 3</option>
+              </select>
+            </td>
+            <td><div id="insttype-txt" class="text-right">2</div></td>
+          </tr>
+
+          <tr>
+            <td>
+              Height Factor<br /><small
+                ><i>Ceiling connection height above ground floor</i><br />
+                <!-- Button trigger modal --><a
+                  href="#"
+                  data-toggle="modal"
+                  data-target="#Modal7"
+                  >more info</a
+                ></small
+              >
+            </td>
+            <td>
+              <select
+                name="floorweight"
+                id="floorweight"
+                class="form-control calctxt"
+              >
+                <option value="3" selected="">0 - 3m</option>
+                <option value="4">3.1 - 6m</option>
+                <option value="5">6.1 - 9m</option>
+                <option value="6">9.1m +</option>
+              </select>
+            </td>
+            <td><div id="floorweight-txt" class="text-right">1</div></td>
+          </tr>
+
+          <tr>
+            <td colspan="2" class="text-right">
+              Seismic Weight <span class="badge c1">Sw</span>
+            </td>
+            <td>
+              <div class="text-right"><span class="total1"></span></div>
+            </td>
+          </tr>
+          <tr class="success">
+            <td colspan="2" class="text-right">
+              Total Seismic Force <span class="badge c2">Sf</span><br /><small
+                >kg/m<sup>2</sup></small
+              >
+            </td>
+
+            <td>
+              <div class="text-right">
+                SLS = <span class="total2"></span><br /><span class="sls2"
+                  >SLS2 = <span class="total2a"></span><br /></span
+                >ULS = <span class="total2b"></span>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>
+        <a
+          class="btn btn-dark"
+          href="#carouselcalc"
+          role="button"
+          data-slide="prev"
+          ><i class="fas fa-chevron-left" aria-hidden="true"></i>
+          <span>Previous</span></a
+        >
+        <a
+          class="btn btn-dark float-right"
+          href="#carouselcalc"
+          role="button"
+          data-slide="next"
+          ><span>Next</span>
+          <i class="fas fa-chevron-right" aria-hidden="true"></i
+        ></a>
+      </p>
+    </div>
+    <div class="carousel-item">
+      <h4>Step Four - Selecting Back Bracing</h4>
+      <p>
+        Determine the maximum area of ceiling that each brace can support based
+        on seismic force, brace type and the plenum height.
+      </p>
+
+      <table class="table">
+        <tbody>
+          <tr>
+            <td>
+              <b>Maximum Plenum Height (m)</b> <span class="badge c6">Ph</span
+              ><br />
+            </td>
+            <td>
+              <select name="ctype" id="ctype" class="form-control calctxt">
+                <option value="0.20" data-d45="0.28" data-txt="1" selected="">
+                  0.20
+                </option>
+                <option value="0.40" data-d45="0.57" data-txt="1">0.40</option>
+                <option value="0.60" data-d45="0.85" data-txt="1">0.60</option>
+                <option value="0.80" data-d45="1.13" data-txt="1">0.80</option>
+                <option value="1.00" data-d45="1.41" data-txt="1">1.00</option>
+                <option value="1.20" data-d45="1.70" data-txt="1">1.20</option>
+                <option value="1.40" data-d45="1.98" data-txt="1">1.40</option>
+                <option value="1.60" data-d45="2.26" data-txt="2">1.60</option>
+                <option value="1.80" data-d45="2.55" data-txt="2">1.80</option>
+                <option value="2.00" data-d45="2.83" data-txt="3">2.00</option>
+                <option value="2.20" data-d45="3.11" data-txt="3">2.20</option>
+                <option value="2.40" data-d45="3.39" data-txt="3">2.40</option>
+                <option value="2.60" data-d45="3.68" data-txt="4">2.60</option>
+                <option value="2.80" data-d45="3.96" data-txt="5">2.80</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <b>45° stud length (m)</b>
+            </td>
+            <td class="text-right"><span id="45length">0.28</span> m</td>
+          </tr>
+          <tr>
+            <td>
+              <b>StratoBrace Capacity (kg)</b>
+            </td>
+            <td class="text-right">
+              <div class="text-right"><span id="ctype-txt">250</span> kg</div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <b>Brace Arm Size</b>
+            </td>
+            <td class="text-right">
+              <span id="bracearm-txt"
+                >64x35x0.55mm or 92x35x0.55mm Steel Stud</span
+              >
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <b>Area per Brace <small>(m<sup>2</sup>)</small></b>
+            </td>
+            <td class="text-right">
+              <span class="apb" id="apb"></span>
+              <span class="badge c3">Ab</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>
+        <small
+          >Note that figures above are based on the T&amp;R StratoBrace
+          specifications. For further information please contact your local
+          T&amp;R representative.</small
+        >
+      </p>
+      <p>
+        <small
+          >If further refinements to the back bracing design is required or a
+          greater capacity of back bracing needed contact a suitably qualified
+          chartered professional engineer.</small
+        >
+      </p>
+      <p class="text-center">
+        <a class="btn btn-sm btn-outline-dark" id="bbd">Bracing diagram</a>
+      </p>
+
+      <div id="bbdi" style="display: none">
+        <p>
+          <img src="/uploads/images/BracingDiagram.png" class="img-fluid" />
+        </p>
+        <p>
+          Installation arrangement of StratoBrace. The brace is constructed of
+          various steel stud compression posts with 2x steel studs at 45 degrees
+          in each direction, depending on the plenum height.
+        </p>
+      </div>
+      <p class="text-center">
+        <a class="btn btn-sm btn-outline-dark" id="bcd">Connection Details</a>
+      </p>
+      <div id="bcdi" style="display: none">
+        <!-- 					<p> <img src="/uploads/images/gridlockconnections.jpg" class="img-fluid" />   </p> -->
+        <p>
+          All fasteners into the building structure are sufficient for the
+          loadings imparted from the back bracing, as long as the manufacturers
+          specifications are followed during the installation of the fastener.
+        </p>
+        <p>
+          For connections into structure which are not detailed in the table
+          please refer to our T&amp;R representatives or a qualified chartered
+          professional engineer.
+        </p>
+      </div>
+
+      <p>
+        <a
+          class="btn btn-dark"
+          href="#carouselcalc"
+          role="button"
+          data-slide="prev"
+          ><i class="fas fa-chevron-left" aria-hidden="true"></i>
+          <span>Previous</span></a
+        >
+        <a
+          class="btn btn-dark float-right"
+          href="#carouselcalc"
+          role="button"
+          data-slide="next"
+          ><span>Next</span>
+          <i class="fas fa-chevron-right" aria-hidden="true"></i
+        ></a>
+      </p>
+    </div>
+    <div class="carousel-item">
+      <h4>Step Five - Back Bracing Layout</h4>
+
+      <p>The minimum number of braces for a ceiling depends on 2 factors:</p>
+      <ul>
+        <li>
+          Capacity basis (sufficient braces to transfer the total ceiling load)
+        </li>
+        <li>
+          Motion limiting basis (sufficient braces to ensure that the ceiling
+          moves as a single unit)
+        </li>
+      </ul>
+      <p></p>
+      <p>&nbsp;</p>
+
+      <h4>Minimum number of braces (capacity basis)</h4>
+      <table class="table text-center">
+        <tbody>
+          <tr>
+            <td>
+              <b>Ceiling Area (m<sup>2</sup>)</b>
+              <span class="badge c7">Ca</span>
+            </td>
+            <td rowspan="2"><b>/</b></td>
+            <td>
+              <b>Area per brace (m<sup>2</sup>)</b>
+              <span class="badge c3">Ab</span>
+            </td>
+            <td rowspan="2"><b>=</b></td>
+            <td><b>Min. # of braces</b> <span class="badge c4">#b</span></td>
+          </tr>
+          <tr>
+            <td>
+              <input
+                type="number"
+                step="0.1"
+                name="carea"
+                value="100"
+                id="carea"
+                class="form-control calctxt"
+              />
+            </td>
+            <td><span class="apb"></span></td>
+            <td><span class="minbraces" id="minbraces"></span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h4>Maximum brace spacing along a Strongback</h4>
+      <table class="table text-center">
+        <tbody>
+          <tr>
+            <td>
+              <b>Area per brace (m<sup>2</sup>)</b>
+              <span class="badge c3">Ab</span>
+            </td>
+            <td rowspan="2"><b>/</b></td>
+            <td><b>Strongback Brace Spacing (m)</b></td>
+            <td rowspan="2"><b>=</b></td>
+            <td>
+              <b>Max. Brace Spacing (m)</b> <span class="badge c5">Bs</span>
+            </td>
+          </tr>
+          <tr>
+            <td><span class="apb"></span></td>
+            <td>2.4</td>
+            <td><span class="bspace" id="bspace"></span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>
+        The calculated minimum number of braces represents the number of braces
+        required to carry the total ceiling load, with the assumption that
+        ceiling load is evenly shared between braces.
+      </p>
+      <p>
+        Often the shape of the ceiling means that more than the minimum number
+        of braces are required to adequately control the motion of the ceiling,
+        therefore costing should not be based of the minimum number. Instead an
+        RCP should be annotated with required bracing in accordance with the
+        bracing guidelines below to work out the actual number of braces:
+      </p>
+      <ul>
+        <li>Bracing should be laid out evenly throughout the ceiling area</li>
+        <li>Strongbacks closest to the ceiling edges should be braced</li>
+        <li>
+          Thereafter every second strongback must be braced. It is preferable
+          that every strongback is braced
+        </li>
+        <li>
+          If a strongback is broken along its length each shall be considered as
+          a separate strongback, and braced accordingly
+        </li>
+      </ul>
+      <p></p>
+      <p>
+        For complex ceiling shapes it is recommended that advice on the bracing
+        layout is sought from a suitably qualified chartered professional
+        engineer.
+      </p>
+      <p>&nbsp;</p>
+      <div class="text-center">
+        <a class="btn btn-sm btn-outline-dark" id="brg">Bracing Guidance</a>
+      </div>
+      <div id="brgi" style="display: none">
+        <p>
+          <img
+            src="/uploads/images/BackBracingGuidance.png"
+            class="img-fluid"
+          />
+        </p>
+      </div>
+      <p>&nbsp;</p>
+
+      <p>
+        <a
+          class="btn btn-dark"
+          href="#carouselcalc"
+          role="button"
+          data-slide="prev"
+          ><i class="fas fa-chevron-left" aria-hidden="true"></i>
+          <span>Previous</span></a
+        >
+        <a
+          class="btn btn-dark float-right"
+          href="#carouselcalc"
+          role="button"
+          data-slide="next"
+          ><span>Next</span>
+          <i class="fas fa-chevron-right" aria-hidden="true"></i
+        ></a>
+      </p>
+    </div>
+    <div class="carousel-item">
+      <h4>Step Six - Determining the Seismic Clearance</h4>
+      <p>
+        Determining a seismic clearance is to ensure there is sufficient
+        clearance to allow parts to move relative to each other during a seismic
+        event.
+      </p>
+
+      <table class="table text-center">
+        <tbody>
+          <tr>
+            <td><b>Plenum height (m)</b> <span class="badge c6">Ph</span></td>
+            <td rowspan="2"><b>X</b></td>
+            <td>
+              <b>Interstory drift factor</b><br />
+              <span class="total0">ULS</span>
+              <span class="total0a">+SLS2</span>
+            </td>
+            <td rowspan="2"><b>=</b></td>
+            <td>
+              <b>Required Seismic Clearance (mm)</b>
+              <span class="badge c8">Sc</span>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <span class="pht"></span>
+            </td>
+            <td><span class="idf"></span>%</td>
+            <td>
+              <span class="rclearance" id="rclearance"></span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <p>
+        For larger plenum heights the required seismic clearance may be
+        impractical, for site specific installations contact a suitably
+        qualified chartered professional engineer.
+      </p>
+
+      <p>&nbsp;</p>
+      <p>
+        <a
+          class="btn btn-dark"
+          href="#carouselcalc"
+          role="button"
+          data-slide="prev"
+          ><i class="fas fa-chevron-left" aria-hidden="true"></i>
+          <span>Previous</span></a
+        >
+        <a
+          class="btn btn-dark float-right"
+          href="#carouselcalc"
+          role="button"
+          data-slide="next"
+          ><span>Next</span>
+          <i class="fas fa-chevron-right" aria-hidden="true"></i
+        ></a>
+      </p>
+    </div>
+    <div class="carousel-item">
+      <h4>Step Seven - Download</h4>
+      <p>Appendix A: Details on the Selection of Pertinent Factors</p>
+
+      <hr />
+      <h2 class="text-success text-center">We're done!</h2>
+
+      <p class="text-center">
+        <a
+          class="btn btn-success"
+          data-done="2"
+          data-toggle="modal"
+          data-target="#downloadmodal"
+          ><i class="far fa-save" aria-hidden="true"></i> Download Result</a
+        >
+      </p>
+      <p>
+        <a
+          class="btn btn-dark"
+          href="#carouselcalc"
+          role="button"
+          data-slide="prev"
+          ><i class="fas fa-chevron-left" aria-hidden="true"></i>
+          <span>Previous</span></a
+        >
+      </p>
+    </div>
+  </div>
+  <!-- carosel -->
+</div>

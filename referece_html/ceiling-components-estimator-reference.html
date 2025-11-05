@@ -1,0 +1,365 @@
+<div>
+  <h1
+    style="
+      text-align: center;
+      color: #ffffff;
+      background-image: url('/uploads/images/IMG_0660-e1432243019916.jpg');
+    "
+  >
+    Component Estimator
+  </h1>
+
+  <h4>T&amp;R Ceiling Components Estimator</h4>
+  <p>Get an estimation of the components needed for your Suspended Ceiling.</p>
+
+  <br />
+
+  <div class="card bg-light" style="max-width: 900px; margin: auto">
+    <div class="card-body row">
+      <div class="col-md-5">
+        <div class="">
+          <h3 class="card-title">Exposed Ceiling Grid Suspension System</h3>
+          <p class="card-text">
+            Quantities are approximate and based on the area being square. Room
+            shape/area variances must be taken into consideration.
+          </p>
+          <p class="card-text">
+            <small class="text-muted">Ceiling drop not more than 1200mm</small>
+          </p>
+        </div>
+      </div>
+      <div class="col-md-7">
+        <div class="">
+          <br />
+          <form>
+            <div class="form-group row">
+              <label for="width" class="col-sm-3 col-form-label"
+                >Width (m)</label
+              >
+              <div class="col-sm-9">
+                <input
+                  type="number"
+                  class="form-control ch"
+                  id="width"
+                  value=""
+                />
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="height" class="col-sm-3 col-form-label"
+                >Length (m)</label
+              >
+              <div class="col-sm-9">
+                <input
+                  type="number"
+                  class="form-control ch"
+                  id="height"
+                  value=""
+                />
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="opts" class="col-sm-3 col-form-label">Option</label>
+              <div class="col-sm-9">
+                <label class="radio-inline">
+                  <input
+                    type="radio"
+                    name="opts"
+                    id="opt1"
+                    value="1"
+                    class="ch"
+                    checked=""
+                  />
+                  exposed 12 x 6
+                </label>
+                &nbsp;&nbsp;
+                <label class="radio-inline">
+                  <input
+                    type="radio"
+                    name="opts"
+                    id="opt2"
+                    value="2"
+                    class="ch"
+                  />
+                  exposed 6 x 6
+                </label>
+              </div>
+            </div>
+
+            <div class="text-center">
+              <button type="button" class="btn btn-outline-dark" id="calc">
+                Calculate
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <br />
+
+  <div
+    class="card bg-light"
+    style="max-width: 900px; margin: auto; display: none"
+    id="results"
+  >
+    <div class="card-header bg-dark text-white p-2"><h2>Results</h2></div>
+    <div class="estimatedResultContent">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-sm-3">
+            <span class="areaLabel"><b>Total Area (m<sup>2</sup>):</b></span>
+          </div>
+          <div class="col-sm-9">
+            <span class="totalAreaWrap" id="area"></span>
+          </div>
+        </div>
+        <br />
+        <div class="form-group row">
+          <label for="varianceInput" class="col-sm-3 col-form-label"
+            >Variance %</label
+          >
+          <div class="input-group col-sm-4">
+            <div class="input-group-prepend">
+              <button class="btn btn-dark" type="button" id="vdown">
+                <i class="fas fa-minus" aria-hidden="true"></i>
+              </button>
+            </div>
+            <input
+              type="text"
+              class="form-control"
+              value="0"
+              readonly=""
+              id="varianceInput"
+            />
+            <div class="input-group-append">
+              <button class="btn btn-dark" type="button" id="vup">
+                <i class="fas fa-plus" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <br />
+        <div class="">
+          <div class="MaterialResult panel panel-default">
+            <h3 class="materialTypeTitle">TILES</h3>
+            <div class="panel-body">
+              <table class="table table-bordered table-list">
+                <thead>
+                  <tr>
+                    <th>Product</th>
+                    <th>Approximate Quantity</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="product">
+                    <td class="itemName" id="r1">Ceiling Tiles</td>
+                    <td class="itemQuantity">
+                      <span id="r2">0</span> pc(s)
+                      <span id="zr2" class="d-none">0</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="MaterialResult panel panel-default">
+            <h3 class="materialTypeTitle">METAL COMPONENTS</h3>
+            <div class="panel-body">
+              <table class="table table-bordered table-list">
+                <thead>
+                  <tr>
+                    <th>Product</th>
+                    <th>Approximate Quantity</th>
+                    <!-- <th>Box Quantity</th> -->
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="product">
+                    <td class="itemName">Suspension Fastener</td>
+                    <td class="itemQuantity">
+                      <span id="r3">0</span> pc(s)
+                      <span id="zr3" class="d-none">0</span>
+                    </td>
+                  </tr>
+                  <tr class="product">
+                    <td class="itemName">Suspension Wire (2.5mm)</td>
+                    <td class="itemQuantity">
+                      <span id="r4">0</span> pc(s)
+                      <span id="zr4" class="d-none">0</span>
+                    </td>
+                  </tr>
+
+                  <tr class="product">
+                    <td class="itemName">Main Tee</td>
+                    <td class="itemQuantity">
+                      <span id="r6">0</span> pc(s)
+                      <span id="zr6" class="d-none">0</span>
+                    </td>
+                  </tr>
+                  <tr class="product">
+                    <td class="itemName">Cross Tee (1200mm)</td>
+                    <td class="itemQuantity">
+                      <span id="r7">0</span> pc(s)
+                      <span id="zr7" class="d-none">0</span>
+                    </td>
+                  </tr>
+                  <tr class="product ct2">
+                    <td class="itemName">Cross Tee (600mm)</td>
+                    <td class="itemQuantity">
+                      <span id="r7a">0</span> pc(s)
+                      <span id="zr7a" class="d-none">0</span>
+                    </td>
+                  </tr>
+                  <tr class="product">
+                    <td class="itemName">Wall Angle</td>
+                    <td class="itemQuantity">
+                      <span id="r8">0</span> pc(s)
+                      <span id="zr8" class="d-none">0</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <p>
+            <i
+              >These quantities do not include the requirements for seismic
+              design. Z Rails and Bracing elements should be added
+              separately.</i
+            >
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <br />
+  <br />
+  <br />
+
+  <script>
+    $(function () {
+      $("#results").hide();
+
+      $("#calc").click(function (event) {
+        event.preventDefault();
+        var height = $("#height").val();
+        var width = $("#width").val();
+        var area = height * width;
+        $("#area").html(area);
+
+        var opts = $("input[name='opts']:checked").val();
+
+        if (opts == 1) {
+          $("#r1,#zr1").html("Ceiling Tiles (1200mm x 600mm)");
+          $("#r2,#zr2").html(Math.ceil(area / 0.72));
+          $("#r3,#zr3").html(Math.ceil(area * 0.694));
+          $("#r4,#zr4").html(Math.ceil(area * 0.694));
+          $("#r5,#zr5").html(Math.ceil(area * 0.694));
+          $("#r6,#zr6").html(Math.ceil((area * 0.833) / 3.6));
+          $("#r7,#zr7").html(Math.ceil((area * 1.666) / 1.2));
+          $("#r8,#zr8").html(Math.ceil((width * 2 + height * 2) / 3));
+
+          $(".ct2").hide();
+        } else {
+          $("#r1,#zr1").html("Ceiling Tiles (600mm x 600mm)");
+          $("#r2,#zr2").html(Math.ceil(area / 0.36));
+          $("#r3,#zr3").html(Math.ceil(area * 0.694));
+          $("#r4,#zr4").html(Math.ceil(area * 0.694));
+          $("#r5,#zr5").html(Math.ceil(area * 0.694));
+          $("#r6,#zr6").html(Math.ceil((area * 0.833) / 3.6));
+          $("#r7,#zr7").html(Math.ceil((area * 1.666) / 1.2));
+          $("#r7a,#zr7a").html(Math.ceil((area * 0.833) / 0.6));
+          $("#r8,#zr8").html(Math.ceil((width * 2 + height * 2) / 3));
+          $(".ct2").show();
+        }
+
+        var r2 = Number($("#zr2").text());
+        var r3 = Number($("#zr3").text());
+        var r4 = Number($("#zr4").text());
+        var r5 = Number($("#zr5").text());
+        var r6 = Number($("#zr6").text());
+        var r7 = Number($("#zr7").text());
+        var r7a = Number($("#zr7a").text());
+        var r8 = Number($("#zr8").text());
+
+        $("#b6").html(Math.ceil(r6 / 20));
+        $("#b7").html(Math.ceil(r7 / 60));
+        $("#b7a").html(Math.ceil(r7a / 60));
+
+        $("#varianceInput").val(0);
+        $("#results").show("slow");
+      });
+
+      $("#vdown").click(function (event) {
+        event.preventDefault();
+        var variance = Number($("#varianceInput").val());
+        variance -= 1;
+        if (variance < 0) {
+          variance = 0;
+        }
+        if (variance > 5) {
+          variance = 5;
+        }
+        vary(variance);
+        $("#varianceInput").val(variance);
+      });
+      $("#vup").click(function (event) {
+        event.preventDefault();
+        var variance = Number($("#varianceInput").val());
+        variance += 1;
+        if (variance < 0) {
+          variance = 0;
+        }
+        if (variance > 5) {
+          variance = 5;
+        }
+        vary(variance);
+        $("#varianceInput").val(variance);
+      });
+
+      $(".ch").change(function () {
+        $("#results").hide("slow");
+      });
+    });
+
+    function vary(variance) {
+      var r2 = Number($("#zr2").text());
+      var r3 = Number($("#zr3").text());
+      var r4 = Number($("#zr4").text());
+      var r5 = Number($("#zr5").text());
+      var r6 = Number($("#zr6").text());
+      var r7 = Number($("#zr7").text());
+      var r7a = Number($("#zr7a").text());
+      var r8 = Number($("#zr8").text());
+
+      $("#r2").html(Math.round((r2 / 100) * variance + r2));
+      $("#r3").html(Math.round((r3 / 100) * variance + r3));
+      $("#r4").html(Math.round((r4 / 100) * variance + r4));
+      $("#r5").html(Math.round((r5 / 100) * variance + r5));
+      $("#r6").html(Math.round((r6 / 100) * variance + r6));
+      $("#r7").html(Math.round((r7 / 100) * variance + r7));
+      $("#r7a").html(Math.round((r7a / 100) * variance + r7a));
+      $("#r8").html(Math.round((r8 / 100) * variance + r8));
+
+      $("#b6").html(Math.ceil(Number($("#r6").text()) / 20));
+      $("#b7").html(Math.ceil(Number($("#r7").text()) / 60));
+      $("#b7a").html(Math.ceil(Number($("#r7a").text()) / 60));
+    }
+  </script>
+  <style type="text/css">
+    <!--
+    .areaLabel, .totalAreaWrap {
+    font-size: 1.5em;
+    }
+    .materialTypeTitle {
+    text-align:center;
+    }
+
+
+
+    -->
+  </style>
+</div>
