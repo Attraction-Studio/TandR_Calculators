@@ -2,8 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Custom styles for the calculator */
-#ceiling-components-estimator-app {
-  font-family: system-ui, -apple-system, sans-serif;
+/* Inherit fonts from Webflow parent */
+/* This overrides Tailwind's base font-family reset */
+@layer base {
+  #ceiling-components-estimator-app,
+  #ceiling-components-estimator-app * {
+    font-family: inherit;
+  }
 }
 

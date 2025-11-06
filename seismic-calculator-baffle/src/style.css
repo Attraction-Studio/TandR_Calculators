@@ -2,8 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Custom styles for the calculator */
-#seismic-calculator-baffle-app {
-  font-family: system-ui, -apple-system, sans-serif;
+/* Inherit fonts from Webflow parent */
+/* This overrides Tailwind's base font-family reset */
+@layer base {
+  #seismic-calculator-baffle-app,
+  #seismic-calculator-baffle-app * {
+    font-family: inherit;
+  }
 }
 
