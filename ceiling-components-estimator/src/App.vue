@@ -163,12 +163,14 @@
                 </td>
                 <td class="border border-gray-300 px-4 py-2 text-right">
                   {{ adjustedR4 }}
+                  <span class="text-sm text-gray-500">pc(s)</span>
                 </td>
               </tr>
               <tr>
                 <td class="border border-gray-300 px-4 py-2">Main Tee</td>
                 <td class="border border-gray-300 px-4 py-2 text-right">
                   {{ adjustedR6 }}
+                  <span class="text-sm text-gray-500">pc(s)</span>
                 </td>
               </tr>
               <tr>
@@ -177,6 +179,7 @@
                 </td>
                 <td class="border border-gray-300 px-4 py-2 text-right">
                   {{ adjustedR7 }}
+                  <span class="text-sm text-gray-500">pc(s)</span>
                 </td>
               </tr>
               <tr v-if="tileSize === '2'">
@@ -185,12 +188,14 @@
                 </td>
                 <td class="border border-gray-300 px-4 py-2 text-right">
                   {{ adjustedR7a }}
+                  <span class="text-sm text-gray-500">pc(s)</span>
                 </td>
               </tr>
               <tr>
                 <td class="border border-gray-300 px-4 py-2">Wall Angle</td>
                 <td class="border border-gray-300 px-4 py-2 text-right">
                   {{ adjustedR8 }}
+                  <span class="text-sm text-gray-500">pc(s)</span>
                 </td>
               </tr>
             </tbody>

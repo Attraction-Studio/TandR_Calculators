@@ -1,0 +1,51 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Font setup: Area Inktrap for headings, Inter for body */
+/* Color setup: Inherit body color from Webflow (#333) */
+@layer base {
+  #tandr-calculators-app {
+    font-family: 'Inter', inherit;
+    color: inherit; /* Inherit body color from Webflow */
+  }
+  
+  /* Headings use Area Inktrap */
+  #tandr-calculators-app h1,
+  #tandr-calculators-app h2,
+  #tandr-calculators-app h3,
+  #tandr-calculators-app h4,
+  #tandr-calculators-app h5,
+  #tandr-calculators-app h6 {
+    font-family: 'Area Inktrap', inherit;
+    color: inherit; /* Inherit body color from Webflow */
+  }
+  
+  /* Body text, labels, inputs, buttons use Inter and inherit color */
+  #tandr-calculators-app p,
+  #tandr-calculators-app label,
+  #tandr-calculators-app input,
+  #tandr-calculators-app button,
+  #tandr-calculators-app span,
+  #tandr-calculators-app td,
+  #tandr-calculators-app th,
+  #tandr-calculators-app div {
+    font-family: 'Inter', inherit;
+    color: inherit; /* Inherit body color from Webflow */
+  }
+  
+  /* Input text should inherit color */
+  #tandr-calculators-app input::placeholder {
+    color: inherit;
+    opacity: 0.6;
+  }
+}
+
+
+.border-brand-black {
+  border-color: #333;
+}
+
+.global-gap {
+  @apply md:gap-24 gap-8;
+}
