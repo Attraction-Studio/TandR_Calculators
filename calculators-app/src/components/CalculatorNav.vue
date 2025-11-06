@@ -1,5 +1,5 @@
 <template>
-  <nav class="mb-8" aria-label="Calculator navigation">
+  <nav class="mb-12" aria-label="Calculator navigation">
     <ul class="flex flex-wrap gap-2">
       <li v-for="calc in calculators" :key="calc.id">
         <button

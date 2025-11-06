@@ -1,6 +1,6 @@
 <template>
   <div class="w-full">
-    <div class="mb-24">
+    <div class="mb-16">
       <h2 class="text-4xl md:text-7xl max-w-2xl font-bold mb-6">
         Ceiling Components Estimator
       </h2>
