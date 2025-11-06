@@ -3,6 +3,9 @@ import vue from '@vitejs/plugin-vue';
 
 export default defineConfig({
   plugins: [vue()],
+  define: {
+    'process.env': {},
+  },
   build: {
     lib: {
       entry: './src/main.js',
@@ -14,9 +17,6 @@ export default defineConfig({
       output: {
         inlineDynamicImports: true,
       },
-    },
-    define: {
-      'process.env': {},
     },
   },
 });
