@@ -85,11 +85,11 @@
 
     <!-- Results Section -->
     <div class="mt-8 space-y-4">
-      <div class="border-t pt-6">
+      <div class="space-y-4 p-4 bg-gray-50">
         <h3 class="text-xl font-semibold mb-4 text-gray-800">Results</h3>
 
         <!-- Area Display -->
-        <div class="mb-4 p-4 bg-gray-50 rounded-md">
+        <div class="mb-4 p-4 bg-white">
           <p class="text-sm text-gray-600">Area</p>
           <p class="text-2xl font-bold text-gray-800">
             {{ area.toFixed(2) }} m²
@@ -97,7 +97,7 @@
         </div>
 
         <!-- Variance Control -->
-        <div class="mb-6 p-4 bg-blue-50 rounded-md">
+        <div class="mb-6 p-4 bg-blue-50">
           <label class="block text-sm font-medium text-gray-700 mb-2">
             Variance Adjustment (%)
           </label>
@@ -150,37 +150,45 @@
                 </td>
               </tr>
               <tr>
-                <td class="border border-gray-300 px-4 py-2">Component 1</td>
+                <td class="border border-gray-300 px-4 py-2">
+                  Suspension Fastener
+                </td>
                 <td class="border border-gray-300 px-4 py-2 text-right">
                   {{ adjustedR3 }}
                 </td>
               </tr>
               <tr>
-                <td class="border border-gray-300 px-4 py-2">Component 2</td>
+                <td class="border border-gray-300 px-4 py-2">
+                  Suspension Wire (2.5mm)
+                </td>
                 <td class="border border-gray-300 px-4 py-2 text-right">
                   {{ adjustedR4 }}
                 </td>
               </tr>
               <tr>
-                <td class="border border-gray-300 px-4 py-2">Component 3</td>
+                <td class="border border-gray-300 px-4 py-2">Main Tee</td>
                 <td class="border border-gray-300 px-4 py-2 text-right">
                   {{ adjustedR6 }}
                 </td>
               </tr>
               <tr>
-                <td class="border border-gray-300 px-4 py-2">Component 4</td>
+                <td class="border border-gray-300 px-4 py-2">
+                  Cross Tee (1200mm)
+                </td>
                 <td class="border border-gray-300 px-4 py-2 text-right">
                   {{ adjustedR7 }}
                 </td>
               </tr>
               <tr v-if="tileSize === '2'">
-                <td class="border border-gray-300 px-4 py-2">Component 4a</td>
+                <td class="border border-gray-300 px-4 py-2">
+                  Cross Tee (600mm)
+                </td>
                 <td class="border border-gray-300 px-4 py-2 text-right">
                   {{ adjustedR7a }}
                 </td>
               </tr>
               <tr>
-                <td class="border border-gray-300 px-4 py-2">Component 5</td>
+                <td class="border border-gray-300 px-4 py-2">Wall Angle</td>
                 <td class="border border-gray-300 px-4 py-2 text-right">
                   {{ adjustedR8 }}
                 </td>
