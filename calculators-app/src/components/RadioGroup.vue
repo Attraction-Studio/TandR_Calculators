@@ -1,6 +1,6 @@
 <template>
   <div class="mb-6">
-    <label class="block text-sm font-medium mb-3">
+    <label class="block btn_12_text mb-3">
       {{ label }}
     </label>
     <div

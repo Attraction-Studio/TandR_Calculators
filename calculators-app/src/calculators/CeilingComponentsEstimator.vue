@@ -2,12 +2,12 @@
   <div class="w-full">
     <div class="mb-16 flex lg:flex-row flex-col justify-between gap-6">
       <h2 class="heading-style-h1 mb-6">Ceiling Components Estimator</h2>
-      <div class="flex flex-col gap-4">
-        <p class="paragraph-18px max-w-xl">
+      <div class="flex flex-col gap-4 max-w-3xl">
+        <p class="paragraph-18px">
           Use this tool to estimate the quantity of components required for your
           Suspended Ceiling project.
         </p>
-        <p class="paragraph-18px max-w-xl">
+        <p class="paragraph-18px">
           Enter your room dimensions and select a tile size to quickly calculate
           an approximate materials list. Please note: all figures are estimates
           and actual requirements may vary depending on your room shape and
@@ -16,32 +16,36 @@
       </div>
     </div>
     <!-- Main Content Grid -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 global-gap mb-8">
+    <div
+      class="mb-16 flex lg:flex-row flex-col justify-between gap-6 items-end"
+    >
       <!-- Left Column: Inputs -->
-      <div>
+      <div class="w-full">
         <!-- Input Form -->
-        <div class="space-y-6 max-w-xl">
-          <InputField
-            id="length"
-            v-model.number="length"
-            label="Length"
-            type="number"
-            step="0.01"
-            min="0"
-            max="100000"
-            @update:modelValue="onInputChange"
-          />
+        <div class="space-y-6 w-1/2">
+          <div class="grid grid-cols-2 gap-4 w-full">
+            <InputField
+              id="length"
+              v-model.number="length"
+              label="Length"
+              type="number"
+              step="0.01"
+              min="0"
+              max="100000"
+              @update:modelValue="onInputChange"
+            />
 
-          <InputField
-            id="width"
-            v-model.number="width"
-            label="Width"
-            type="number"
-            step="0.01"
-            min="0"
-            max="100000"
-            @update:modelValue="onInputChange"
-          />
+            <InputField
+              id="width"
+              v-model.number="width"
+              label="Width"
+              type="number"
+              step="0.01"
+              min="0"
+              max="100000"
+              @update:modelValue="onInputChange"
+            />
+          </div>
 
           <RadioGroup
             id="tile-size"
@@ -54,18 +58,17 @@
       </div>
 
       <!-- Right Column: Info & Total Area -->
-      <div class="space-y-6 flex flex-col gap-6 justify-end">
-        <InfoBox variant="warning" title="Important Note">
-          Quantities are approximate and based on the area being square. Room
-          shape/area variances must be taken into consideration.
-        </InfoBox>
-
+      <div class="space-y-6 flex flex-col gap-6 justify-end w-full max-w-3xl">
         <div>
-          <p class="text-sm mb-2 border-b border-brand-black pb-2">
+          <p class="btn_12_text mb-2 border-b border-brand-black pb-2">
             Total Area
           </p>
           <p class="text-4xl md:text-5xl font-bold">{{ area.toFixed(2) }} m²</p>
         </div>
+        <InfoBox variant="warning" title="Important Note">
+          Quantities are approximate and based on the area being square. Room
+          shape/area variances must be taken into consideration.
+        </InfoBox>
       </div>
     </div>
 
@@ -74,7 +77,7 @@
     </div>
 
     <!-- Bottom Section: Results -->
-    <div class="grid grid-cols-1 md:grid-cols-2 global-gap">
+    <div class="flex lg:flex-row flex-col justify-between gap-6">
       <!-- Left Column: Tiles -->
       <div>
         <h3 class="text-4xl mb- font-semibold mb-6">Tiles</h3>
@@ -90,8 +93,8 @@
       </div>
 
       <!-- Right Column: Metal Components -->
-      <div>
-        <h3 class="text-4xl mb- font-semibold mb-6">Metal Components</h3>
+      <div class="w-full max-w-3xl">
+        <h3 class="text-4xl font-semibold mb-6">Metal Components</h3>
         <div class="space-y-3">
           <div
             v-for="component in metalComponents"
