@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen px-8">
+  <div class="min-h-screen">
     <div class="w-full py-8">
       <!-- Calculator Navigation -->
       <CalculatorNav
