@@ -1,6 +1,6 @@
 <template>
   <div class="mb-4">
-    <label :for="id" class="block text-sm font-medium mb-2">
+    <label :for="id" class="block btn_12_text mb-2">
       {{ label }}
       <span v-if="required" class="text-red-500" aria-label="required">*</span>
     </label>

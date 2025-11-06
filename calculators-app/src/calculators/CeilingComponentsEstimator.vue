@@ -1,18 +1,26 @@
 <template>
   <div class="w-full">
     <div class="mb-16 flex lg:flex-row flex-col justify-between gap-6">
-      <h2 class="heading-style-h2 mb-6">Ceiling Components Estimator</h2>
-      <p class="paragraph-18px max-w-xl">
-        Quantities are approximate and based on the area being square. Room
-        shape/area variances must be taken into consideration.
-      </p>
+      <h2 class="heading-style-h1 mb-6">Ceiling Components Estimator</h2>
+      <div class="flex flex-col gap-4">
+        <p class="paragraph-18px max-w-xl">
+          Use this tool to estimate the quantity of components required for your
+          Suspended Ceiling project.
+        </p>
+        <p class="paragraph-18px max-w-xl">
+          Enter your room dimensions and select a tile size to quickly calculate
+          an approximate materials list. Please note: all figures are estimates
+          and actual requirements may vary depending on your room shape and
+          specific site conditions.
+        </p>
+      </div>
     </div>
     <!-- Main Content Grid -->
     <div class="grid grid-cols-1 lg:grid-cols-2 global-gap mb-8">
       <!-- Left Column: Inputs -->
       <div>
         <!-- Input Form -->
-        <div class="space-y-6">
+        <div class="space-y-6 max-w-xl">
           <InputField
             id="length"
             v-model.number="length"
@@ -20,6 +28,7 @@
             type="number"
             step="0.01"
             min="0"
+            max="100000"
             @update:modelValue="onInputChange"
           />
 
@@ -30,6 +39,7 @@
             type="number"
             step="0.01"
             min="0"
+            max="100000"
             @update:modelValue="onInputChange"
           />
 
