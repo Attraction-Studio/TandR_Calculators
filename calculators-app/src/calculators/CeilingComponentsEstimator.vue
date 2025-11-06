@@ -1,10 +1,8 @@
 <template>
   <div class="w-full">
-    <div class="mb-16">
-      <h2 class="text-4xl md:text-7xl max-w-2xl font-bold mb-6">
-        Ceiling Components Estimator
-      </h2>
-      <p class="text-base text-gray-600 mb-8 max-w-xl">
+    <div class="mb-16 flex lg:flex-row flex-col justify-between gap-6">
+      <h2 class="heading-style-h2 mb-6">Ceiling Components Estimator</h2>
+      <p class="paragraph-18px max-w-xl">
         Quantities are approximate and based on the area being square. Room
         shape/area variances must be taken into consideration.
       </p>
@@ -62,7 +60,7 @@
     </div>
 
     <div class="border-t border-brand-black pt-4 mt-24 mb-12">
-      <h2 class="text-base font-bold">Results</h2>
+      <h2 class="btn_12_text">Results</h2>
     </div>
 
     <!-- Bottom Section: Results -->
