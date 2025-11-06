@@ -2,12 +2,32 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Inherit fonts from Webflow parent */
-/* This overrides Tailwind's base font-family reset */
+/* Font setup: Area Inktrap for headings, Inter for body */
 @layer base {
-  #seismic-calculator-baffle-app,
-  #seismic-calculator-baffle-app * {
-    font-family: inherit;
+  #seismic-calculator-baffle-app {
+    font-family: 'Inter', inherit;
+  }
+  
+  /* Headings use Area Inktrap */
+  #seismic-calculator-baffle-app h1,
+  #seismic-calculator-baffle-app h2,
+  #seismic-calculator-baffle-app h3,
+  #seismic-calculator-baffle-app h4,
+  #seismic-calculator-baffle-app h5,
+  #seismic-calculator-baffle-app h6 {
+    font-family: 'Area Inktrap', inherit;
+  }
+  
+  /* Body text, labels, inputs, buttons use Inter */
+  #seismic-calculator-baffle-app p,
+  #seismic-calculator-baffle-app label,
+  #seismic-calculator-baffle-app input,
+  #seismic-calculator-baffle-app button,
+  #seismic-calculator-baffle-app span,
+  #seismic-calculator-baffle-app td,
+  #seismic-calculator-baffle-app th,
+  #seismic-calculator-baffle-app div {
+    font-family: 'Inter', inherit;
   }
 }
 
