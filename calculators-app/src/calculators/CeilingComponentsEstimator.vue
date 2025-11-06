@@ -31,7 +31,7 @@
               type="number"
               step="0.01"
               min="0"
-              max="100000"
+              :max="100000"
               @update:modelValue="onInputChange"
             />
 
@@ -42,7 +42,7 @@
               type="number"
               step="0.01"
               min="0"
-              max="100000"
+              :max="100000"
               @update:modelValue="onInputChange"
             />
           </div>
