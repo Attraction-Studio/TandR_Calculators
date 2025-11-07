@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full max-w-7xl mx-auto px-4">
+  <div class="w-full">
     <!-- Header -->
     <div class="mb-8">
       <h2 class="heading-style-h1 mb-4">Suspended Ceiling Seismic Calculator</h2>
