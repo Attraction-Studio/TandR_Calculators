@@ -20,6 +20,7 @@
   import { ref, computed } from "vue";
   import CalculatorNav from "./components/CalculatorNav.vue";
   import CeilingComponentsEstimator from "./calculators/CeilingComponentsEstimator.vue";
+  import SuspendedCeilingCalculator from "./calculators/SuspendedCeilingCalculator.vue";
 
   // Calculator registry
   const calculators = [
@@ -31,9 +32,9 @@
     },
     {
       id: "2",
-      name: "Seismic Calculator",
-      component: null,
-      available: false,
+      name: "Suspended Ceiling Seismic Calculator",
+      component: SuspendedCeilingCalculator,
+      available: true,
     },
     {
       id: "3",
