@@ -17,53 +17,256 @@
 
     <!-- Wizard Content -->
     <div class="min-h-[600px]">
-      <!-- Step 1: Limit State Selection -->
+      <!-- Page 1: Introduction -->
       <div v-show="currentStep === 1">
-        <StepCard
-          :step-number="1"
-          title="Limit State Selection"
-          description="Select the appropriate limit state for your design"
-          :is-complete="step1Complete"
-        >
-      <QuestionCard
-        question-title="What limit state applies to your project?"
-        info-title="About Limit States"
-      >
-        <template #context>
-          <p class="mb-4">
-            A limit state is a condition beyond which a structure no longer meets defined design criteria.
-          </p>
-          <ul class="list-disc pl-5 space-y-2">
-            <li>
-              <strong>ULS (Ultimate Limit State):</strong> Concerned with strength criteria.
-              The structure may suffer damage but should not collapse.
-            </li>
-            <li>
-              <strong>SLS (Serviceability Limit State):</strong> Related to deflection criteria.
-              The structure should have no or very minor damage.
-            </li>
-          </ul>
-        </template>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <!-- Main Content (2/3) -->
+          <div class="lg:col-span-2">
+            <h2 class="text-4xl font-bold mb-8">T&R Seismic Calculator</h2>
 
-        <template #info>
-          Either limit state can govern your design. You must satisfy both ULS and SLS
-          requirements where applicable.
-        </template>
+            <div class="prose max-w-none space-y-6">
+              <p class="paragraph-18px">
+                Because every building is different, there is no standard seismic restraint solution to address site, location, form and function. The scope of seismic restraint and related engineering work that will be required will not be known until the ceiling design is completed. The T&R Seismic System will provide a solution for buildings with an Importance Level of 3 and below. A suitably qualified Chartered Professional Engineer will be required for Importance Levels 4 & 5. It is imperative that mechanical services, sprinkler systems, electrical and suspended ceiling design are all co-ordinated at appropriate stages.
+              </p>
 
-        <template #answer>
-          <RadioGroup
-            id="limit-state"
-            v-model="limitState"
-            label="Select Limit State"
-            :options="limitStateOptions"
-          />
-        </template>
-        </QuestionCard>
-      </StepCard>
-    </div>
+              <p class="paragraph-18px">
+                While full compliance with seismic requirements will add cost, it will limit damage, reduce repair costs and reduce the time to re-occupy post event. Furthermore it is now a legislative requirement for Code of Compliance Certificates and Health and Safety Laws. The new laws, affect those who are upstream from the workplace (for example designers, engineers, manufacturers, suppliers or installers). Specifically they have a duty to ensure, so far as is reasonably practicable, that the work they do or the things they provide to the workplace don't create health and safety risks.
+              </p>
 
-    <!-- Step 2: Site Information -->
-    <div v-show="currentStep === 2">
+              <div class="my-8">
+                <h3 class="text-2xl font-semibold mb-4">Usage Notes:</h3>
+                
+                <p class="paragraph-18px mb-4">
+                  This guide allows a designer to calculate required bracing for suspended ceilings. The calculations are based on conservative assumptions. Reduced seismic bracing designs for individual sites may be possible if a suitably qualified Chartered Professional Engineer carries out a site-specific design. This guide should not be used as a calculation template for a PS-1; specific seismic design should be carried out for these cases.
+                </p>
+
+                <p class="paragraph-18px mb-4">
+                  This guide has been prepared by JSK Consulting Engineers for T&R Interior Systems with the usual care and thoroughness of the consulting profession. Interpretation and application of this guide is outside the control of the engineer and therefore is the users' responsibility. This guide does not constitute a producer statement or engineer's certification, and is not for use with trafficable ceilings or ceilings which support partition walls or any other service load.
+                </p>
+
+                <p class="paragraph-18px mb-4">
+                  Allowance for relative motion between the ceiling and structure must be provided by floating edges. If the perimeter bracing method is used then two perpendicular edges must be fixed with the remaining two floating. If back bracing to the upper structure is used, then all edges must be floating. Floating edges must also be provided around rigid or separately braced items that pass through the ceiling. The amount of clearance should be checked by an engineer on a case-by-case basis.
+                </p>
+
+                <p class="paragraph-18px">
+                  Consult a structural engineer for the expected earthquake deflections of the structure.
+                </p>
+              </div>
+
+              <InfoBox variant="info">
+                <p class="text-sm">
+                  © The T&R Seismic System has been developed in conjunction with JSK Consulting Engineers, the University of Canterbury and T&R Interior Systems. It remains the intellectual property of T&R Interior Systems and may not be used with other products.
+                </p>
+              </InfoBox>
+            </div>
+          </div>
+
+          <!-- Right Sidebar (1/3) -->
+          <div class="lg:col-span-1">
+            <div class="border border-brand-black p-6 bg-white sticky top-4">
+              <h3 class="text-xl font-semibold mb-4 pb-3 border-b border-brand-black">You Will Need...</h3>
+              <ul class="space-y-3 text-sm">
+                <li class="flex items-start">
+                  <span class="mr-2">•</span>
+                  <span>Building Location</span>
+                </li>
+                <li class="flex items-start">
+                  <span class="mr-2">•</span>
+                  <span>Ceiling Height</span>
+                </li>
+                <li class="flex items-start">
+                  <span class="mr-2">•</span>
+                  <span>Tile Weight</span>
+                </li>
+                <li class="flex items-start">
+                  <span class="mr-2">•</span>
+                  <span>Reflected ceiling plans</span>
+                </li>
+                <li class="flex items-start">
+                  <span class="mr-2">•</span>
+                  <span>A section showing plenum depths</span>
+                </li>
+                <li class="flex items-start">
+                  <span class="mr-2">•</span>
+                  <span>This design is for 2 way exposed 24mm CBI grid only and cannot be used with any other manufacturer's grid</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Page 2: Design Methods -->
+      <div v-show="currentStep === 2">
+        <div class="max-w-4xl">
+          <h2 class="text-4xl font-bold mb-8">Introduction to suspended ceiling seismic design</h2>
+
+          <div class="prose max-w-none space-y-6">
+            <p class="paragraph-18px">
+              There are two main ways of approaching the seismic design of a suspended ceiling, each with their own benefits and drawbacks.
+            </p>
+
+            <div class="my-8">
+              <h3 class="text-2xl font-semibold mb-4">1. Perimeter Fixing</h3>
+              <p class="paragraph-18px mb-4">
+                This approach to seismic restraint relies on connections to adjacent walls to transfer the horizontal seismic load back to the primary building structure.
+              </p>
+              <p class="paragraph-18px mb-4">
+                The perimeter fixing approach relies on a fix-float philosophy, where the perimeter edges directly opposite a 'fixed' edge shall be 'floating'.
+              </p>
+              <p class="paragraph-18px mb-4">
+                A fixed edge has the tee riveted to the wall trim and screws each side of the tee into the wall to provide a solid load path. The floating edge has seismic clearance between the ceiling and the wall to allow for movement of the building structure.
+              </p>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-6">
+                <div class="bg-gray-100 p-4">
+                  <h4 class="font-semibold mb-2">Pros</h4>
+                  <ul class="list-disc pl-5 space-y-1 text-sm">
+                    <li>Cheaper and faster installation</li>
+                    <li>Less plenum congestion</li>
+                  </ul>
+                </div>
+                <div class="bg-gray-100 p-4">
+                  <h4 class="font-semibold mb-2">Cons</h4>
+                  <ul class="list-disc pl-5 space-y-1 text-sm">
+                    <li>Can only be used for small-medium ceilings, as the ceiling size is limited by the grid strength</li>
+                    <li>Walls must be capable of transferring the seismic load</li>
+                    <li>Seismic joints may be used to expand the size of ceiling that may be edge restrained</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div class="my-8">
+              <h3 class="text-2xl font-semibold mb-4">2. Back Bracing</h3>
+              <p class="paragraph-18px mb-4">
+                This approach is used for larger ceilings, where the required ceiling tee lengths exceed the allowable lengths or where the walls around the ceiling cannot be relied upon to transfer the seismic load to the primary building structure.
+              </p>
+              <p class="paragraph-18px mb-4">
+                Rigid bracing is used evenly throughout the ceiling to transfer the ceiling seismic load through to the overhead structure. This approach requires that all the perimeter edges are floating in order to prevent damage from inter-story drift.
+              </p>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-6">
+                <div class="bg-gray-100 p-4">
+                  <h4 class="font-semibold mb-2">Pros</h4>
+                  <ul class="list-disc pl-5 space-y-1 text-sm">
+                    <li>Suitable for large ceilings</li>
+                    <li>No load from the ceiling is transferred to perimeter walls</li>
+                    <li>Important if there are part height walls or bulkheads around the ceiling that have not been designed to carry the ceiling loads</li>
+                  </ul>
+                </div>
+                <div class="bg-gray-100 p-4">
+                  <h4 class="font-semibold mb-2">Cons</h4>
+                  <ul class="list-disc pl-5 space-y-1 text-sm">
+                    <li>Larger plenum heights require large floating edge clearances</li>
+                    <li>Usually more expensive than edge-restrained designs</li>
+                    <li>Harder to keep ceiling square as there are no fixed edges</li>
+                  </ul>
+                </div>
+              </div>
+
+              <p class="paragraph-18px">
+                An alternative to back bracing that may be used in certain situations is rigid hangers. This approach is suitable for ceilings suspended very close (50-500mm) to purlins, rafters/trusses, or floor joists. The wire hangers are replaced with heavy gauge steel angle hangers, which are used to transfer the seismic load back to primary structure.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 3: Limit State Selection -->
+      <div v-show="currentStep === 3">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <!-- Main Content (2/3) -->
+          <div class="lg:col-span-2">
+            <h2 class="text-3xl font-bold mb-6">Step One - Limit State Type</h2>
+
+            <div class="prose max-w-none space-y-6">
+              <div>
+                <h3 class="text-xl font-semibold mb-3">What is limit state design?</h3>
+                <p class="paragraph-18px">
+                  The limit state of a ceiling determines the level of seismic activity that the ceiling must withstand. A structure shall be designed and constructed in such a way that it will, during its design working life (with appropriate degrees of reliability) sustain all seismic activity that is likely to occur.
+                </p>
+              </div>
+
+              <div>
+                <h3 class="text-xl font-semibold mb-3">Serviceability Limit State One (SLS1)</h3>
+                <p class="paragraph-18px">
+                  No damage occurs and the structure and the non-structural components do not require repair after the seismic event.
+                </p>
+              </div>
+
+              <div>
+                <h3 class="text-xl font-semibold mb-3">Serviceability Limit State Two (SLS2)</h3>
+                <p class="paragraph-18px">
+                  The system is should only suffer minor damage and should be able to be repaired within a short period of time. Ceilings designed to SLS2 may have lightweight tiles, sections of grid, and other components fall during larger earthquakes. Therefore designing a ceiling to SLS2 loads is a risk based decision and project stakeholders should be made aware.
+                </p>
+              </div>
+
+              <div>
+                <h3 class="text-xl font-semibold mb-3">Ultimate Limit State (ULS)</h3>
+                <p class="paragraph-18px mb-4">
+                  Specifically, for earthquake actions this shall mean avoidance of collapse of the structural system or parts of the structure representing a hazard to human life inside and outside the structure necessary for the building evacuation.
+                </p>
+                <p class="paragraph-18px mb-4">
+                  ULS requirements must be met for all ceilings, but there are multiple pathways to achieve this. ULS design criteria can be met by either:
+                </p>
+                <ul class="list-disc pl-6 space-y-2 paragraph-18px">
+                  <li>Designing the ceiling to withstand higher ULS loads. Note that damage to the ceiling is still likely to occur during a ULS event, independently tethering heavy items that could be a life safety hazard is advised.</li>
+                  <li>Design the ceiling to withstand SLS2 loads. There must be no parts in the ceiling that may be a life safety risk if the ceiling was to collapse, therefore meeting ULS requirements by ensuring there are no life safety hazards present. Designing to SLS2 only is a risk based decision that should be made by suitably competent engineer and discussed with the client and end user. It is not suitable for all projects.</li>
+                </ul>
+              </div>
+
+              <!-- Question Box -->
+              <QuestionBox title="Does any part of the suspended ceiling create a life safety hazard to building occupants?">
+                <p class="paragraph-18px mb-4">
+                  Hazards include but are not limited to:
+                </p>
+                <ul class="list-disc pl-6 space-y-2 paragraph-18px mb-6">
+                  <li>Heavy/hard falling objects such as heavy acoustic tiles, lighting and heaters supported by the ceiling grid.</li>
+                  <li>Ceilings above emergency egress routes or emergency exits, where ceiling collapse could obstruct evacuation of the building.</li>
+                </ul>
+
+                <RadioGroup
+                  id="limit-state"
+                  v-model="limitState"
+                  label="Select Limit State Design"
+                  :options="limitStateOptions"
+                />
+              </QuestionBox>
+
+              <InfoBox variant="info">
+                <p class="text-sm">
+                  As per the suppliment to NZS 1170.5, this category can apply to ceilings which interact with fire suppression systems, emergency lighting installations and other parts.
+                </p>
+                <p class="text-sm mt-2">
+                  Note that this applies for all parts and components that are essential for a building to be occupied. These would include; fire protection systems, critical plumbing systems, electrical systems and lifts. For all structures these will be elements required to be returned to an operational state within an acceptably short time frame (hours or days rather than weeks) in order for the structure to be reoccupied.
+                </p>
+                <p class="text-sm mt-2">
+                  For example reinstatement of lightweight fallen tiles may be considered a viable option within the time frame indicated to allow reoccupation of a office but may be unsuitable for an operating theatre.
+                </p>
+              </InfoBox>
+            </div>
+          </div>
+
+          <!-- Calculation Sidebar (1/3) -->
+          <div class="lg:col-span-1">
+            <CalculationSidebar>
+              <div class="space-y-4 text-sm">
+                <div>
+                  <div class="font-semibold mb-1">T - Limit State Type</div>
+                  <div class="text-lg">{{ limitState.toUpperCase() || '-' }}</div>
+                </div>
+                <div class="border-t border-gray-300 pt-4">
+                  <div class="text-xs text-gray-500">Complete this step to see calculations</div>
+                </div>
+              </div>
+            </CalculationSidebar>
+          </div>
+        </div>
+      </div>
+
+    <!-- Step 4: Site Information -->
+    <div v-show="currentStep === 4">
       <StepCard
         :step-number="2"
         title="Site Information"
@@ -112,8 +315,8 @@
       </StepCard>
     </div>
 
-    <!-- Step 3: Seismic Weight -->
-    <div v-show="currentStep === 3">
+    <!-- Step 5: Seismic Weight -->
+    <div v-show="currentStep === 5">
       <StepCard
         :step-number="3"
         title="Seismic Weight Components"
@@ -225,8 +428,8 @@
       </StepCard>
     </div>
 
-    <!-- Step 4: Grid Configuration -->
-    <div v-show="currentStep === 4">
+    <!-- Step 6: Grid Configuration -->
+    <div v-show="currentStep === 6">
       <StepCard
         :step-number="4"
         title="Grid Configuration"
@@ -272,8 +475,8 @@
       </StepCard>
     </div>
 
-    <!-- Step 5: Design Options -->
-    <div v-show="currentStep === 5">
+    <!-- Step 7: Design Options -->
+    <div v-show="currentStep === 7">
       <StepCard
         :step-number="5"
         title="Design Options"
@@ -388,8 +591,8 @@
       </StepCard>
     </div>
 
-    <!-- Step 6: Validation -->
-    <div v-show="currentStep === 6">
+    <!-- Step 8: Validation -->
+    <div v-show="currentStep === 8">
       <StepCard
         :step-number="6"
         title="Measured Tee Lengths"
@@ -420,8 +623,8 @@
       </StepCard>
     </div>
 
-    <!-- Step 7: Results -->
-    <div v-show="currentStep === 7">
+    <!-- Step 9: Results -->
+    <div v-show="currentStep === 9">
       <div class="border-t border-brand-black pt-8 mt-12">
         <h2 class="btn_12_text mb-6">Calculation Results</h2>
 
@@ -579,6 +782,8 @@ import { ref, computed, watch } from 'vue';
 import WizardProgress from '../components/WizardProgress.vue';
 import StepCard from '../components/StepCard.vue';
 import QuestionCard from '../components/QuestionCard.vue';
+import QuestionBox from '../components/QuestionBox.vue';
+import CalculationSidebar from '../components/CalculationSidebar.vue';
 import ConditionalSection from '../components/ConditionalSection.vue';
 import RadioGroup from '../components/RadioGroup.vue';
 import SelectField from '../components/SelectField.vue';
@@ -620,16 +825,18 @@ import {
 // WIZARD STATE
 // ============================================================================
 const currentStep = ref(1);
-const totalSteps = 7;
+const totalSteps = 9;
 
 const wizardSteps = [
-  { number: 1, label: 'Limit State' },
-  { number: 2, label: 'Site Info' },
-  { number: 3, label: 'Weight' },
-  { number: 4, label: 'Grid Config' },
-  { number: 5, label: 'Options' },
-  { number: 6, label: 'Validation' },
-  { number: 7, label: 'Results' },
+  { number: 1, label: 'Introduction' },
+  { number: 2, label: 'Design Methods' },
+  { number: 3, label: 'Limit State' },
+  { number: 4, label: 'Site Info' },
+  { number: 5, label: 'Weight' },
+  { number: 6, label: 'Grid Config' },
+  { number: 7, label: 'Options' },
+  { number: 8, label: 'Validation' },
+  { number: 9, label: 'Results' },
 ];
 
 // ============================================================================
@@ -910,19 +1117,23 @@ const yesNoOptions = YES_NO_OPTIONS;
 // ============================================================================
 const canProceed = computed(() => {
   switch (currentStep.value) {
-    case 1:
+    case 1: // Introduction page
+      return true;
+    case 2: // Design methods page
+      return true;
+    case 3: // Limit state
       return step1Complete.value;
-    case 2:
+    case 4: // Site info
       return step2Complete.value;
-    case 3:
+    case 5: // Weight
       return step3Complete.value;
-    case 4:
+    case 6: // Grid config
       return step4Complete.value;
-    case 5:
+    case 7: // Options
       return step5Complete.value;
-    case 6:
+    case 8: // Validation
       return step6Complete.value;
-    case 7:
+    case 9: // Results
       return true;
     default:
       return false;
