@@ -31,8 +31,9 @@
       <div class="space-y-6 flex flex-col gap-6 justify-end w-full max-w-3xl">
         <!-- Input Form -->
         <div class="space-y-6 w-1/2">
-          <div class="grid grid-cols-2 gap-4 w-full">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
             <InputField
+              class="w-full"
               id="length"
               v-model.number="length"
               label="Length"
@@ -44,6 +45,7 @@
             />
 
             <InputField
+              class="w-full"
               id="width"
               v-model.number="width"
               label="Width"
