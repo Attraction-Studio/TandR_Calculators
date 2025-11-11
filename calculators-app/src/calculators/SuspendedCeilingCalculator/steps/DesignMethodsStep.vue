@@ -33,7 +33,7 @@
           />
           <img
             src="https://cdn.prod.website-files.com/68ec24dc82bba0539e7b250e/691281512eb4e8893c2b2c1b_scs_fixededge2.jpg"
-            alt="Fixed edge configuration"
+            alt="Fixed floating edge"
             class="w-full h-full aspect-square max-w-96 object-contain"
           />
         </div>
@@ -44,12 +44,27 @@
           for movement of the building structure.
         </p>
 
+        <div
+          class="flex flex-col md:flex-row gap-4 my-6 justify-start items-center"
+        >
+          <img
+            src="https://cdn.prod.website-files.com/68ec24dc82bba0539e7b250e/69128151d336f905d85d07bb_scs_fixededge4.jpg"
+            alt="Typical Fixed edge"
+            class="w-full h-full aspect-square max-w-64 object-contain"
+          />
+          <img
+            src="https://cdn.prod.website-files.com/68ec24dc82bba0539e7b250e/691281511d3f6a75921bee58_dcs_fixededge3.jpg"
+            alt="Fixed edge configuration"
+            class="w-full h-full aspect-square max-w-96 object-contain"
+          />
+        </div>
+
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-6">
           <div class="bg-gray-100 p-4">
             <h4 class="font-semibold mb-2">Pros</h4>
             <ul class="list-disc pl-5 space-y-1 text-sm">
-              <li>Simpler and cheaper to install</li>
-              <li>Smaller floating edge clearances required</li>
+              <li>Cheaper and faster installation</li>
+              <li>Less plenum congestion</li>
             </ul>
           </div>
           <div class="bg-gray-100 p-4">
@@ -60,12 +75,23 @@
                 is limited by the grid strength
               </li>
               <li>Walls must be capable of transferring the seismic load</li>
-              <li>
-                Seismic joints may be used to expand the size of ceiling that
-                may be edge restrained
-              </li>
             </ul>
           </div>
+        </div>
+
+        <p class="paragraph-18px">
+          Seismic joints may be used to expand the size of ceiling that may be
+          edge restrained. A seismic joint essentially creates a 'floating' edge
+          in the ceiling, allowing opposing ceiling edges to be fixed.
+        </p>
+        <div
+          class="flex flex-col md:flex-row gap-4 my-6 justify-start items-center"
+        >
+          <img
+            src="https://cdn.prod.website-files.com/68ec24dc82bba0539e7b250e/69128151010e96a044b1f6bd_scs_fixededge5.jpg"
+            alt="Typical Fixed edge"
+            class="w-full h-full max-w-2xl object-contain"
+          />
         </div>
       </div>
 
@@ -84,17 +110,31 @@
           damage from inter-story drift.
         </p>
 
+        <div
+          class="flex flex-col md:flex-row gap-4 my-6 justify-start items-center"
+        >
+          <img
+            src="https://cdn.prod.website-files.com/68ec24dc82bba0539e7b250e/69128151dfe0a4ceb4887068_scs_floating1.jpg"
+            alt="Typical Fixed edge"
+            class="w-full h-full aspect-square max-w-64 object-contain"
+          />
+          <img
+            src="https://cdn.prod.website-files.com/68ec24dc82bba0539e7b250e/69128151747456d4a0486e6f_scs_floating2.jpg"
+            alt="Fixed floating edge"
+            class="w-full h-full aspect-square max-w-96 object-contain"
+          />
+        </div>
+
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-6">
           <div class="bg-gray-100 p-4">
             <h4 class="font-semibold mb-2">Pros</h4>
             <ul class="list-disc pl-5 space-y-1 text-sm">
               <li>Suitable for large ceilings</li>
               <li>
-                No load from the ceiling is transferred to perimeter walls
-              </li>
-              <li>
-                Important if there are part height walls or bulkheads around the
-                ceiling that have not been designed to carry the ceiling loads
+                No load from the ceiling is transferred to perimeter walls. This
+                is important if there are part height walls or bulkheads around
+                the ceiling that have not been designed to carry the ceiling
+                loads.
               </li>
             </ul>
           </div>
