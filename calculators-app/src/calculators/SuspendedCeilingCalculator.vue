@@ -58,6 +58,20 @@
               Interior Systems and may not be used with other products.
             </p>
           </InfoBox>
+
+          <!-- Navigation Buttons for Step 1 -->
+          <div class="mt-8 space-y-4">
+            <button
+              @click="nextStep"
+              class="w-full px-6 py-4 border-2 border-brand-black bg-[#333] !text-white hover:bg-[#333]/90 transition-colors btn_12_text"
+            >
+              Get Started →
+            </button>
+
+            <div class="text-center text-sm text-gray-600 pt-2">
+              Step {{ currentStep }} of {{ totalSteps }}
+            </div>
+          </div>
         </div>
 
         <!-- Calculation Sidebar (Steps 2-8) -->
@@ -124,46 +138,63 @@
                 Values update as you progress through steps
               </div>
             </div>
+
+            <!-- Navigation Buttons Inside Sidebar -->
+            <div class="border-t border-gray-300 pt-6 mt-6 space-y-4">
+              <button
+                v-if="currentStep < totalSteps"
+                @click="nextStep"
+                :disabled="!canProceed"
+                :class="[
+                  'w-full px-6 py-4 border-2 border-brand-black transition-colors btn_12_text',
+                  canProceed
+                    ? 'bg-[#333] !text-white hover:bg-[#333]/90'
+                    : 'bg-gray-200 text-gray-400 cursor-not-alowed border-gray-300',
+                ]"
+              >
+                Next Step →
+              </button>
+
+              <div class="flex gap-4">
+                <button
+                  v-if="currentStep > 1"
+                  @click="previousStep"
+                  class="flex-1 px-6 py-3 border border-brand-black hover:bg-gray-100 transition-colors text-sm"
+                >
+                  ← Previous
+                </button>
+
+                <button
+                  @click="resetCalculator"
+                  class="flex-1 px-6 py-3 border border-brand-black hover:bg-gray-100 transition-colors text-sm"
+                >
+                  Reset
+                </button>
+              </div>
+
+              <div class="text-center text-sm text-gray-600 pt-2">
+                Step {{ currentStep }} of {{ totalSteps }}
+              </div>
+            </div>
           </div>
         </CalculationSidebar>
       </div>
     </div>
 
-    <!-- Wizard Navigation -->
+    <!-- Bottom Navigation (Results Page Only) -->
     <div
+      v-if="currentStep === 9"
       class="flex justify-between items-center mt-8 pt-6 border-t border-brand-black"
     >
       <button
-        v-if="currentStep > 1"
         @click="previousStep"
         class="px-6 py-3 border-2 border-brand-black hover:bg-gray-100 transition-colors btn_12_text"
       >
         ← Previous
       </button>
-      <div v-else></div>
 
       <button
-        @click="resetCalculator"
-        class="px-6 py-3 border border-brand-black hover:bg-gray-100 transition-colors text-sm"
-      >
-        Reset
-      </button>
-
-      <button
-        v-if="currentStep < totalSteps"
-        @click="nextStep"
-        :disabled="!canProceed"
-        :class="[
-          'px-6 py-3 border-2 border-brand-black transition-colors btn_12_text',
-          canProceed
-            ? 'bg-brand-black text-white hover:bg-gray-800'
-            : 'bg-gray-200 text-gray-400 cursor-not-allowed',
-        ]"
-      >
-        Next →
-      </button>
-      <button
-        v-else-if="currentStep === totalSteps && state.step6Complete"
+        v-if="state.step6Complete"
         @click="resetCalculator"
         class="px-6 py-3 border-2 border-brand-black hover:bg-gray-100 transition-colors btn_12_text"
       >
