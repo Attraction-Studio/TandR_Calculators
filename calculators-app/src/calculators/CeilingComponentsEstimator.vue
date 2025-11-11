@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full">
+  <div class="w-full p-8 bg-white">
     <div class="mb-16 flex lg:flex-row flex-col justify-between gap-6">
       <h2 class="heading-style-h1 mb-6">Ceiling Components Estimator</h2>
       <div class="flex flex-col gap-4 max-w-3xl">

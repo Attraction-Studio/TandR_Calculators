@@ -1,8 +1,10 @@
 <template>
-  <div class="mb-12">
+  <div class="my-24 relative">
     <!-- Progress Bar -->
-    <div class="relative">
-      <div class="overflow-hidden h-2 mb-4 text-xs flex bg-gray-200 border border-brand-black">
+    <div class="">
+      <div
+        class="overflow-hidden h-2 mb-4 text-xs flex bg-gray-200 border border-brand-black"
+      >
         <div
           :style="{ width: progressPercentage + '%' }"
           class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-brand-black transition-all duration-500"
@@ -11,7 +13,9 @@
     </div>
 
     <!-- Step Indicators -->
-    <div class="flex justify-between items-start">
+    <div
+      class="flex justify-between items-start absolute -top-5 left-0 right-0"
+    >
       <div
         v-for="step in steps"
         :key="step.number"
@@ -25,7 +29,7 @@
               ? 'bg-green-500 border-green-500 text-white'
               : step.number === currentStep
               ? 'bg-brand-black border-brand-black text-white scale-110'
-              : 'bg-white border-gray-300 text-gray-400'
+              : 'bg-white border-gray-300 text-gray-400',
           ]"
         >
           <span v-if="step.number < currentStep">✓</span>
@@ -37,7 +41,7 @@
           <p
             :class="[
               'text-xs font-semibold',
-              step.number <= currentStep ? 'text-brand-black' : 'text-gray-400'
+              step.number <= currentStep ? 'text-brand-black' : 'text-gray-400',
             ]"
           >
             {{ step.label }}
@@ -49,21 +53,21 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+  import { computed } from "vue";
 
-const props = defineProps({
-  steps: {
-    type: Array,
-    required: true,
-    // Format: [{ number: 1, label: 'Step Name' }, ...]
-  },
-  currentStep: {
-    type: Number,
-    required: true,
-  },
-});
+  const props = defineProps({
+    steps: {
+      type: Array,
+      required: true,
+      // Format: [{ number: 1, label: 'Step Name' }, ...]
+    },
+    currentStep: {
+      type: Number,
+      required: true,
+    },
+  });
 
-const progressPercentage = computed(() => {
-  return ((props.currentStep - 1) / (props.steps.length - 1)) * 100;
-});
+  const progressPercentage = computed(() => {
+    return ((props.currentStep - 1) / (props.steps.length - 1)) * 100;
+  });
 </script>
