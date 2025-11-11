@@ -1,23 +1,20 @@
 import { ref, computed } from 'vue';
 import {
-  CONSTANTS,
-  getGridSpacing,
-  getConnectionCapacity,
-  getGridCapacity,
-  getFloorFactor,
-  DUCTILITY_OPTIONS,
-} from '../../data/suspendedCeilingData.js';
-
-import {
   calculateSeismicWeight,
   validateSeismicWeight,
   calculateAllSeismicForces,
   calculateLimitingLengths,
-  adjustForRakeAngle,
-  validateRakeAngle,
   calculateStrengtheningDistance,
   validateDesign,
 } from '../../utils/seismicCalculations.js';
+import {
+  getFloorFactor,
+  getConnectionCapacity,
+  getGridCapacity,
+  getGridSpacing,
+  CONSTANTS,
+} from '../../data/suspendedCeilingData.js';
+import { useLimitStateLogic } from './useLimitStateLogic.js';
 
 /**
  * Shared calculator state and computed properties
@@ -25,10 +22,24 @@ import {
  */
 export function useCalculatorState() {
   // ============================================================================
-  // STATE - Step 1: Limit State
+  // STATE - Step 1: Limit State (Question Answers)
   // ============================================================================
-  const limitState = ref('uls');
-  const showSLS2 = ref(false); // Controls whether SLS2 calculations are shown
+  const q1Answer = ref(''); // Life safety hazard
+  const q2Answer = ref(''); // Part weight > 7.5kg
+  const q3Answer = ref(''); // Height >= 3m
+  const q4Answer = ref(''); // Blocks emergency egress
+  const q5Answer = ref(''); // Complies with assumptions
+
+  // ============================================================================
+  // COMPUTED - Limit State Logic
+  // ============================================================================
+  const limitStateLogic = useLimitStateLogic({
+    q1Answer,
+    q2Answer,
+    q3Answer,
+    q4Answer,
+    q5Answer,
+  });
 
   // ============================================================================
   // STATE - Step 2: Site Information
@@ -73,7 +84,7 @@ export function useCalculatorState() {
   // ============================================================================
   // COMPUTED - Step Completion
   // ============================================================================
-  const step1Complete = computed(() => !!limitState.value);
+  const step1Complete = computed(() => !!limitStateLogic.limitStateMain.value);
 
   const step2Complete = computed(
     () =>
@@ -126,8 +137,8 @@ export function useCalculatorState() {
   // COMPUTED - Seismic Forces
   // ============================================================================
   const ductilityFactor = computed(() => {
-    const option = DUCTILITY_OPTIONS.find((opt) => opt.value === 1);
-    return option?.partULS || 1;
+    // Default ductility factor for ULS
+    return 1;
   });
 
   const seismicForces = computed(() => {
@@ -317,9 +328,17 @@ export function useCalculatorState() {
   }
 
   return {
-    // State
-    limitState,
-    showSLS2,
+    // State - Limit State Questions
+    q1Answer,
+    q2Answer,
+    q3Answer,
+    q4Answer,
+    q5Answer,
+    
+    // Limit State Logic (computed)
+    limitStateLogic,
+    
+    // State - Site Info
     zoneFactor,
     importanceLevel,
     floorHeight,

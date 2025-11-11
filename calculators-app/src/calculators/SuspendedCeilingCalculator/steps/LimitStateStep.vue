@@ -362,12 +362,12 @@
         <p class="paragraph-18px">
           Your Limit State Type is
           <span class="font-bold">{{ limitStateResult }}</span>
-          <span v-if="showSLS2Note" class="font-bold">+SLS2</span>
+          <span v-if="limitStateLogic.footerSLS2Display.value" class="font-bold"> {{ limitStateLogic.footerSLS2Display.value }}</span>
         </p>
-        <p v-if="showSLS2Note" class="paragraph-18px text-sm mt-2">
+        <p v-if="limitStateLogic.showSLS2Note.value" class="paragraph-18px text-sm mt-2">
           SLS2 loads may be able to be used for design, consult an engineer.
         </p>
-        <p v-if="showMultiState" class="paragraph-18px text-sm mt-2">
+        <p v-if="limitStateLogic.footerSLS2Display.value" class="paragraph-18px text-sm mt-2">
           <small
             >As there are two limit states which apply to the suspended ceiling
             in this instance, the most stringent state which results in the
@@ -380,16 +380,12 @@
 </template>
 
 <script setup>
-  import { inject, ref, computed, watch } from "vue";
+  import { inject, ref, computed } from "vue";
 
   const state = inject("calculatorState");
 
-  // Question answers
-  const q1Answer = ref(""); // Life safety hazard
-  const q2Answer = ref(""); // Part weight > 7.5kg
-  const q3Answer = ref(""); // Height >= 3m
-  const q4Answer = ref(""); // Blocks emergency egress
-  const q5Answer = ref(""); // Complies with assumptions
+  // Use centralized question answers from state
+  const { q1Answer, q2Answer, q3Answer, q4Answer, q5Answer, limitStateLogic } = state;
 
   const showAssumptions = ref(false);
 
@@ -405,61 +401,29 @@
       q2Answer.value === "no" &&
       q3Answer.value === "no"
   );
-  const showQuestion5 = computed(
-    () =>
+  const showQuestion5 = computed(() => {
+    // Show Q5 (assumptions) when:
+    // 1. Q1=Yes (skip directly to assumptions), OR
+    // 2. Q1=No AND Q2=No AND Q3=No AND Q4=No (reached end of decision tree)
+    if (q1Answer.value === "yes") {
+      return true;
+    }
+    if (
       q1Answer.value === "no" &&
       q2Answer.value === "no" &&
       q3Answer.value === "no" &&
       q4Answer.value === "no"
-  );
-
-  // Result logic
-  const showError = computed(() => q5Answer.value === "no");
-  const showResult = computed(() => {
-    // Show result if we've reached a conclusion
-    if (
-      q1Answer.value === "yes" ||
-      q2Answer.value === "yes" ||
-      q3Answer.value === "yes" ||
-      q4Answer.value === "yes"
     ) {
-      return true;
-    }
-    if (q5Answer.value === "yes") {
       return true;
     }
     return false;
   });
 
-  const limitStateResult = computed(() => {
-    if (
-      q1Answer.value === "yes" ||
-      q2Answer.value === "yes" ||
-      q3Answer.value === "yes" ||
-      q4Answer.value === "yes"
-    ) {
-      return "ULS";
-    }
-    if (q5Answer.value === "yes") {
-      return "ULS";
-    }
-    return "";
-  });
-
-  const showSLS2Note = computed(() => {
-    // Show SLS2 note when progressing through questions with "No" answers
-    // This means no immediate life safety hazard, so SLS2 can be considered
-    // SLS2 is hidden when any question is answered "Yes" (pure ULS scenario)
-    if (q1Answer.value === "yes" || q2Answer.value === "yes" || q3Answer.value === "yes" || q4Answer.value === "yes") {
-      return false; // Pure ULS - hide SLS2
-    }
-    // If we've started answering questions with "No", show SLS2
-    return q1Answer.value === "no";
-  });
-
-  const showMultiState = computed(() => {
-    return showSLS2Note.value;
-  });
+  // Use computed properties from centralized logic
+  const showError = limitStateLogic.showError;
+  const limitStateResult = limitStateLogic.limitStateMain;
+  const showSLS2Note = computed(() => q1Answer.value === "no");
+  const showResult = limitStateLogic.showFooterResult;
 
   // Question handlers
   function answerQuestion1(answer) {
@@ -503,16 +467,4 @@
   function answerQuestion5(answer) {
     q5Answer.value = answer;
   }
-
-  // Update calculator state when result changes
-  watch(limitStateResult, (newValue) => {
-    if (newValue) {
-      state.limitState.value = newValue;
-    }
-  });
-
-  // Update showSLS2 flag based on whether SLS2 note should be displayed
-  watch(showSLS2Note, (newValue) => {
-    state.showSLS2.value = newValue;
-  });
 </script>
