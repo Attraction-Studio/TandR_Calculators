@@ -77,10 +77,11 @@
         <!-- Calculation Sidebar (Steps 2-8) -->
         <CalculationSidebar v-else>
           <div class="space-y-4 text-sm">
-            <div v-if="state.showSLS2.value">
+            <div>
               <div class="font-semibold mb-1">Limit State Type</div>
               <div class="text-lg">
-                +SLS2
+                <span v-if="state.showSLS2.value">+SLS2</span>
+                <span v-else>-</span>
               </div>
             </div>
 
