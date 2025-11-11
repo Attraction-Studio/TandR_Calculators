@@ -29,16 +29,18 @@
         The system is should only suffer minor damage and should be able to be
         repaired within a short period of time. Ceilings designed to SLS2 may
         have lightweight tiles, sections of grid, and other components fall
-        during larger earthquakes. Therefore designing a ceiling to SLS2 loads is
-        a risk based decision and project stakeholders should be made aware.
+        during larger earthquakes. Therefore designing a ceiling to SLS2 loads
+        is a risk based decision and project stakeholders should be made aware.
       </p>
 
-      <h3 class="text-2xl font-semibold mb-4"><b>Ultimate Limit State (ULS)</b></h3>
+      <h3 class="text-2xl font-semibold mb-4">
+        <b>Ultimate Limit State (ULS)</b>
+      </h3>
       <p class="paragraph-18px">
         Specifically, for earthquake actions this shall mean avoidance of
         collapse of the structural system or parts of the structure representing
-        a hazard to human life inside and outside the structure necessary for the
-        building evacuation.
+        a hazard to human life inside and outside the structure necessary for
+        the building evacuation.
       </p>
 
       <p class="paragraph-18px">
@@ -54,12 +56,12 @@
         </li>
         <li>
           Design the ceiling to withstand SLS2 loads. There must be
-          <b><u>no</u></b> parts in the ceiling that may be a life safety risk if
-          the ceiling was to collapse, therefore meeting ULS requirements by
+          <b><u>no</u></b> parts in the ceiling that may be a life safety risk
+          if the ceiling was to collapse, therefore meeting ULS requirements by
           ensuring there are no life safety hazards present. Designing to SLS2
-          only is a risk based decision that should be made by suitably competent
-          engineer and discussed with the client and end user. It is not suitable
-          for all projects.
+          only is a risk based decision that should be made by suitably
+          competent engineer and discussed with the client and end user. It is
+          not suitable for all projects.
         </li>
       </ul>
 
@@ -79,8 +81,8 @@
         <p class="paragraph-18px">Hazards include but are not limited to:</p>
         <ul class="list-disc pl-6 space-y-1 paragraph-18px">
           <li>
-            Heavy/hard falling objects such as heavy acoustic tiles, lighting and
-            heaters supported by the ceiling grid.
+            Heavy/hard falling objects such as heavy acoustic tiles, lighting
+            and heaters supported by the ceiling grid.
           </li>
           <li>
             Ceilings above emergency egress routes or emergency exits, where
@@ -88,19 +90,27 @@
           </li>
         </ul>
 
-        <div class="btn-group btn-group-toggle my-4" data-toggle="buttons">
+        <div class="flex gap-2 my-4">
           <button
             type="button"
-            class="btn btn-dark"
-            :class="{ active: q1Answer === 'yes' }"
+            class="px-6 py-2 font-semibold transition-colors"
+            :class="
+              q1Answer === 'yes'
+                ? 'bg-[#333] !text-white'
+                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            "
             @click="answerQuestion1('yes')"
           >
             Yes
           </button>
           <button
             type="button"
-            class="btn btn-dark"
-            :class="{ active: q1Answer === 'no' }"
+            class="px-6 py-2 font-semibold transition-colors"
+            :class="
+              q1Answer === 'no'
+                ? 'bg-[#333] !text-white'
+                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            "
             @click="answerQuestion1('no')"
           >
             No
@@ -121,9 +131,10 @@
           rather than weeks) in order for the structure to be reoccupied.
         </p>
         <p class="paragraph-18px text-sm italic mt-2">
-          For example reinstatement of lightweight fallen tiles may be considered
-          a viable option within the time frame indicated to allow reoccupation
-          of a office but may be unsuitable for an operating theatre
+          For example reinstatement of lightweight fallen tiles may be
+          considered a viable option within the time frame indicated to allow
+          reoccupation of a office but may be unsuitable for an operating
+          theatre
         </p>
         <hr class="my-6" />
       </div>
@@ -133,27 +144,35 @@
         <p class="paragraph-18px font-semibold">
           <b>Does any individual part of the ceiling weigh more than 7.5kg?</b>
         </p>
-        <div class="btn-group btn-group-toggle my-4" data-toggle="buttons">
+        <div class="flex gap-2 my-4">
           <button
             type="button"
-            class="btn btn-dark"
-            :class="{ active: q2Answer === 'yes' }"
+            class="px-6 py-2 font-semibold transition-colors"
+            :class="
+              q2Answer === 'yes'
+                ? 'bg-[#333] !text-white'
+                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            "
             @click="answerQuestion2('yes')"
           >
             Yes
           </button>
           <button
             type="button"
-            class="btn btn-dark"
-            :class="{ active: q2Answer === 'no' }"
+            class="px-6 py-2 font-semibold transition-colors"
+            :class="
+              q2Answer === 'no'
+                ? 'bg-[#333] !text-white'
+                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            "
             @click="answerQuestion2('no')"
           >
             No
           </button>
         </div>
         <p class="paragraph-18px text-sm italic">
-          For the ceiling to not be considered ULS design it must weigh less than
-          7.5kg
+          For the ceiling to not be considered ULS design it must weigh less
+          than 7.5kg
         </p>
         <hr class="my-6" />
       </div>
@@ -166,19 +185,27 @@
             greater?</b
           >
         </p>
-        <div class="btn-group btn-group-toggle my-4" data-toggle="buttons">
+        <div class="flex gap-2 my-4">
           <button
             type="button"
-            class="btn btn-dark"
-            :class="{ active: q3Answer === 'yes' }"
+            class="px-6 py-2 font-semibold transition-colors"
+            :class="
+              q3Answer === 'yes'
+                ? 'bg-[#333] !text-white'
+                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            "
             @click="answerQuestion3('yes')"
           >
             Yes
           </button>
           <button
             type="button"
-            class="btn btn-dark"
-            :class="{ active: q3Answer === 'no' }"
+            class="px-6 py-2 font-semibold transition-colors"
+            :class="
+              q3Answer === 'no'
+                ? 'bg-[#333] !text-white'
+                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            "
             @click="answerQuestion3('no')"
           >
             No
@@ -199,19 +226,27 @@
             routes?</b
           >
         </p>
-        <div class="btn-group btn-group-toggle my-4" data-toggle="buttons">
+        <div class="flex gap-2 my-4">
           <button
             type="button"
-            class="btn btn-dark"
-            :class="{ active: q4Answer === 'yes' }"
+            class="px-6 py-2 font-semibold transition-colors"
+            :class="
+              q4Answer === 'yes'
+                ? 'bg-[#333] !text-white'
+                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            "
             @click="answerQuestion4('yes')"
           >
             Yes
           </button>
           <button
             type="button"
-            class="btn btn-dark"
-            :class="{ active: q4Answer === 'no' }"
+            class="px-6 py-2 font-semibold transition-colors"
+            :class="
+              q4Answer === 'no'
+                ? 'bg-[#333] !text-white'
+                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            "
             @click="answerQuestion4('no')"
           >
             No
@@ -251,13 +286,17 @@
               For other importance level structures, specific seismic design is
               required
             </li>
-            <li>Part Category 6 is not included in this generic design guide.</li>
             <li>
-              Only horizontal forces have been considered in this guide. Vertical
-              forces may need to be considered on a site-specific basis
+              Part Category 6 is not included in this generic design guide.
+            </li>
+            <li>
+              Only horizontal forces have been considered in this guide.
+              Vertical forces may need to be considered on a site-specific basis
             </li>
             <li>The period of the part is less than 0.75s</li>
-            <li>Part ductility is dependant on whether the design is SLS or ULS</li>
+            <li>
+              Part ductility is dependant on whether the design is SLS or ULS
+            </li>
             <li>Class C soils have been assumed</li>
             <li>
               For perimeter fixed ceilings, a continuous ceiling dwang or cross
@@ -280,19 +319,27 @@
           </ul>
         </div>
 
-        <div class="btn-group btn-group-toggle my-4" data-toggle="buttons">
+        <div class="flex gap-2 my-4">
           <button
             type="button"
-            class="btn btn-dark"
-            :class="{ active: q5Answer === 'yes' }"
+            class="px-6 py-2 font-semibold transition-colors"
+            :class="
+              q5Answer === 'yes'
+                ? 'bg-[#333] !text-white'
+                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            "
             @click="answerQuestion5('yes')"
           >
             Yes
           </button>
           <button
             type="button"
-            class="btn btn-dark"
-            :class="{ active: q5Answer === 'no' }"
+            class="px-6 py-2 font-semibold transition-colors"
+            :class="
+              q5Answer === 'no'
+                ? 'bg-[#333] !text-white'
+                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            "
             @click="answerQuestion5('no')"
           >
             No
@@ -313,7 +360,8 @@
       <!-- Result -->
       <div v-if="showResult" class="alert alert-success">
         <p class="paragraph-18px">
-          Your Limit State Type is <span class="font-bold">{{ limitStateResult }}</span>
+          Your Limit State Type is
+          <span class="font-bold">{{ limitStateResult }}</span>
           <span v-if="showSLS2Note" class="font-bold">+SLS2</span>
         </p>
         <p v-if="showSLS2Note" class="paragraph-18px text-sm mt-2">
@@ -332,105 +380,133 @@
 </template>
 
 <script setup>
-import { inject, ref, computed, watch } from 'vue';
+  import { inject, ref, computed, watch } from "vue";
 
-const state = inject('calculatorState');
+  const state = inject("calculatorState");
 
-// Question answers
-const q1Answer = ref(''); // Life safety hazard
-const q2Answer = ref(''); // Part weight > 7.5kg
-const q3Answer = ref(''); // Height >= 3m
-const q4Answer = ref(''); // Blocks emergency egress
-const q5Answer = ref(''); // Complies with assumptions
+  // Question answers
+  const q1Answer = ref(""); // Life safety hazard
+  const q2Answer = ref(""); // Part weight > 7.5kg
+  const q3Answer = ref(""); // Height >= 3m
+  const q4Answer = ref(""); // Blocks emergency egress
+  const q5Answer = ref(""); // Complies with assumptions
 
-const showAssumptions = ref(false);
+  const showAssumptions = ref(false);
 
-// Question visibility logic
-const showQuestion1 = computed(() => true);
-const showQuestion2 = computed(() => q1Answer.value === 'no');
-const showQuestion3 = computed(() => q1Answer.value === 'no' && q2Answer.value === 'no');
-const showQuestion4 = computed(() => q1Answer.value === 'no' && q2Answer.value === 'no' && q3Answer.value === 'no');
-const showQuestion5 = computed(() => q1Answer.value === 'no' && q2Answer.value === 'no' && q3Answer.value === 'no' && q4Answer.value === 'no');
+  // Question visibility logic
+  const showQuestion1 = computed(() => true);
+  const showQuestion2 = computed(() => q1Answer.value === "no");
+  const showQuestion3 = computed(
+    () => q1Answer.value === "no" && q2Answer.value === "no"
+  );
+  const showQuestion4 = computed(
+    () =>
+      q1Answer.value === "no" &&
+      q2Answer.value === "no" &&
+      q3Answer.value === "no"
+  );
+  const showQuestion5 = computed(
+    () =>
+      q1Answer.value === "no" &&
+      q2Answer.value === "no" &&
+      q3Answer.value === "no" &&
+      q4Answer.value === "no"
+  );
 
-// Result logic
-const showError = computed(() => q5Answer.value === 'no');
-const showResult = computed(() => {
-  // Show result if we've reached a conclusion
-  if (q1Answer.value === 'yes' || q2Answer.value === 'yes' || q3Answer.value === 'yes' || q4Answer.value === 'yes') {
-    return true;
+  // Result logic
+  const showError = computed(() => q5Answer.value === "no");
+  const showResult = computed(() => {
+    // Show result if we've reached a conclusion
+    if (
+      q1Answer.value === "yes" ||
+      q2Answer.value === "yes" ||
+      q3Answer.value === "yes" ||
+      q4Answer.value === "yes"
+    ) {
+      return true;
+    }
+    if (q5Answer.value === "yes") {
+      return true;
+    }
+    return false;
+  });
+
+  const limitStateResult = computed(() => {
+    if (
+      q1Answer.value === "yes" ||
+      q2Answer.value === "yes" ||
+      q3Answer.value === "yes" ||
+      q4Answer.value === "yes"
+    ) {
+      return "ULS";
+    }
+    if (q5Answer.value === "yes") {
+      return "ULS";
+    }
+    return "";
+  });
+
+  const showSLS2Note = computed(() => {
+    // Show SLS2 note if any ULS condition is met
+    return (
+      q1Answer.value === "yes" ||
+      q2Answer.value === "yes" ||
+      q3Answer.value === "yes" ||
+      q4Answer.value === "yes"
+    );
+  });
+
+  const showMultiState = computed(() => {
+    return showSLS2Note.value;
+  });
+
+  // Question handlers
+  function answerQuestion1(answer) {
+    q1Answer.value = answer;
+    // Reset subsequent questions
+    if (answer === "yes") {
+      q2Answer.value = "";
+      q3Answer.value = "";
+      q4Answer.value = "";
+      q5Answer.value = "";
+    }
   }
-  if (q5Answer.value === 'yes') {
-    return true;
+
+  function answerQuestion2(answer) {
+    q2Answer.value = answer;
+    // Reset subsequent questions
+    if (answer === "yes") {
+      q3Answer.value = "";
+      q4Answer.value = "";
+      q5Answer.value = "";
+    }
   }
-  return false;
-});
 
-const limitStateResult = computed(() => {
-  if (q1Answer.value === 'yes' || q2Answer.value === 'yes' || q3Answer.value === 'yes' || q4Answer.value === 'yes') {
-    return 'ULS';
+  function answerQuestion3(answer) {
+    q3Answer.value = answer;
+    // Reset subsequent questions
+    if (answer === "yes") {
+      q4Answer.value = "";
+      q5Answer.value = "";
+    }
   }
-  if (q5Answer.value === 'yes') {
-    return 'ULS';
+
+  function answerQuestion4(answer) {
+    q4Answer.value = answer;
+    // Reset subsequent questions
+    if (answer === "yes") {
+      q5Answer.value = "";
+    }
   }
-  return '';
-});
 
-const showSLS2Note = computed(() => {
-  // Show SLS2 note if any ULS condition is met
-  return q1Answer.value === 'yes' || q2Answer.value === 'yes' || q3Answer.value === 'yes' || q4Answer.value === 'yes';
-});
-
-const showMultiState = computed(() => {
-  return showSLS2Note.value;
-});
-
-// Question handlers
-function answerQuestion1(answer) {
-  q1Answer.value = answer;
-  // Reset subsequent questions
-  if (answer === 'yes') {
-    q2Answer.value = '';
-    q3Answer.value = '';
-    q4Answer.value = '';
-    q5Answer.value = '';
+  function answerQuestion5(answer) {
+    q5Answer.value = answer;
   }
-}
 
-function answerQuestion2(answer) {
-  q2Answer.value = answer;
-  // Reset subsequent questions
-  if (answer === 'yes') {
-    q3Answer.value = '';
-    q4Answer.value = '';
-    q5Answer.value = '';
-  }
-}
-
-function answerQuestion3(answer) {
-  q3Answer.value = answer;
-  // Reset subsequent questions
-  if (answer === 'yes') {
-    q4Answer.value = '';
-    q5Answer.value = '';
-  }
-}
-
-function answerQuestion4(answer) {
-  q4Answer.value = answer;
-  // Reset subsequent questions
-  if (answer === 'yes') {
-    q5Answer.value = '';
-  }
-}
-
-function answerQuestion5(answer) {
-  q5Answer.value = answer;
-}
-
-// Update calculator state when result changes
-watch(limitStateResult, (newValue) => {
-  if (newValue) {
-    state.limitState = newValue;
-  }
-});
+  // Update calculator state when result changes
+  watch(limitStateResult, (newValue) => {
+    if (newValue) {
+      state.limitState = newValue;
+    }
+  });
 </script>
