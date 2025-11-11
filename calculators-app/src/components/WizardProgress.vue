@@ -1,26 +1,9 @@
 <template>
-  <div class="my-24 relative">
-    <!-- Progress Bar -->
-    <div class="">
-      <div
-        class="overflow-hidden h-2 mb-4 text-xs flex bg-gray-200 border border-brand-black"
-      >
-        <div
-          :style="{ width: progressPercentage + '%' }"
-          class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-brand-black transition-all duration-500"
-        />
-      </div>
-    </div>
-
+  <div class="relative mb-12">
     <!-- Step Indicators -->
-    <div
-      class="flex justify-between items-start absolute -top-5 left-0 right-0"
-    >
-      <div
-        v-for="step in steps"
-        :key="step.number"
-        class="flex flex-col items-center flex-1"
-      >
+    <p class="text-xl font-semibold mb-4">Steps</p>
+    <div class="flex items-start w-full">
+      <div v-for="step in steps" :key="step.number" class="flex flex-row mr-2">
         <!-- Circle Indicator -->
         <div
           :class="[
@@ -28,24 +11,12 @@
             step.number < currentStep
               ? 'bg-green-500 border-green-500 text-white'
               : step.number === currentStep
-              ? 'bg-brand-black border-brand-black text-white scale-110'
-              : 'bg-white border-gray-300 text-gray-400',
+              ? 'bg-[#333] border-[#333] !text-white scale-110'
+              : 'bg-white border-[#333] text-[#333]',
           ]"
         >
           <span v-if="step.number < currentStep">✓</span>
           <span v-else>{{ step.number }}</span>
-        </div>
-
-        <!-- Step Label -->
-        <div class="mt-2 text-center">
-          <p
-            :class="[
-              'text-xs font-semibold',
-              step.number <= currentStep ? 'text-brand-black' : 'text-gray-400',
-            ]"
-          >
-            {{ step.label }}
-          </p>
         </div>
       </div>
     </div>

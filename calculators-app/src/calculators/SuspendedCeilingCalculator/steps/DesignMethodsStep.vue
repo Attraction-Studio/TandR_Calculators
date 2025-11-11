@@ -1,12 +1,10 @@
 <template>
-  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-    <!-- Main Content (2/3) -->
-    <div class="lg:col-span-2">
-      <h2 class="text-4xl font-bold mb-8">
-        Introduction to suspended ceiling seismic design
-      </h2>
+  <div>
+    <h2 class="text-4xl font-bold mb-8">
+      Introduction to suspended ceiling seismic design
+    </h2>
 
-      <div class="prose max-w-none space-y-6">
+    <div class="prose max-w-none space-y-6">
         <p class="paragraph-18px">
           There are two main ways of approaching the seismic design of a
           suspended ceiling, each with their own benefits and drawbacks.
@@ -122,81 +120,10 @@
             primary structure.
           </p>
         </div>
-      </div>
-    </div>
-
-    <!-- Right Sidebar (1/3) -->
-    <div class="lg:col-span-1">
-      <CalculationSidebar>
-        <div class="space-y-4 text-sm">
-          <div>
-            <div class="font-semibold mb-1">Limit State Type</div>
-            <div class="text-lg">
-              {{
-                state.limitState.value
-                  ? state.limitState.value.toUpperCase()
-                  : "-"
-              }}
-            </div>
-          </div>
-
-          <div class="border-t border-gray-300 pt-4">
-            <div class="font-semibold mb-1">Seismic Weight</div>
-            <div class="text-lg">
-              {{ state.seismicWeight.value.toFixed(1) }} kg/m²
-            </div>
-          </div>
-
-          <div class="border-t border-gray-300 pt-4">
-            <div class="font-semibold mb-1">Seismic Force (ULS)</div>
-            <div class="text-lg">
-              {{ state.seismicForces.value.uls.toFixed(2) }} kgf/m²
-            </div>
-          </div>
-
-          <div class="border-t border-gray-300 pt-4">
-            <div class="font-semibold mb-1">Limiting Main Tee Length (ULS)</div>
-            <div class="text-lg">
-              {{ state.adjustedLimitingLengths.value.uls.main.toFixed(1) }} m
-            </div>
-          </div>
-
-          <div class="border-t border-gray-300 pt-4">
-            <div class="font-semibold mb-1">
-              Limiting Cross Tee Length (ULS)
-            </div>
-            <div class="text-lg">
-              {{ state.adjustedLimitingLengths.value.uls.cross.toFixed(1) }} m
-            </div>
-          </div>
-
-          <div class="border-t border-gray-300 pt-4">
-            <div class="font-semibold mb-1">Area per Brace</div>
-            <div class="text-lg">-</div>
-          </div>
-
-          <div class="border-t border-gray-300 pt-4">
-            <div class="font-semibold mb-1">Max Tee Spacing</div>
-            <div class="text-lg">
-              Main: {{ state.gridSpacing.value.main }}m<br />
-              Cross: {{ state.gridSpacing.value.cross }}m
-            </div>
-          </div>
-
-          <div class="border-t border-gray-300 pt-4">
-            <div class="text-xs text-gray-500">
-              Values update as you progress through steps
-            </div>
-          </div>
-        </div>
-      </CalculationSidebar>
     </div>
   </div>
 </template>
 
 <script setup>
-  import { inject } from "vue";
-  import CalculationSidebar from "../../../components/CalculationSidebar.vue";
-
-  const state = inject("calculatorState");
+// No imports needed - purely informational page
 </script>

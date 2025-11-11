@@ -6,7 +6,7 @@
     >
       <!-- Left Column: Inputs -->
       <div class="w-full">
-        <h2 class="heading-style-h1 !text-4xl md:!text-7xl mb-6">
+        <h2 class="heading-style-h1 global-heading-override mb-6">
           Ceiling Components Estimator
         </h2>
         <div class="flex flex-col gap-6">
