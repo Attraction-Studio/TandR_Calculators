@@ -1,16 +1,5 @@
 <template>
-  <div class="w-full p-8 bg-white">
-    <!-- Header -->
-    <div class="mb-8">
-      <h2 class="heading-style-h1 mb-4">
-        Suspended Ceiling Seismic Calculator
-      </h2>
-      <p class="paragraph-18px max-w-3xl">
-        This calculator helps you determine seismic requirements for suspended
-        ceiling systems in accordance with NZ seismic standards.
-      </p>
-    </div>
-
+  <div class="w-full p-8 md:p-12 bg-white">
     <!-- Wizard Progress -->
     <WizardProgress :steps="wizardSteps" :current-step="currentStep" />
 

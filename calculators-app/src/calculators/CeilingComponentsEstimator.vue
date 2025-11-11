@@ -1,26 +1,34 @@
 <template>
-  <div class="w-full p-8 bg-white">
-    <div class="mb-16 flex lg:flex-row flex-col justify-between gap-6">
-      <h2 class="heading-style-h1 mb-6">Ceiling Components Estimator</h2>
-      <div class="flex flex-col gap-4 max-w-3xl">
-        <p class="paragraph-18px">
-          Use this tool to estimate the quantity of components required for your
-          Suspended Ceiling project.
-        </p>
-        <p class="paragraph-18px">
-          Enter your room dimensions and select a tile size to quickly calculate
-          an approximate materials list. Please note: all figures are estimates
-          and actual requirements may vary depending on your room shape and
-          specific site conditions.
-        </p>
-      </div>
-    </div>
+  <div class="w-full p-8 md:p-24 bg-white">
     <!-- Main Content Grid -->
     <div
-      class="mb-16 flex lg:flex-row flex-col justify-between gap-6 items-end"
+      class="mb-16 flex lg:flex-row flex-col justify-between global-gap items-end"
     >
       <!-- Left Column: Inputs -->
       <div class="w-full">
+        <h2 class="heading-style-h1 !text-4xl md:!text-7xl mb-6">
+          Ceiling Components Estimator
+        </h2>
+        <div class="flex flex-col gap-6">
+          <p class="text-2xl">
+            Use this tool to estimate the quantity of components required for
+            your Suspended Ceiling project.
+          </p>
+          <p class="text-base mb-6">
+            Enter your room dimensions and select a tile size to quickly
+            calculate an approximate materials list. Please note: all figures
+            are estimates and actual requirements may vary depending on your
+            room shape and specific site conditions.
+          </p>
+          <InfoBox variant="warning" title="Important Note">
+            Quantities are approximate and based on the area being square. Room
+            shape/area variances must be taken into consideration.
+          </InfoBox>
+        </div>
+      </div>
+
+      <!-- Right Column: Info & Total Area -->
+      <div class="space-y-6 flex flex-col gap-6 justify-end w-full max-w-3xl">
         <!-- Input Form -->
         <div class="space-y-6 w-1/2">
           <div class="grid grid-cols-2 gap-4 w-full">
@@ -55,20 +63,12 @@
             @update:modelValue="onInputChange"
           />
         </div>
-      </div>
-
-      <!-- Right Column: Info & Total Area -->
-      <div class="space-y-6 flex flex-col gap-6 justify-end w-full max-w-3xl">
         <div>
           <p class="btn_12_text mb-2 border-b border-brand-black pb-2">
             Total Area
           </p>
           <p class="text-4xl md:text-5xl font-bold">{{ area.toFixed(2) }} m²</p>
         </div>
-        <InfoBox variant="warning" title="Important Note">
-          Quantities are approximate and based on the area being square. Room
-          shape/area variances must be taken into consideration.
-        </InfoBox>
       </div>
     </div>
 
