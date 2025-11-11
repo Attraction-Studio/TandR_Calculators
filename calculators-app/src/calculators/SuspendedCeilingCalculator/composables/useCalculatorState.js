@@ -28,6 +28,7 @@ export function useCalculatorState() {
   // STATE - Step 1: Limit State
   // ============================================================================
   const limitState = ref('uls');
+  const showSLS2 = ref(false); // Controls whether SLS2 calculations are shown
 
   // ============================================================================
   // STATE - Step 2: Site Information
@@ -318,6 +319,7 @@ export function useCalculatorState() {
   return {
     // State
     limitState,
+    showSLS2,
     zoneFactor,
     importanceLevel,
     floorHeight,

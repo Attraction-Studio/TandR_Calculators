@@ -447,13 +447,14 @@
   });
 
   const showSLS2Note = computed(() => {
-    // Show SLS2 note if any ULS condition is met
-    return (
-      q1Answer.value === "yes" ||
-      q2Answer.value === "yes" ||
-      q3Answer.value === "yes" ||
-      q4Answer.value === "yes"
-    );
+    // Show SLS2 note when progressing through questions with "No" answers
+    // This means no immediate life safety hazard, so SLS2 can be considered
+    // SLS2 is hidden when any question is answered "Yes" (pure ULS scenario)
+    if (q1Answer.value === "yes" || q2Answer.value === "yes" || q3Answer.value === "yes" || q4Answer.value === "yes") {
+      return false; // Pure ULS - hide SLS2
+    }
+    // If we've started answering questions with "No", show SLS2
+    return q1Answer.value === "no";
   });
 
   const showMultiState = computed(() => {
@@ -506,7 +507,12 @@
   // Update calculator state when result changes
   watch(limitStateResult, (newValue) => {
     if (newValue) {
-      state.limitState = newValue;
+      state.limitState.value = newValue;
     }
+  });
+
+  // Update showSLS2 flag based on whether SLS2 note should be displayed
+  watch(showSLS2Note, (newValue) => {
+    state.showSLS2.value = newValue;
   });
 </script>

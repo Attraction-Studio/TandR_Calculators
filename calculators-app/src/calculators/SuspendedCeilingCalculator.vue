@@ -77,46 +77,51 @@
         <!-- Calculation Sidebar (Steps 2-8) -->
         <CalculationSidebar v-else>
           <div class="space-y-4 text-sm">
-            <div>
+            <div v-if="state.showSLS2.value">
               <div class="font-semibold mb-1">Limit State Type</div>
               <div class="text-lg">
-                {{
-                  state.limitState.value
-                    ? state.limitState.value.toUpperCase()
-                    : "-"
-                }}
+                +SLS2
               </div>
             </div>
 
             <div class="border-t border-gray-300 pt-4">
               <div class="font-semibold mb-1">Seismic Weight</div>
               <div class="text-lg">
-                {{ state.seismicWeight.value.toFixed(1) }} kg/m²
+                {{ state.step3Complete.value ? state.seismicWeight.value.toFixed(1) : '-' }} kg/m²
               </div>
             </div>
 
             <div class="border-t border-gray-300 pt-4">
-              <div class="font-semibold mb-1">Seismic Force (ULS)</div>
+              <div class="font-semibold mb-1">Seismic Force</div>
               <div class="text-lg">
-                {{ state.seismicForces.value.uls.toFixed(2) }} kgf/m²
-              </div>
-            </div>
-
-            <div class="border-t border-gray-300 pt-4">
-              <div class="font-semibold mb-1">
-                Limiting Main Tee Length (ULS)
-              </div>
-              <div class="text-lg">
-                {{ state.adjustedLimitingLengths.value.uls.main.toFixed(1) }} m
+                <span v-if="state.showSLS2.value">
+                  SLS2 = {{ state.seismicForces.value.sls2 > 0 ? state.seismicForces.value.sls2.toFixed(2) : '-' }} kgf/m²<br />
+                </span>
+                ULS = {{ state.seismicForces.value.uls > 0 ? state.seismicForces.value.uls.toFixed(2) : '-' }} kgf/m²
               </div>
             </div>
 
             <div class="border-t border-gray-300 pt-4">
               <div class="font-semibold mb-1">
-                Limiting Cross Tee Length (ULS)
+                Limiting Main Tee Length (max)
               </div>
               <div class="text-lg">
-                {{ state.adjustedLimitingLengths.value.uls.cross.toFixed(1) }} m
+                <span v-if="state.showSLS2.value">
+                  SLS2 = {{ state.adjustedLimitingLengths.value.sls2.main > 0 ? state.adjustedLimitingLengths.value.sls2.main.toFixed(1) : '-' }} m<br />
+                </span>
+                ULS = {{ state.adjustedLimitingLengths.value.uls.main > 0 ? state.adjustedLimitingLengths.value.uls.main.toFixed(1) : '-' }} m
+              </div>
+            </div>
+
+            <div class="border-t border-gray-300 pt-4">
+              <div class="font-semibold mb-1">
+                Limiting Cross Tee Length (max)
+              </div>
+              <div class="text-lg">
+                <span v-if="state.showSLS2.value">
+                  SLS2 = {{ state.adjustedLimitingLengths.value.sls2.cross > 0 ? state.adjustedLimitingLengths.value.sls2.cross.toFixed(1) : '-' }} m<br />
+                </span>
+                ULS = {{ state.adjustedLimitingLengths.value.uls.cross > 0 ? state.adjustedLimitingLengths.value.uls.cross.toFixed(1) : '-' }} m
               </div>
             </div>
 
@@ -128,8 +133,14 @@
             <div class="border-t border-gray-300 pt-4">
               <div class="font-semibold mb-1">Max Tee Spacing</div>
               <div class="text-lg">
-                Main: {{ state.gridSpacing.value.main }}m<br />
-                Cross: {{ state.gridSpacing.value.cross }}m
+                <template v-if="state.gridMass.value">
+                  Main: {{ state.gridSpacing.value.main }}m<br />
+                  Cross: {{ state.gridSpacing.value.cross }}m
+                </template>
+                <template v-else>
+                  Main: - m<br />
+                  Cross: - m
+                </template>
               </div>
             </div>
 
