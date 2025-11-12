@@ -19,15 +19,12 @@
             :options="gridMassOptions"
             @update:model-value="onGridMassChange"
           />
-
-          <img
-            v-if="gridImage"
-            :src="gridImage.src"
-            :alt="gridImage.alt"
-            class="mt-4 rounded border border-gray-300"
-          />
-
-          <ConditionalSection :show="!!gridMassNote">
+          <div
+            class="mt-8 p-6 border border-gray-300 flex justify-center items-center"
+          >
+            <img v-if="gridImage" :src="gridImage.src" :alt="gridImage.alt" />
+          </div>
+          <ConditionalSection class="mt-8" :show="!!gridMassNote">
             <InfoBox variant="warning" :title="gridMassNote.title">
               {{ gridMassNote.text }}
             </InfoBox>
@@ -49,9 +46,23 @@
           <button
             type="button"
             @click="showCommonTiles = !showCommonTiles"
-            class="text-blue-600 hover:underline text-sm mt-2"
+            class="bg-[#333] !text-white px-4 py-2 text-sm mt-2 flex items-center gap-2"
           >
             {{ showCommonTiles ? "Hide" : "Show" }} Common Tiles
+            <svg
+              class="w-4 h-4 transition-transform duration-200"
+              :class="{ 'rotate-180': showCommonTiles }"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
           </button>
 
           <div
@@ -128,13 +139,32 @@
 
       <!-- Right: Live Calculation -->
       <div class="lg:w-1/2 w-full">
-        <div class="border border-brand-black p-6 sticky top-4">
+        <div class="bg-gray-100 p-6 sticky top-4">
           <h4 class="btn_12_text mb-4 border-b border-brand-black pb-2">
             Total Seismic Weight
           </h4>
           <div class="text-4xl font-bold mb-6">
             {{ state.seismicWeight.value.toFixed(1) }}
             <span class="text-2xl">kg/m²</span>
+          </div>
+
+          <div v-if="state.seismicWeight.value > 24.78" class="mb-4">
+            <div
+              class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded flex items-start gap-3"
+            >
+              <svg
+                class="w-6 h-6 flex-shrink-0 mt-0.5"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+              <p>The maximum allowable ceiling weight is 24.78 kg/m²</p>
+            </div>
           </div>
 
           <div class="space-y-2 text-sm mb-4">
