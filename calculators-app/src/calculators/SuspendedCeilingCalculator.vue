@@ -80,8 +80,11 @@
             <div>
               <div class="font-semibold mb-1">Limit State Type</div>
               <div class="text-lg">
-                <template v-if="state.limitStateLogic.liveCalcSLS2Display.value">
-                  {{ state.limitStateLogic.limitStateMain.value }} {{ state.limitStateLogic.liveCalcSLS2Display.value }}
+                <template
+                  v-if="state.limitStateLogic.liveCalcSLS2Display.value"
+                >
+                  {{ state.limitStateLogic.limitStateMain.value }}
+                  {{ state.limitStateLogic.liveCalcSLS2Display.value }}
                 </template>
                 <span v-else>-</span>
               </div>
@@ -90,7 +93,12 @@
             <div class="border-t border-gray-300 pt-4">
               <div class="font-semibold mb-1">Seismic Weight</div>
               <div class="text-lg">
-                {{ state.step3Complete.value ? state.seismicWeight.value.toFixed(1) : '-' }} kg/m²
+                {{
+                  state.step3Complete.value
+                    ? state.seismicWeight.value.toFixed(1)
+                    : "-"
+                }}
+                kg/m²
               </div>
             </div>
 
@@ -98,9 +106,21 @@
               <div class="font-semibold mb-1">Seismic Force</div>
               <div class="text-lg">
                 <span v-if="state.limitStateLogic.showSLS2Calculations.value">
-                  SLS2 = {{ state.seismicForces.value.sls2 > 0 ? state.seismicForces.value.sls2.toFixed(2) : '-' }} kgf/m²<br />
+                  SLS2 =
+                  {{
+                    state.seismicForces.value.sls2 > 0
+                      ? state.seismicForces.value.sls2.toFixed(2)
+                      : "-"
+                  }}
+                  kgf/m²<br />
                 </span>
-                ULS = {{ state.seismicForces.value.uls > 0 ? state.seismicForces.value.uls.toFixed(2) : '-' }} kgf/m²
+                ULS =
+                {{
+                  state.seismicForces.value.uls > 0
+                    ? state.seismicForces.value.uls.toFixed(2)
+                    : "-"
+                }}
+                kgf/m²
               </div>
             </div>
 
@@ -110,9 +130,21 @@
               </div>
               <div class="text-lg">
                 <span v-if="state.limitStateLogic.showSLS2Calculations.value">
-                  SLS2 = {{ state.adjustedLimitingLengths.value.sls2.main > 0 ? state.adjustedLimitingLengths.value.sls2.main.toFixed(1) : '-' }} m<br />
+                  SLS2 =
+                  {{
+                    state.adjustedLimitingLengths.value.sls2.main > 0
+                      ? state.adjustedLimitingLengths.value.sls2.main.toFixed(1)
+                      : "-"
+                  }}
+                  m<br />
                 </span>
-                ULS = {{ state.adjustedLimitingLengths.value.uls.main > 0 ? state.adjustedLimitingLengths.value.uls.main.toFixed(1) : '-' }} m
+                ULS =
+                {{
+                  state.adjustedLimitingLengths.value.uls.main > 0
+                    ? state.adjustedLimitingLengths.value.uls.main.toFixed(1)
+                    : "-"
+                }}
+                m
               </div>
             </div>
 
@@ -122,9 +154,23 @@
               </div>
               <div class="text-lg">
                 <span v-if="state.limitStateLogic.showSLS2Calculations.value">
-                  SLS2 = {{ state.adjustedLimitingLengths.value.sls2.cross > 0 ? state.adjustedLimitingLengths.value.sls2.cross.toFixed(1) : '-' }} m<br />
+                  SLS2 =
+                  {{
+                    state.adjustedLimitingLengths.value.sls2.cross > 0
+                      ? state.adjustedLimitingLengths.value.sls2.cross.toFixed(
+                          1
+                        )
+                      : "-"
+                  }}
+                  m<br />
                 </span>
-                ULS = {{ state.adjustedLimitingLengths.value.uls.cross > 0 ? state.adjustedLimitingLengths.value.uls.cross.toFixed(1) : '-' }} m
+                ULS =
+                {{
+                  state.adjustedLimitingLengths.value.uls.cross > 0
+                    ? state.adjustedLimitingLengths.value.uls.cross.toFixed(1)
+                    : "-"
+                }}
+                m
               </div>
             </div>
 
