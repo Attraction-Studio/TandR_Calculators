@@ -20,6 +20,13 @@
             @update:model-value="onGridMassChange"
           />
 
+          <img
+            v-if="gridImage"
+            :src="gridImage.src"
+            :alt="gridImage.alt"
+            class="mt-4 rounded border border-gray-300"
+          />
+
           <ConditionalSection :show="!!gridMassNote">
             <InfoBox variant="warning" :title="gridMassNote.title">
               {{ gridMassNote.text }}
@@ -210,6 +217,28 @@
       };
     }
     return null;
+  });
+
+  const gridImage = computed(() => {
+    const images = {
+      1.1: {
+        src: "https://cdn.prod.website-files.com/68ec24dc82bba0539e7b250e/69128151a8058c7604b90fb4_scs_step2image1.jpg",
+        alt: "Main Tee @ 1200kg/m² | Cross Tee @ 600kg/m²",
+      },
+      1.6: {
+        src: "https://cdn.prod.website-files.com/68ec24dc82bba0539e7b250e/69128151e9e6a5b8e0e771c8_scs_step2image3.jpg",
+        alt: "Main Tee @ 1200kg/m² | Cross Tee @ 600kg/m² | Additional Cross Tee @ 600kg/m²",
+      },
+      1.8: {
+        src: "https://cdn.prod.website-files.com/68ec24dc82bba0539e7b250e/69128151e9e6a5b8e0e771cb_scs_step2image4.jpg",
+        alt: "Main Tee @ 600kg/m² | Cross Tee @ 600kg/m²",
+      },
+      1.4: {
+        src: "https://cdn.prod.website-files.com/68ec24dc82bba0539e7b250e/691281513c47c4946c75648f_scs_step2image2.jpg",
+        alt: "Main Tee @ 600kg/m² | Cross Tee @ 1200kg/m²",
+      },
+    };
+    return images[state.gridMass.value] || null;
   });
 
   function onGridMassChange() {
