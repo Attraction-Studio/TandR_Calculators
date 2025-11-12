@@ -84,7 +84,20 @@ export function useCalculatorState() {
   // ============================================================================
   // COMPUTED - Step Completion
   // ============================================================================
-  const step1Complete = computed(() => !!limitStateLogic.limitStateMain.value);
+  const step1Complete = computed(() => {
+    // Must have a limit state result
+    if (!limitStateLogic.limitStateMain.value) return false;
+    
+    // If Q1=Yes, must also answer Q5
+    if (q1Answer.value === 'yes' && !q5Answer.value) return false;
+    
+    // If Q1=No, must answer subsequent questions until a Yes is reached
+    if (q1Answer.value === 'no') {
+      return !!(q2Answer.value === 'yes' || q3Answer.value === 'yes' || q4Answer.value === 'yes' || q5Answer.value === 'yes');
+    }
+    
+    return true;
+  });
 
   const step2Complete = computed(
     () =>
