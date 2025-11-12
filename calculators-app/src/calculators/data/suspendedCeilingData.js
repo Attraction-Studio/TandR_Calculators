@@ -214,22 +214,20 @@ export const GRID_MASS_OPTIONS = [
 // ============================================================================
 
 export const TILE_MASS_OPTIONS = [
-  { value: 3.5, type: 'Mineral Fibre 600 x 600 x 15mm', mass: 3.5 },
-  { value: 7.0, type: 'Mineral Fibre 1200 x 600 x 15mm', mass: 7.0 },
-  { value: 4.3, type: 'Mineral Fibre 600 x 600 x 19mm', mass: 4.3 },
-  { value: 8.6, type: 'Mineral Fibre 1200 x 600 x 19mm', mass: 8.6 },
-  { value: 2.9, type: 'Mineral Fibre 600 x 600 x 12mm', mass: 2.9 },
-  { value: 5.8, type: 'Mineral Fibre 1200 x 600 x 12mm', mass: 5.8 },
-  { value: 6.5, type: 'Mineral Fibre 600 x 600 x 25mm', mass: 6.5 },
-  { value: 13.0, type: 'Mineral Fibre 1200 x 600 x 25mm', mass: 13.0 },
-  { value: 5.0, type: 'Mineral Fibre 600 x 600 x 20mm (High Density)', mass: 5.0 },
-  { value: 10.0, type: 'Mineral Fibre 1200 x 600 x 20mm (High Density)', mass: 10.0 },
-  { value: 3.0, type: 'Metal 600 x 600', mass: 3.0 },
-  { value: 6.0, type: 'Metal 1200 x 600', mass: 6.0 },
-  { value: 7.5, type: 'Plasterboard 600 x 600 x 10mm', mass: 7.5 },
-  { value: 15.0, type: 'Plasterboard 1200 x 600 x 10mm', mass: 15.0 },
-  { value: 9.0, type: 'Plasterboard 600 x 600 x 13mm', mass: 9.0 },
-  { value: 18.0, type: 'Plasterboard 1200 x 600 x 13mm', mass: 18.0 },
+  { value: 1.5, type: 'Phonic Absorb (15mm)', mass: 1.5 },
+  { value: 7.5, type: 'Phonic Combo Plus (35mm)', mass: 7.5 },
+  { value: 2, type: 'Phonic Tech (20mm)', mass: 2 },
+  { value: 4, type: 'Phonic Impact Sport (40mm)', mass: 4 },
+  { value: 4, type: 'Phonic Tech (40mm)', mass: 4 },
+  { value: 5.3, type: 'Phonic Harmony (19mm)', mass: 5.3 },
+  { value: 4.2, type: 'Daiken Plain', mass: 4.2 },
+  { value: 4.2, type: 'Phonic New NDF', mass: 4.2 },
+  { value: 4.2, type: 'Phonic Fine Fissured', mass: 4.2 },
+  { value: 6.9, type: 'Fenta', mass: 6.9 },
+  { value: 7.9, type: 'Phonic Gypsum Vinyl (9mm)', mass: 7.9 },
+  { value: 1.9, type: 'Focus Polyester (9mm)', mass: 1.9 },
+  { value: 2, type: 'Phonic Clean', mass: 2 },
+  { value: 8.3, type: 'Bosk Panel 12mm (max)', mass: 8.3 },
 ];
 
 // ============================================================================

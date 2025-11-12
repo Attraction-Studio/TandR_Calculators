@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2 class="text-4xl font-bold mb-8">Step One - Limit State Type</h2>
+    <h2 class="global-step-title">Step One - Limit State Type</h2>
 
     <div class="prose max-w-none space-y-6">
       <h3 class="text-2xl font-semibold mb-4">
@@ -362,12 +362,23 @@
         <p class="paragraph-18px">
           Your Limit State Type is
           <span class="font-bold">{{ limitStateResult }}</span>
-          <span v-if="limitStateLogic.footerSLS2Display.value" class="font-bold"> {{ limitStateLogic.footerSLS2Display.value }}</span>
+          <span
+            v-if="limitStateLogic.footerSLS2Display.value"
+            class="font-bold"
+          >
+            {{ limitStateLogic.footerSLS2Display.value }}</span
+          >
         </p>
-        <p v-if="limitStateLogic.showSLS2Note.value" class="paragraph-18px text-sm mt-2">
+        <p
+          v-if="limitStateLogic.showSLS2Note.value"
+          class="paragraph-18px text-sm mt-2"
+        >
           SLS2 loads may be able to be used for design, consult an engineer.
         </p>
-        <p v-if="limitStateLogic.footerSLS2Display.value" class="paragraph-18px text-sm mt-2">
+        <p
+          v-if="limitStateLogic.footerSLS2Display.value"
+          class="paragraph-18px text-sm mt-2"
+        >
           <small
             >As there are two limit states which apply to the suspended ceiling
             in this instance, the most stringent state which results in the
@@ -385,7 +396,8 @@
   const state = inject("calculatorState");
 
   // Use centralized question answers from state
-  const { q1Answer, q2Answer, q3Answer, q4Answer, q5Answer, limitStateLogic } = state;
+  const { q1Answer, q2Answer, q3Answer, q4Answer, q5Answer, limitStateLogic } =
+    state;
 
   const showAssumptions = ref(false);
 

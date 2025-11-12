@@ -52,7 +52,7 @@ export function useCalculatorState() {
   // ============================================================================
   // STATE - Step 3: Seismic Weight
   // ============================================================================
-  const gridMass = ref('');
+  const gridMass = ref(1.1); // Default to first option: Main Tee @ 1200 | Cross Tee @ 600
   const tileMass = ref('');
   const luminaries = ref(0);
   const insulation = ref(0);

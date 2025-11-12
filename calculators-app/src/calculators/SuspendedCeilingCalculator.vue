@@ -246,8 +246,8 @@
     { number: 1, label: "Introduction" },
     { number: 2, label: "Design Methods" },
     { number: 3, label: "Limit State" },
-    { number: 4, label: "Site Info" },
-    { number: 5, label: "Weight" },
+    { number: 4, label: "Weight" },
+    { number: 5, label: "Site Info" },
     { number: 6, label: "Grid Config" },
     { number: 7, label: "Options" },
     { number: 8, label: "Validation" },
@@ -269,8 +269,8 @@
     IntroductionStep,
     DesignMethodsStep,
     LimitStateStep,
-    SiteInformationStep,
     SeismicWeightStep,
+    SiteInformationStep,
     GridConfigurationStep,
     DesignOptionsStep,
     ValidationStep,
@@ -300,10 +300,10 @@
         return true;
       case 3: // Limit state
         return state.step1Complete.value;
-      case 4: // Site info
-        return state.step2Complete.value;
-      case 5: // Weight
+      case 4: // Weight
         return state.step3Complete.value;
+      case 5: // Site info
+        return state.step2Complete.value;
       case 6: // Grid config
         return state.step4Complete.value;
       case 7: // Options

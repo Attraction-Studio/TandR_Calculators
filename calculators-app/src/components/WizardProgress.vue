@@ -11,7 +11,7 @@
           :class="[
             'w-10 h-10 rounded-full border-2 flex items-center justify-center font-bold transition-all duration-300',
             step.number < currentStep
-              ? 'bg-green-500 border-green-500 text-white'
+              ? 'bg-[#3C999B] border-[#3C999B] text-white'
               : step.number === currentStep
               ? 'bg-[#333] border-[#333] !text-white scale-110'
               : 'bg-white border-[#333] text-[#333]',
@@ -28,7 +28,7 @@
       <!-- Previous step (if exists) -->
       <div v-if="currentStep > 1" class="flex-shrink-0">
         <div
-          class="w-7 h-7 rounded-full border flex items-center justify-center text-xs font-bold bg-green-500 border-green-500 !text-white"
+          class="w-7 h-7 rounded-full border flex items-center justify-center text-xs font-bold bg-[#3C999B] border-[#3C999B] !text-white"
         >
           ✓
         </div>
