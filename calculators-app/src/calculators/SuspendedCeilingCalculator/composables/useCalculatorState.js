@@ -44,10 +44,10 @@ export function useCalculatorState() {
   // ============================================================================
   // STATE - Step 2: Site Information
   // ============================================================================
-  const zoneFactor = ref('');
-  const importanceLevel = ref('2');
-  const floorHeight = ref(0);
-  const ceilingHeight = ref(0);
+  const zoneFactor = ref('0.13'); // Default to Kaitaia
+  const importanceLevel = ref('2'); // Default to Importance Level 2
+  const floorHeight = ref(0); // Default to ground floor
+  const ceilingHeight = ref(2.4); // Default ceiling height
 
   // ============================================================================
   // STATE - Step 3: Seismic Weight
@@ -103,7 +103,7 @@ export function useCalculatorState() {
     () =>
       zoneFactor.value &&
       importanceLevel.value &&
-      floorHeight.value > 0 &&
+      floorHeight.value >= 0 &&
       ceilingHeight.value > 0
   );
 
@@ -155,17 +155,23 @@ export function useCalculatorState() {
   });
 
   const seismicForces = computed(() => {
-    if (!step2Complete.value || !step3Complete.value) {
+    // Calculate if we have the necessary data
+    const zf = Number(zoneFactor.value);
+    const il = Number(importanceLevel.value);
+    const ch = Number(ceilingHeight.value);
+    const sw = Number(seismicWeight.value);
+    
+    if (!zf || !il || ch <= 0 || sw <= 0) {
       return { sls: 0, sls2: 0, uls: 0 };
     }
 
     return calculateAllSeismicForces({
-      zoneFactor: Number(zoneFactor.value),
-      importanceLevel: Number(importanceLevel.value),
-      floorHeight: floorHeight.value,
-      ceilingHeight: ceilingHeight.value,
+      zoneFactor: zf,
+      importanceLevel: il,
+      floorHeight: Number(floorHeight.value),
+      ceilingHeight: ch,
       partFactorULS: ductilityFactor.value,
-      seismicWeight: seismicWeight.value,
+      seismicWeight: sw,
     });
   });
 

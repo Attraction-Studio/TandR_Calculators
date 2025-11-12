@@ -3,7 +3,7 @@
     :step-number="5"
     title="Design Options"
     description="Configure grid strengthening and special conditions"
-    :is-complete="state.step5Complete"
+    :is-complete="state.step5Complete.value"
   >
     <div class="space-y-8">
       <QuestionCard
@@ -98,7 +98,7 @@
             :options="yesNoOptions"
           />
 
-          <ConditionalSection :show="state.isRaked === 'yes'">
+          <ConditionalSection :show="state.isRaked.value === 'yes'">
             <InputField
               id="rake-angle"
               v-model.number="state.rakeAngle"

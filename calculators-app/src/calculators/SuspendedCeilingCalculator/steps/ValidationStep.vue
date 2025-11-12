@@ -3,7 +3,7 @@
     :step-number="6"
     title="Measured Tee Lengths"
     description="Enter the maximum measured tee lengths as per plans supplied"
-    :is-complete="state.step6Complete"
+    :is-complete="state.step6Complete.value"
   >
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <InputField

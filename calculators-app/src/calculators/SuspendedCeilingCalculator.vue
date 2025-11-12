@@ -265,7 +265,7 @@
 </template>
 
 <script setup>
-  import { ref, computed, provide } from "vue";
+  import { ref, computed, provide, watch } from "vue";
   import WizardProgress from "../components/WizardProgress.vue";
   import CalculationSidebar from "../components/CalculationSidebar.vue";
   import InfoBox from "../components/InfoBox.vue";
@@ -293,7 +293,7 @@
     { number: 2, label: "Design Methods" },
     { number: 3, label: "Limit State" },
     { number: 4, label: "Weight" },
-    { number: 5, label: "Site Info" },
+    { number: 5, label: "Seismic Actions" },
     { number: 6, label: "Grid Config" },
     { number: 7, label: "Options" },
     { number: 8, label: "Validation" },
@@ -348,7 +348,7 @@
         return state.step1Complete.value;
       case 4: // Weight
         return state.step3Complete.value;
-      case 5: // Site info
+      case 5: // Seismic Actions (Site info)
         return state.step2Complete.value;
       case 6: // Grid config
         return state.step4Complete.value;
@@ -386,4 +386,21 @@
     currentStep.value = 1;
     scrollToTop();
   }
+
+  // Debug watchers
+  watch(() => state.zoneFactor.value, (val) => {
+    console.log('zoneFactor changed:', val);
+  });
+  
+  watch(() => state.seismicWeight.value, (val) => {
+    console.log('seismicWeight changed:', val);
+  });
+  
+  watch(() => state.seismicForces.value, (val) => {
+    console.log('seismicForces changed:', val);
+  });
+  
+  watch(() => state.step2Complete.value, (val) => {
+    console.log('step2Complete changed:', val);
+  });
 </script>

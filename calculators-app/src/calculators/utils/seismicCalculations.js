@@ -160,7 +160,8 @@ export function calculateAllSeismicForces(params) {
     uls: calculateSeismicForce({
       zoneFactor,
       returnFactor: ulsFactor,
-      floorFactor: partFactorULS,
+      floorFactor,
+      partFactor: partFactorULS,
       seismicWeight,
     }),
   };

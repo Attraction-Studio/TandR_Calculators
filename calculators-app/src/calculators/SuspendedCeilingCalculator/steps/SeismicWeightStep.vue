@@ -14,7 +14,7 @@
           <h3 class="font-semibold text-lg mb-4">Grid Mass</h3>
           <SelectField
             id="grid-mass"
-            v-model="state.gridMass.value"
+            v-model="state.gridMass"
             label="Grid Type"
             :options="gridMassOptions"
             @update:model-value="onGridMassChange"
@@ -36,7 +36,7 @@
           <h3 class="font-semibold text-lg mb-4">Tile Mass (kg/m²)</h3>
           <InputField
             id="tile-mass"
-            v-model.number="state.tileMass.value"
+            v-model.number="state.tileMass"
             label="Tile Mass"
             type="number"
             step="0.1"
@@ -100,7 +100,7 @@
           <div class="space-y-4">
             <InputField
               id="luminaries"
-              v-model.number="state.luminaries.value"
+              v-model.number="state.luminaries"
               label="Luminaires"
               type="number"
               step="0.1"
@@ -109,7 +109,7 @@
 
             <InputField
               id="insulation"
-              v-model.number="state.insulation.value"
+              v-model.number="state.insulation"
               label="Insulation"
               type="number"
               step="0.1"
@@ -118,7 +118,7 @@
 
             <InputField
               id="other-loads"
-              v-model.number="state.otherLoads.value"
+              v-model.number="state.otherLoads"
               label="Other"
               type="number"
               step="0.1"
@@ -127,7 +127,7 @@
 
             <InputField
               id="dead-load"
-              v-model.number="state.deadLoad.value"
+              v-model.number="state.deadLoad"
               label="Design Distributed Load (min 3 kg/m²)"
               type="number"
               step="0.1"

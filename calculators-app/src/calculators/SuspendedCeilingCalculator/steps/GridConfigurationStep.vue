@@ -3,7 +3,7 @@
     :step-number="4"
     title="Grid Configuration"
     description="Select your ceiling grid and connection details"
-    :is-complete="state.step4Complete"
+    :is-complete="state.step4Complete.value"
   >
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <SelectField

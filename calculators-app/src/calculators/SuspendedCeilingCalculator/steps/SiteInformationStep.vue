@@ -3,7 +3,7 @@
     :step-number="2"
     title="Site Information"
     description="Enter details about your project location and building"
-    :is-complete="state.step2Complete"
+    :is-complete="state.step2Complete.value"
   >
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <SelectField
