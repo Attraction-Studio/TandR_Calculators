@@ -1,4 +1,4 @@
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import {
   calculateSeismicWeight,
   validateSeismicWeight,
@@ -48,6 +48,7 @@ export function useCalculatorState() {
   const importanceLevel = ref('2'); // Default to Importance Level 2
   const floorHeight = ref(0); // Default to ground floor
   const ceilingHeight = ref(2.4); // Default ceiling height
+  const ductility = ref(1); // Default to 1 (legacy: <option value="1" selected="">1</option>)
 
   // ============================================================================
   // STATE - Step 3: Seismic Weight
@@ -58,6 +59,13 @@ export function useCalculatorState() {
   const insulation = ref(0);
   const otherLoads = ref(0);
   const deadLoad = ref(CONSTANTS.DEFAULT_DEAD_LOAD);
+  
+  // Enforce dead load minimum (legacy: if (ddload < 3) { ddload = 3; })
+  watch(deadLoad, (newValue) => {
+    if (newValue < CONSTANTS.MIN_DEAD_LOAD) {
+      deadLoad.value = CONSTANTS.MIN_DEAD_LOAD;
+    }
+  });
 
   // ============================================================================
   // STATE - Step 4: Grid Configuration
@@ -80,6 +88,12 @@ export function useCalculatorState() {
   // ============================================================================
   const maxMainTee = ref(0);
   const maxCrossTee = ref(0);
+  
+  // ============================================================================
+  // STATE - Connection Heights (for back brace calculations)
+  // ============================================================================
+  const connectionHeight = ref(0); // Legacy: connectionheight - for rigid hanger
+  const connectionHeight2 = ref(0); // Legacy: connectionheight2 - for back brace
 
   // ============================================================================
   // COMPUTED - Step Completion
@@ -128,10 +142,10 @@ export function useCalculatorState() {
     return calculateSeismicWeight({
       gridMass: Number(gridMass.value) || 0,
       tileMass: Number(tileMass.value) || 0,
-      luminaries: luminaries.value,
-      insulation: insulation.value,
-      other: otherLoads.value,
-      deadLoad: deadLoad.value,
+      luminaries: Number(luminaries.value) || 0,
+      insulation: Number(insulation.value) || 0,
+      other: Number(otherLoads.value) || 0,
+      deadLoad: Number(deadLoad.value) || 0,
     });
   });
 
@@ -150,8 +164,22 @@ export function useCalculatorState() {
   // COMPUTED - Seismic Forces
   // ============================================================================
   const ductilityFactor = computed(() => {
-    // Default ductility factor for ULS
-    return 1;
+    // Legacy JS (suspended_ceiling_calculator.js:419-426):
+    // var partSLS = 1;
+    // if (ductility == 1) {
+    //   var partULS = 1;
+    // } else {
+    //   var partULS = 0.85;
+    // }
+    // Legacy HTML shows: <option value="1">1</option> and <option value="1.25">1.25</option>
+    // But the JS logic treats it as binary: 1 = 1.0, else = 0.85
+    // The HTML option "1.25" would be treated as "else" and return 0.85
+    // This seems like a bug in the legacy code, but we must match it exactly
+    if (Number(ductility.value) === 1) {
+      return 1.0;
+    } else {
+      return 0.85; // Limited ductility (anything other than 1)
+    }
   });
 
   const seismicForces = computed(() => {
@@ -176,7 +204,23 @@ export function useCalculatorState() {
   });
 
   const floorFactorValue = computed(() => {
-    return getFloorFactor(floorHeight.value + ceilingHeight.value);
+    // Legacy logic (suspended_ceiling_calculator.js:740-750):
+    // if (connectionheight2 != 0) {
+    //   var floorfactorx = connectionheight2;
+    // } else if (connectionheight != 0) {
+    //   var floorfactorx = connectionheight;
+    // } else {
+    //   var floorfactorx = ceilheight + floorheight;
+    // }
+    let heightToUse;
+    if (connectionHeight2.value > 0) {
+      heightToUse = connectionHeight2.value;
+    } else if (connectionHeight.value > 0) {
+      heightToUse = connectionHeight.value;
+    } else {
+      heightToUse = floorHeight.value + ceilingHeight.value;
+    }
+    return getFloorFactor(heightToUse);
   });
 
   // ============================================================================
@@ -324,16 +368,24 @@ export function useCalculatorState() {
   // METHODS
   // ============================================================================
   function resetState() {
-    limitState.value = 'uls';
-    zoneFactor.value = '';
+    q1Answer.value = '';
+    q2Answer.value = '';
+    q3Answer.value = '';
+    q4Answer.value = '';
+    q5Answer.value = '';
+    zoneFactor.value = '0.13';
     importanceLevel.value = '2';
     floorHeight.value = 0;
-    ceilingHeight.value = 0;
-    gridMass.value = '';
+    ceilingHeight.value = 2.4;
+    ductility.value = 1;
+    connectionHeight.value = 0;
+    connectionHeight2.value = 0;
+    gridMass.value = 1.1;
     tileMass.value = '';
     luminaries.value = 0;
     insulation.value = 0;
     otherLoads.value = 0;
+    deadLoad.value = CONSTANTS.DEFAULT_DEAD_LOAD;
     studType.value = '1';
     connectionType.value = '1';
     gridType.value = '1';
@@ -362,6 +414,9 @@ export function useCalculatorState() {
     importanceLevel,
     floorHeight,
     ceilingHeight,
+    ductility,
+    connectionHeight,
+    connectionHeight2,
     gridMass,
     tileMass,
     luminaries,

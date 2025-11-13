@@ -6,20 +6,20 @@
     </label>
     <select
       :id="id"
-      :value="modelValue"
+      :value="String(modelValue ?? '')"
       :class="[
         'w-full px-4 py-2 border border-brand-black focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors',
         error ? 'border-red-500' : '',
       ]"
       :aria-invalid="error ? 'true' : 'false'"
       :aria-describedby="error ? `${id}-error` : undefined"
-      @change="$emit('update:modelValue', $event.target.value)"
+      @change="handleChange"
     >
       <option v-if="placeholder" value="" disabled>{{ placeholder }}</option>
       <option
         v-for="option in options"
-        :key="option.value"
-        :value="option.value"
+        :key="String(option.value)"
+        :value="String(option.value)"
         :data-note="option.note"
       >
         {{ option.label }}
@@ -40,7 +40,7 @@
 </template>
 
 <script setup>
-  defineProps({
+  const props = defineProps({
     id: {
       type: String,
       required: true,
@@ -83,5 +83,12 @@
     },
   });
 
-  defineEmits(["update:modelValue"]);
+  const emit = defineEmits(["update:modelValue"]);
+
+  function handleChange(event) {
+    const value = event.target.value;
+    // Try to convert to number if the value is numeric
+    const numValue = Number(value);
+    emit('update:modelValue', isNaN(numValue) ? value : numValue);
+  }
 </script>

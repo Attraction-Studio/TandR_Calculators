@@ -14,10 +14,10 @@
           <h3 class="font-semibold text-lg mb-4">Grid Mass</h3>
           <SelectField
             id="grid-mass"
-            v-model="state.gridMass"
+            :model-value="state.gridMass.value"
+            @update:model-value="(val) => { state.gridMass.value = val; onGridMassChange(); }"
             label="Grid Type"
             :options="gridMassOptions"
-            @update:model-value="onGridMassChange"
           />
           <div
             class="mt-8 p-6 border border-gray-300 flex justify-center items-center"
@@ -36,7 +36,8 @@
           <h3 class="font-semibold text-lg mb-4">Tile Mass (kg/m²)</h3>
           <InputField
             id="tile-mass"
-            v-model.number="state.tileMass"
+            :model-value="state.tileMass.value"
+            @update:model-value="(val) => state.tileMass.value = val"
             label="Tile Mass"
             type="number"
             step="0.1"
@@ -100,7 +101,8 @@
           <div class="space-y-4">
             <InputField
               id="luminaries"
-              v-model.number="state.luminaries"
+              :model-value="state.luminaries.value"
+              @update:model-value="(val) => state.luminaries.value = val"
               label="Luminaires"
               type="number"
               step="0.1"
@@ -109,7 +111,8 @@
 
             <InputField
               id="insulation"
-              v-model.number="state.insulation"
+              :model-value="state.insulation.value"
+              @update:model-value="(val) => state.insulation.value = val"
               label="Insulation"
               type="number"
               step="0.1"
@@ -118,7 +121,8 @@
 
             <InputField
               id="other-loads"
-              v-model.number="state.otherLoads"
+              :model-value="state.otherLoads.value"
+              @update:model-value="(val) => state.otherLoads.value = val"
               label="Other"
               type="number"
               step="0.1"
@@ -127,7 +131,8 @@
 
             <InputField
               id="dead-load"
-              v-model.number="state.deadLoad"
+              :model-value="state.deadLoad.value"
+              @update:model-value="(val) => state.deadLoad.value = val"
               label="Design Distributed Load (min 3 kg/m²)"
               type="number"
               step="0.1"
@@ -163,7 +168,10 @@
                   clip-rule="evenodd"
                 />
               </svg>
-              <p>The maximum allowable ceiling weight is 24.78 kg/m²</p>
+              <p>
+                <strong>ERROR:</strong> The maximum allowable ceiling weight is 24.78
+                kg/m<sup>2</sup>
+              </p>
             </div>
           </div>
 
@@ -171,37 +179,37 @@
             <div class="flex justify-between">
               <span>Grid Mass:</span>
               <span class="font-semibold"
-                >{{ Number(state.gridMass.value || 0).toFixed(1) }} kg/m²</span
+                >{{ (Number(state.gridMass.value) || 0).toFixed(1) }} kg/m²</span
               >
             </div>
             <div class="flex justify-between">
               <span>Tile Mass:</span>
               <span class="font-semibold"
-                >{{ Number(state.tileMass.value || 0).toFixed(1) }} kg/m²</span
+                >{{ (Number(state.tileMass.value) || 0).toFixed(1) }} kg/m²</span
               >
             </div>
             <div class="flex justify-between">
               <span>Luminaries:</span>
               <span class="font-semibold"
-                >{{ state.luminaries.value.toFixed(1) }} kg/m²</span
+                >{{ (Number(state.luminaries.value) || 0).toFixed(1) }} kg/m²</span
               >
             </div>
             <div class="flex justify-between">
               <span>Insulation:</span>
               <span class="font-semibold"
-                >{{ state.insulation.value.toFixed(1) }} kg/m²</span
+                >{{ (Number(state.insulation.value) || 0).toFixed(1) }} kg/m²</span
               >
             </div>
             <div class="flex justify-between">
               <span>Other:</span>
               <span class="font-semibold"
-                >{{ state.otherLoads.value.toFixed(1) }} kg/m²</span
+                >{{ (Number(state.otherLoads.value) || 0).toFixed(1) }} kg/m²</span
               >
             </div>
             <div class="flex justify-between border-t border-brand-black pt-2">
               <span>Dead Load:</span>
               <span class="font-semibold"
-                >{{ state.deadLoad.value.toFixed(1) }} kg/m²</span
+                >{{ (Number(state.deadLoad.value) || 0).toFixed(1) }} kg/m²</span
               >
             </div>
           </div>
@@ -276,7 +284,7 @@
   }
 
   function selectTile(mass) {
-    state.tileMass.value = mass;
+    state.tileMass.value = Number(mass);
     showCommonTiles.value = false;
   }
 </script>

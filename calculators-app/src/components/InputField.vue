@@ -10,14 +10,14 @@
       :step="step"
       :min="min"
       :max="max"
-      :value="modelValue"
+      :value="modelValue ?? ''"
       :class="[
         'w-full px-4 py-2 border border-brand-black focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors',
         error ? 'border-red-500' : '',
       ]"
       :aria-invalid="error ? 'true' : 'false'"
       :aria-describedby="error ? `${id}-error` : undefined"
-      @input="$emit('update:modelValue', $event.target.value)"
+      @input="handleInput"
     />
     <p
       v-if="error"
@@ -34,7 +34,7 @@
 </template>
 
 <script setup>
-  defineProps({
+  const props = defineProps({
     id: {
       type: String,
       required: true,
@@ -77,5 +77,21 @@
     },
   });
 
-  defineEmits(["update:modelValue"]);
+  const emit = defineEmits(["update:modelValue"]);
+
+  function handleInput(event) {
+    const value = event.target.value;
+    // If type is number, convert to number
+    if (props.type === 'number') {
+      if (value === '' || value === null || value === undefined) {
+        // For empty values, emit null so the input can be cleared
+        emit('update:modelValue', null);
+      } else {
+        const numValue = Number(value);
+        emit('update:modelValue', isNaN(numValue) ? null : numValue);
+      }
+    } else {
+      emit('update:modelValue', value);
+    }
+  }
 </script>
