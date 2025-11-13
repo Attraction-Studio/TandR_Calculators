@@ -55,7 +55,7 @@ export function useCalculatorState() {
   // ============================================================================
   const gridMass = ref(1.1); // Default to first option: Main Tee @ 1200 | Cross Tee @ 600
   const tileMass = ref('');
-  const luminaries = ref(0);
+  const luminaries = ref(1.5); // Legacy default: value="1.5"
   const insulation = ref(0);
   const otherLoads = ref(0);
   const deadLoad = ref(CONSTANTS.DEFAULT_DEAD_LOAD);
@@ -382,7 +382,7 @@ export function useCalculatorState() {
     connectionHeight2.value = 0;
     gridMass.value = 1.1;
     tileMass.value = '';
-    luminaries.value = 0;
+    luminaries.value = 1.5; // Legacy default
     insulation.value = 0;
     otherLoads.value = 0;
     deadLoad.value = CONSTANTS.DEFAULT_DEAD_LOAD;
