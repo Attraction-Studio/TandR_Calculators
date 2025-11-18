@@ -237,13 +237,13 @@ export const TILE_MASS_OPTIONS = [
 export const STUD_TYPES = [
   {
     value: 1,
-    label: 'Concrete/Masonry',
-    description: 'Concrete or masonry wall construction',
+    label: '0.55mm BMT Steel stud',
+    description: '0.55mm BMT Steel stud',
   },
   {
     value: 2,
-    label: 'Steel Stud',
-    description: 'Steel stud wall construction',
+    label: 'Min 0.75mm BMT steel, or timber studs',
+    description: 'Min 0.75mm BMT steel, or timber studs',
   },
 ];
 
@@ -254,7 +254,7 @@ export const STUD_TYPES = [
 export const CONNECTION_TYPES = [
   {
     value: 1,
-    label: '31 x 19 x 0.6mm BMT',
+    label: 'Double Rivet',
     capacities: {
       concrete: { uls: 73.1, sls: 73.1 },
       steel: { uls: 110.1, sls: 92.5 },
@@ -262,7 +262,7 @@ export const CONNECTION_TYPES = [
   },
   {
     value: 2,
-    label: '40 x 20 x 0.6mm BMT',
+    label: 'Single Rivet',
     capacities: {
       concrete: { uls: 55.1, sls: 55.1 },
       steel: { uls: 55.1, sls: 55.1 },
@@ -270,7 +270,7 @@ export const CONNECTION_TYPES = [
   },
   {
     value: 3,
-    label: 'Z Rail',
+    label: 'T&R Seismic Clip',
     capacities: {
       concrete: { uls: 57.4, sls: 57.4 },
       steel: { uls: 80, sls: 80 },
@@ -285,7 +285,7 @@ export const CONNECTION_TYPES = [
 export const GRID_TYPES = [
   {
     value: 1,
-    label: 'Standard Grid',
+    label: 'CBI',
     capacities: {
       mainTee: 88,
       crossTee1200: 80,
@@ -294,7 +294,7 @@ export const GRID_TYPES = [
   },
   {
     value: 2,
-    label: 'Heavy Duty Grid',
+    label: 'Phonic 1',
     capacities: {
       mainTee: 120,
       crossTee1200: 80,

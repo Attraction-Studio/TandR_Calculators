@@ -228,11 +228,13 @@ export function calculateLimitingLengths(params) {
       force
     );
     
+    // Connection capacity calculation
+    // Legacy: ULSteea = ulscap / tspace / total2b (no addmt)
+    // When clipmain == 1, uses ULSteea directly (connection capacity without addmt)
     const mainFromConnection = calculateLimitingLength(
       connectionCapacity,
       mainTeeSpacing,
-      force,
-      additionalMainLength
+      force
     );
     
     const mainFromWall = calculateLimitingLength(
@@ -279,10 +281,22 @@ export function calculateLimitingLengths(params) {
     let limitingMain, limitingCross;
     
     if (strengthenMain) {
-      // Only limited by tee capacity when strengthened
-      limitingMain = mainFromTee;
+      // Legacy: when clipmain == 1, uses ULSteea (connection capacity) directly
+      // ULSteea doesn't include addmt and is used as-is
+      // The legacy code shows 32.8m when both are yes, which matches connection capacity alone
+      // So we should NOT add additionalMainLength when strengthened
+      console.log('calculateForState - strengthenMain=true, mainFromConnection:', mainFromConnection, 'additionalMainLength:', additionalMainLength, '(NOT adding)');
+      limitingMain = mainFromConnection;
+      console.log('calculateForState - strengthenMain=true, limitingMain:', limitingMain);
     } else {
-      limitingMain = Math.min(mainFromTee, mainFromConnection, mainFromWall, mainFromGrid);
+      // Legacy: Math.min(ULSteea, ULSteez, ULSteey) - does NOT include tee capacity
+      // ULSteea = connection capacity, ULSteez = grid capacity (with addmt), ULSteey = wall capacity
+      console.log('calculateForState - mainFromTee:', mainFromTee);
+      console.log('calculateForState - mainFromConnection:', mainFromConnection);
+      console.log('calculateForState - mainFromWall:', mainFromWall);
+      console.log('calculateForState - mainFromGrid:', mainFromGrid, '(additionalMainLength:', additionalMainLength, ')');
+      limitingMain = Math.min(mainFromConnection, mainFromWall, mainFromGrid);
+      console.log('calculateForState - limitingMain (min):', limitingMain);
     }
     
     if (strengthenCross) {

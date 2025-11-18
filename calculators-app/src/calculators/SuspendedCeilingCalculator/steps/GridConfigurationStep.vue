@@ -1,10 +1,9 @@
 <template>
-  <StepCard
-    :step-number="4"
-    title="Grid Configuration"
-    description="Select your ceiling grid and connection details"
-    :is-complete="state.step4Complete.value"
-  >
+  <div>
+    <h2 class="global-step-title">Grid Configuration</h2>
+    <p class="paragraph-18px mb-6">
+      Select your ceiling grid and connection details
+    </p>
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <SelectField
         id="stud-type"
@@ -41,17 +40,21 @@
         </div>
       </div>
     </div>
-  </StepCard>
+  </div>
 </template>
 
 <script setup>
-import { inject } from 'vue';
-import StepCard from '../../../components/StepCard.vue';
-import SelectField from '../../../components/SelectField.vue';
-import { STUD_TYPES, CONNECTION_TYPES, GRID_TYPES } from '../../data/suspendedCeilingData.js';
+  import { inject } from "vue";
+  import StepCard from "../../../components/StepCard.vue";
+  import SelectField from "../../../components/SelectField.vue";
+  import {
+    STUD_TYPES,
+    CONNECTION_TYPES,
+    GRID_TYPES,
+  } from "../../data/suspendedCeilingData.js";
 
-const state = inject('calculatorState');
-const studTypeOptions = STUD_TYPES;
-const connectionTypeOptions = CONNECTION_TYPES;
-const gridTypeOptions = GRID_TYPES;
+  const state = inject("calculatorState");
+  const studTypeOptions = STUD_TYPES;
+  const connectionTypeOptions = CONNECTION_TYPES;
+  const gridTypeOptions = GRID_TYPES;
 </script>

@@ -12,6 +12,7 @@
         v-for="option in options"
         :key="option.value"
         class="flex items-center cursor-pointer group"
+        @click.stop="handleClick(option.value)"
       >
         <!-- Hidden native radio input for accessibility -->
         <input
@@ -19,15 +20,15 @@
           :name="id"
           type="radio"
           :value="option.value"
-          :checked="modelValue === option.value"
+          :checked="String(modelValue) === String(option.value)"
           class="sr-only"
-          @change="$emit('update:modelValue', option.value)"
+          @change="handleChange"
         />
         <!-- Custom square radio button -->
         <span
           :class="[
             'mr-2 w-5 h-5 border-2 transition-colors',
-            modelValue === option.value
+            String(modelValue) === String(option.value)
               ? 'bg-black border-black'
               : 'bg-white border-brand-black group-hover:bg-gray-50',
           ]"
@@ -40,7 +41,7 @@
 </template>
 
 <script setup>
-  defineProps({
+  const props = defineProps({
     id: {
       type: String,
       required: true,
@@ -59,5 +60,18 @@
     },
   });
 
-  defineEmits(["update:modelValue"]);
+  const emit = defineEmits(["update:modelValue"]);
+
+  function handleClick(value) {
+    const currentValue = String(props.modelValue);
+    const newValue = String(value);
+    if (currentValue !== newValue) {
+      emit('update:modelValue', value);
+    }
+  }
+
+  function handleChange(event) {
+    const value = event.target.value;
+    emit('update:modelValue', value);
+  }
 </script>

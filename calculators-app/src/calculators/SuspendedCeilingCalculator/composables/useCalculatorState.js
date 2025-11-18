@@ -259,7 +259,25 @@ export function useCalculatorState() {
 
     const gridCap = getGridCapacity(Number(gridType.value));
 
-    return calculateLimitingLengths({
+    // Legacy: if connectionheight2 > 0 (back bracing), addmt = 0
+    // Otherwise, addmt = 3.0 if specifyMainConnection is 'yes', else 0
+    // Force reactivity by explicitly reading the value
+    const connectionHeight2Val = connectionHeight2.value;
+    const specifyMainConnectionVal = specifyMainConnection.value;
+    
+    console.log('limitingLengths computed - specifyMainConnectionVal:', specifyMainConnectionVal);
+    console.log('limitingLengths computed - connectionHeight2Val:', connectionHeight2Val);
+    
+    let additionalMainLength = 0;
+    if (connectionHeight2Val > 0) {
+      additionalMainLength = 0; // Back bracing overrides
+    } else {
+      additionalMainLength = specifyMainConnectionVal === 'yes' ? 3.0 : 0;
+    }
+    
+    console.log('limitingLengths computed - additionalMainLength:', additionalMainLength);
+
+    const result = calculateLimitingLengths({
       teeCapacityMain: gridCap.mainTee,
       teeCapacityCross: gridCap.crossTee1200,
       connectionCapacity: connectionCap,
@@ -273,9 +291,14 @@ export function useCalculatorState() {
       seismicForceULS: seismicForces.value.uls,
       strengthenMain: strengthenMain.value === 'yes',
       strengthenCross: strengthenCross.value === 'yes',
-      additionalMainLength: specifyMainConnection.value === 'yes' ? 3.0 : 0,
+      additionalMainLength: additionalMainLength,
       additionalCrossLength: 0,
     });
+    
+    console.log('limitingLengths computed - result.uls.main:', result.uls.main);
+    console.log('limitingLengths computed - result.uls.cross:', result.uls.cross);
+    
+    return result;
   });
 
   const adjustedLimitingLengths = computed(() => {

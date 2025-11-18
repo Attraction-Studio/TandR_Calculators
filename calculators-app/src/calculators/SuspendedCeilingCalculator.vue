@@ -214,11 +214,15 @@
                   'w-full px-6 py-4 border-2 border-brand-black transition-colors btn_12_text',
                   canProceed
                     ? 'bg-[#333] !text-white hover:bg-[#333]/90'
-                    : 'bg-gray-200 text-gray-400 cursor-not-alowed border-gray-300',
+                    : 'bg-gray-200 text-gray-400 cursor-not-allowed border-gray-300',
                 ]"
               >
                 Next Step →
               </button>
+              
+              <div v-if="currentStep === totalSteps" class="text-center text-sm text-gray-600 py-2">
+                Final Step - Complete
+              </div>
 
               <div class="flex gap-4">
                 <button
@@ -246,9 +250,9 @@
       </div>
     </div>
 
-    <!-- Bottom Navigation (Results Page Only) -->
+    <!-- Bottom Navigation (Final Step Only) -->
     <div
-      v-if="currentStep === 9"
+      v-if="currentStep === 6"
       class="flex justify-between items-center mt-8 pt-6 border-t border-brand-black"
     >
       <button
@@ -259,7 +263,7 @@
       </button>
 
       <button
-        v-if="state.step6Complete"
+        v-if="state.step6Complete.value"
         @click="resetCalculator"
         class="px-6 py-3 border-2 border-brand-black hover:bg-gray-100 transition-colors btn_12_text"
       >
@@ -282,16 +286,13 @@
   import LimitStateStep from "./SuspendedCeilingCalculator/steps/LimitStateStep.vue";
   import SiteInformationStep from "./SuspendedCeilingCalculator/steps/SiteInformationStep.vue";
   import SeismicWeightStep from "./SuspendedCeilingCalculator/steps/SeismicWeightStep.vue";
-  import GridConfigurationStep from "./SuspendedCeilingCalculator/steps/GridConfigurationStep.vue";
-  import DesignOptionsStep from "./SuspendedCeilingCalculator/steps/DesignOptionsStep.vue";
-  import ValidationStep from "./SuspendedCeilingCalculator/steps/ValidationStep.vue";
-  import ResultsStep from "./SuspendedCeilingCalculator/steps/ResultsStep.vue";
+  import GridCapacityStep from "./SuspendedCeilingCalculator/steps/GridCapacityStep.vue";
 
   // ============================================================================
   // WIZARD STATE
   // ============================================================================
   const currentStep = ref(1);
-  const totalSteps = 9;
+  const totalSteps = 6; // Consolidated from 9 to 6 steps
 
   const wizardSteps = [
     { number: 1, label: "Introduction" },
@@ -299,10 +300,7 @@
     { number: 3, label: "Limit State" },
     { number: 4, label: "Weight" },
     { number: 5, label: "Seismic Actions" },
-    { number: 6, label: "Grid Config" },
-    { number: 7, label: "Options" },
-    { number: 8, label: "Validation" },
-    { number: 9, label: "Results" },
+    { number: 6, label: "Grid Capacity" },
   ];
 
   // ============================================================================
@@ -322,10 +320,7 @@
     LimitStateStep,
     SeismicWeightStep,
     SiteInformationStep,
-    GridConfigurationStep,
-    DesignOptionsStep,
-    ValidationStep,
-    ResultsStep,
+    GridCapacityStep, // Consolidated final step (replaces steps 6-9)
   ];
 
   const currentStepComponent = computed(() => {
@@ -336,8 +331,8 @@
   // SIDEBAR VISIBILITY
   // ============================================================================
   const showSidebar = computed(() => {
-    // Show sidebar on all steps except results (step 9)
-    return currentStep.value < 9;
+    // Show sidebar on all steps (final step 6 includes results inline)
+    return true;
   });
 
   // ============================================================================
@@ -355,14 +350,8 @@
         return state.step3Complete.value;
       case 5: // Seismic Actions (Site info)
         return state.step2Complete.value;
-      case 6: // Grid config
-        return state.step4Complete.value;
-      case 7: // Options
-        return state.step5Complete.value;
-      case 8: // Validation
-        return state.step6Complete.value;
-      case 9: // Results
-        return true;
+      case 6: // Grid Capacity (consolidated final step)
+        return state.step4Complete.value; // Can proceed once grid config is complete
       default:
         return false;
     }
