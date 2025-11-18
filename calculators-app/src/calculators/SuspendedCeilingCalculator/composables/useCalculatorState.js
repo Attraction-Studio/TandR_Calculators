@@ -12,8 +12,10 @@ import {
   getConnectionCapacity,
   getGridCapacity,
   getGridSpacing,
+  BACK_BRACE_OPTIONS,
   CONSTANTS,
 } from '../../data/suspendedCeilingData.js';
+import { getReturnPeriodFactor } from '../../utils/seismicCalculations.js';
 import { useLimitStateLogic } from './useLimitStateLogic.js';
 
 /**
@@ -44,11 +46,11 @@ export function useCalculatorState() {
   // ============================================================================
   // STATE - Step 2: Site Information
   // ============================================================================
-  const zoneFactor = ref('0.13'); // Default to Kaitaia
-  const importanceLevel = ref('2'); // Default to Importance Level 2
+  const zoneFactor = ref('0.1'); // Legacy default: first option (Kaitaia) - no selected attribute, so defaults to first
+  const importanceLevel = ref('2'); // Legacy default: <option value="2" selected="">Importance Level 2</option>
   const floorHeight = ref(0); // Default to ground floor
   const ceilingHeight = ref(2.4); // Default ceiling height
-  const ductility = ref(1); // Default to 1 (legacy: <option value="1" selected="">1</option>)
+  const ductility = ref(1); // Legacy default: <option value="1" selected="">1</option>
 
   // ============================================================================
   // STATE - Step 3: Seismic Weight
@@ -70,9 +72,9 @@ export function useCalculatorState() {
   // ============================================================================
   // STATE - Step 4: Grid Configuration
   // ============================================================================
-  const studType = ref('1');
-  const connectionType = ref('1');
-  const gridType = ref('1');
+  const studType = ref('2'); // Legacy default: <option value="2" selected="">Min 0.75mm BMT steel, or timber studs</option>
+  const connectionType = ref('1'); // Legacy default: <option value="1" selected="">Double Rivet</option>
+  const gridType = ref('1'); // Legacy default: <option value="1" selected="">CBI</option>
 
   // ============================================================================
   // STATE - Step 5: Design Options
@@ -94,6 +96,12 @@ export function useCalculatorState() {
   // ============================================================================
   const connectionHeight = ref(0); // Legacy: connectionheight - for rigid hanger
   const connectionHeight2 = ref(0); // Legacy: connectionheight2 - for back brace
+  
+  // ============================================================================
+  // STATE - Back Brace (for area per brace and max tee space calculations)
+  // ============================================================================
+  const braceType = ref(3); // Legacy default: <option value="3" selected="">StratoBrace (recommended)</option>
+  const pendantHeight = ref(250); // Legacy default: pheightC value="250" selected="" (200mm height)
 
   // ============================================================================
   // COMPUTED - Step Completion
@@ -193,7 +201,7 @@ export function useCalculatorState() {
       return { sls: 0, sls2: 0, uls: 0 };
     }
 
-    return calculateAllSeismicForces({
+    const forces = calculateAllSeismicForces({
       zoneFactor: zf,
       importanceLevel: il,
       floorHeight: Number(floorHeight.value),
@@ -201,6 +209,14 @@ export function useCalculatorState() {
       partFactorULS: ductilityFactor.value,
       seismicWeight: sw,
     });
+    
+    // Legacy rounds seismic forces to 1 decimal place before using in calculations
+    // (suspended_ceiling_calculator.js:449-451)
+    return {
+      sls: Number(forces.sls.toFixed(1)),
+      sls2: Number(forces.sls2.toFixed(1)),
+      uls: Number(forces.uls.toFixed(1)),
+    };
   });
 
   const floorFactorValue = computed(() => {
@@ -365,6 +381,73 @@ export function useCalculatorState() {
   });
 
   // ============================================================================
+  // COMPUTED - Back Brace Calculations (for area per brace and max tee space)
+  // ============================================================================
+  const braceArea = computed(() => {
+    // Legacy: bracearea = bracecap / total2b_bb (suspended_ceiling_calculator.js:813)
+    // total2b_bb uses connectionheight2 if set, otherwise connectionheight, otherwise floor+ceiling height
+    // Uses the back brace seismic force calculation
+    if (!step2Complete.value || !step3Complete.value) return 0;
+    
+    // Legacy: var bracecap = blookup.val(); where blookup is pheightC (default)
+    // The select value IS the capacity (e.g., value="250" = 250kg capacity)
+    const braceCapacity = Number(pendantHeight.value);
+    if (braceCapacity === 0) return 0;
+    
+    // Calculate back brace seismic force (uses connectionheight2 or connectionheight if set)
+    // Legacy: if (connectionheight2 != 0) { floorfactorx = connectionheight2; } else if (connectionheight != 0) { floorfactorx = connectionheight; } else { floorfactorx = ceilheight + floorheight; }
+    const heightForBB = connectionHeight2.value > 0 
+      ? connectionHeight2.value 
+      : (connectionHeight.value > 0 ? connectionHeight.value : (floorHeight.value + ceilingHeight.value));
+    const floorFactorBB = getFloorFactor(heightForBB);
+    
+    const zf = Number(zoneFactor.value);
+    const il = Number(importanceLevel.value);
+    const returnFactorULS = getReturnPeriodFactor('ULS', il);
+    let zfrfb = zf * returnFactorULS;
+    if (zfrfb > CONSTANTS.MAX_RETURN_FACTOR) {
+      zfrfb = CONSTANTS.MAX_RETURN_FACTOR;
+    }
+    
+    // Legacy: total2b_bb = (zfrfb * floorfactor_bb * partULS * total1).toFixed(1)
+    // Note: total1 is the seismic weight (gridmass + tilemass + luminaries + insulation + other + ddload)
+    const total1 = seismicWeight.value;
+    const partULS = ductilityFactor.value;
+    const total2b_bb = Number((zfrfb * floorFactorBB * partULS * total1).toFixed(1));
+    
+    // Legacy: bracearea = bracecap / total2b_bb
+    if (total2b_bb === 0) return 0;
+    return braceCapacity / total2b_bb;
+  });
+
+  const maxTeeSpace = computed(() => {
+    // Legacy: teespace1 = Math.min(bsum, bspace) where bsum = 6
+    // bspace = Math.sqrt(bracearea) - (Math.sqrt(bracearea) % tspace)
+    // bspace2 = bracearea / bspace - ((bracearea / bspace) % tspace2)
+    if (braceArea.value === 0) {
+      return { main: gridSpacing.value.main, cross: gridSpacing.value.cross };
+    }
+    
+    const bsum = 6; // Legacy constant
+    const tspace = gridSpacing.value.main;
+    const tspace2 = gridSpacing.value.cross;
+    
+    const idealSpacing = Math.sqrt(braceArea.value);
+    let bspace = idealSpacing - (idealSpacing % tspace); // modulus operation
+    
+    const bspace2 = braceArea.value / bspace;
+    const bspace2Rounded = bspace2 - (bspace2 % tspace2);
+    
+    const teespace1 = Math.min(bsum, bspace);
+    const teespace2 = Math.min(bsum, bspace2Rounded);
+    
+    return {
+      main: teespace1,
+      cross: teespace2,
+    };
+  });
+
+  // ============================================================================
   // METHODS
   // ============================================================================
   function resetState() {
@@ -373,22 +456,24 @@ export function useCalculatorState() {
     q3Answer.value = '';
     q4Answer.value = '';
     q5Answer.value = '';
-    zoneFactor.value = '0.13';
+    zoneFactor.value = '0.1'; // Legacy default: first option
     importanceLevel.value = '2';
     floorHeight.value = 0;
     ceilingHeight.value = 2.4;
     ductility.value = 1;
     connectionHeight.value = 0;
     connectionHeight2.value = 0;
+    braceType.value = 3; // Legacy default: StratoBrace
+    pendantHeight.value = 250; // Legacy default: pheightC value="250"
     gridMass.value = 1.1;
     tileMass.value = '';
     luminaries.value = 1.5; // Legacy default
     insulation.value = 0;
     otherLoads.value = 0;
     deadLoad.value = CONSTANTS.DEFAULT_DEAD_LOAD;
-    studType.value = '1';
-    connectionType.value = '1';
-    gridType.value = '1';
+    studType.value = '2'; // Legacy default: Steel Stud
+    connectionType.value = '1'; // Legacy default: Double Rivet
+    gridType.value = '1'; // Legacy default: CBI
     strengthenMain.value = 'no';
     strengthenCross.value = 'no';
     specifyMainConnection.value = 'no';
@@ -417,6 +502,8 @@ export function useCalculatorState() {
     ductility,
     connectionHeight,
     connectionHeight2,
+    braceType,
+    pendantHeight,
     gridMass,
     tileMass,
     luminaries,
@@ -451,6 +538,8 @@ export function useCalculatorState() {
     designValidation,
     strengtheningDistances,
     rakeAngleError,
+    braceArea,
+    maxTeeSpace,
     
     // Methods
     resetState,

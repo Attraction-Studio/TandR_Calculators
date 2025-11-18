@@ -176,19 +176,24 @@
 
             <div class="border-t border-gray-300 pt-4">
               <div class="font-semibold mb-1">Area per Brace</div>
-              <div class="text-lg">-</div>
+              <div class="text-lg">
+                <template v-if="state.braceArea.value > 0">
+                  {{ state.braceArea.value.toFixed(1) }} m²
+                </template>
+                <template v-else>-</template>
+              </div>
             </div>
 
             <div class="border-t border-gray-300 pt-4">
-              <div class="font-semibold mb-1">Max Tee Spacing</div>
+              <div class="font-semibold mb-1">Max Tee Space</div>
               <div class="text-lg">
-                <template v-if="state.gridMass.value">
-                  Main: {{ state.gridSpacing.value.main }}m<br />
-                  Cross: {{ state.gridSpacing.value.cross }}m
+                <template v-if="state.maxTeeSpace.value.main > 0">
+                  Main: {{ state.maxTeeSpace.value.main.toFixed(1) }}m<br />
+                  Cross: {{ state.maxTeeSpace.value.cross.toFixed(1) }}m
                 </template>
                 <template v-else>
-                  Main: - m<br />
-                  Cross: - m
+                  Main: {{ state.gridSpacing.value.main }}m<br />
+                  Cross: {{ state.gridSpacing.value.cross }}m
                 </template>
               </div>
             </div>
