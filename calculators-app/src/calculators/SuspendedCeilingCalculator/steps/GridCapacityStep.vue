@@ -248,11 +248,7 @@
           <RadioGroup
             id="is-raked"
             :model-value="state.isRaked.value"
-            @update:model-value="
-              (val) => {
-                state.isRaked.value = val;
-              }
-            "
+            @update:model-value="handleRakedChange"
             label="Ceiling Raked?"
             :options="yesNoOptions"
           />
@@ -260,7 +256,7 @@
             <InputField
               id="rake-angle"
               :model-value="state.rakeAngle.value"
-              @update:model-value="(val) => (state.rakeAngle.value = val)"
+              @update:model-value="handleRakeAngleChange"
               label="Rake Angle (degrees)"
               type="number"
               step="0.1"
@@ -622,6 +618,26 @@
     console.log(
       "adjustedLimitingLengths.value.uls.cross:",
       state.adjustedLimitingLengths.value.uls.cross
+    );
+  }
+
+  function handleRakedChange(val) {
+    console.log("handleRakedChange called with:", val);
+    state.isRaked.value = val;
+    console.log("After update - isRaked.value:", state.isRaked.value);
+    console.log(
+      "adjustedLimitingLengths.value.uls.main:",
+      state.adjustedLimitingLengths.value.uls.main
+    );
+  }
+
+  function handleRakeAngleChange(val) {
+    console.log("handleRakeAngleChange called with:", val);
+    state.rakeAngle.value = val;
+    console.log("After update - rakeAngle.value:", state.rakeAngle.value);
+    console.log(
+      "adjustedLimitingLengths.value.uls.main:",
+      state.adjustedLimitingLengths.value.uls.main
     );
   }
 </script>

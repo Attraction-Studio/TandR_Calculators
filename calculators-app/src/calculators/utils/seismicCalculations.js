@@ -331,7 +331,10 @@ export function calculateLimitingLengths(params) {
 
 /**
  * Adjust tee length for rake angle
- * Formula: Adjusted Length = Length / cos(angle)
+ * Legacy: rakecos = Math.cos((rakeangle * Math.PI) / 180)
+ *         rakermf = 1 / rakecos
+ *         ULStee = ULStee / rakermf
+ * This is equivalent to: Adjusted Length = Length * cos(angle)
  * 
  * @param {number} length - Original tee length (m)
  * @param {number} rakeAngle - Rake angle (degrees)
@@ -342,9 +345,10 @@ export function adjustForRakeAngle(length, rakeAngle) {
   
   const rakeRadians = (rakeAngle * Math.PI) / 180;
   const rakeCos = Math.cos(rakeRadians);
-  const rakeMultiplier = 1 / rakeCos;
+  const rakermf = 1 / rakeCos; // Legacy: rakermf = 1 / rakecos
   
-  return length / rakeMultiplier;
+  // Legacy: ULStee = ULStee / rakermf, which is equivalent to length * cos(angle)
+  return length / rakermf;
 }
 
 /**

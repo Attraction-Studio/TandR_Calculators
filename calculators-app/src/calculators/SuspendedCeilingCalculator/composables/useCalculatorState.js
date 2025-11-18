@@ -6,6 +6,9 @@ import {
   calculateLimitingLengths,
   calculateStrengtheningDistance,
   validateDesign,
+  adjustForRakeAngle,
+  validateRakeAngle,
+  getReturnPeriodFactor,
 } from '../../utils/seismicCalculations.js';
 import {
   getFloorFactor,
@@ -15,7 +18,6 @@ import {
   BACK_BRACE_OPTIONS,
   CONSTANTS,
 } from '../../data/suspendedCeilingData.js';
-import { getReturnPeriodFactor } from '../../utils/seismicCalculations.js';
 import { useLimitStateLogic } from './useLimitStateLogic.js';
 
 /**
@@ -302,11 +304,13 @@ export function useCalculatorState() {
   });
 
   const adjustedLimitingLengths = computed(() => {
+    console.log('adjustedLimitingLengths computed - isRaked.value:', isRaked.value, 'rakeAngle.value:', rakeAngle.value);
     if (isRaked.value !== 'yes' || rakeAngle.value === 0) {
+      console.log('adjustedLimitingLengths - no adjustment needed, returning limitingLengths.value');
       return limitingLengths.value;
     }
 
-    return {
+    const adjusted = {
       sls: {
         main: adjustForRakeAngle(limitingLengths.value.sls.main, rakeAngle.value),
         cross: limitingLengths.value.sls.cross,
@@ -320,6 +324,8 @@ export function useCalculatorState() {
         cross: limitingLengths.value.uls.cross,
       },
     };
+    console.log('adjustedLimitingLengths - adjusted.uls.main:', adjusted.uls.main, 'from', limitingLengths.value.uls.main);
+    return adjusted;
   });
 
   // ============================================================================
