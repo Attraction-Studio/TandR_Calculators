@@ -477,8 +477,10 @@ export function validateDesign(params) {
   const governingMain = Math.min(limitingMainSLS, limitingMainSLS2, limitingMainULS);
   const governingCross = Math.min(limitingCrossSLS, limitingCrossSLS2, limitingCrossULS);
 
-  const mainPass = maxMainTee <= governingMain;
-  const crossPass = maxCrossTee <= governingCross;
+  // Legacy: 0 is considered valid/within tolerance
+  // If maxMainTee is 0, it's always valid (0 <= any positive number)
+  const mainPass = maxMainTee === 0 || maxMainTee <= governingMain;
+  const crossPass = maxCrossTee === 0 || maxCrossTee <= governingCross;
   
   const mainSeismicJoint = maxMainTee <= governingMain * 2;
   const crossSeismicJoint = maxCrossTee <= governingCross * 2;

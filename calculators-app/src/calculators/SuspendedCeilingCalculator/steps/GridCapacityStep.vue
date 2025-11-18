@@ -431,30 +431,113 @@
       </div>
     </div>
 
-    <!-- Connection Heights (Optional) -->
-    <div class="mb-8 border-t border-gray-300 pt-6">
-      <h3 class="text-lg font-semibold mb-4">Connection Heights (Optional)</h3>
+    <!-- Rigid Hanger Section (Hidden by default, shown when button clicked) -->
+    <div
+      id="rigid-hanger-section"
+      v-show="showRigidHangerSection"
+      class="mb-8 border-t border-gray-300 pt-6"
+    >
+      <h3 class="text-lg font-semibold mb-4">
+        Step Five - Calculating Rigid Hanger suitability
+      </h3>
+      <div class="space-y-4 mb-6">
+        <p>
+          This section calculates if rigid hangers are suitable for providing
+          dead load, live load and seismic restraint of the ceiling.
+        </p>
+        <div>
+          <p>
+            <strong
+              >Rigid Hangers are suitable in the following situations:</strong
+            >
+          </p>
+          <ul class="list-disc list-inside ml-4 space-y-1">
+            <li>Low plenum height (less than 600mm)</li>
+            <li>Purlins or timber joists above</li>
+            <li>Edge restraining the ceiling is not suitable</li>
+          </ul>
+        </div>
+        <div>
+          <p><strong>Rigid Hangers cannot be used if:</strong></p>
+          <ul class="list-disc list-inside ml-4 space-y-1">
+            <li>The plenum height is larger than 600mm</li>
+            <li>
+              Concrete slab is above (back bracing is more suitable in this
+              situation)
+            </li>
+          </ul>
+        </div>
+        <p>
+          If rigid hangers are used, the suspended ceiling should have floating
+          edges on all edges.
+        </p>
+        <img
+          src="https://www.tris.co.nz/uploads/images/rigid-hanger.jpg"
+          alt="rigid hanger"
+          class="max-w-full h-auto rounded"
+        />
+        <p>
+          <a
+            href="https://www.tris.co.nz/uploads/pdfs/TRIS-RigidHangerDetail.pdf"
+            target="_blank"
+            class="text-blue-600 hover:text-blue-800 underline"
+          >
+            Typical Rigid Hanger installation example (pdf)
+          </a>
+        </p>
+      </div>
+
+      <h4 class="text-md font-semibold mb-3">
+        Height of connection to structure
+      </h4>
       <p class="text-sm text-gray-600 mb-4">
-        These values override the default floor + ceiling height calculation for
-        back brace and rigid hanger calculations. Leave blank to use default
-        (floor height + ceiling height).
+        This is the maximum height of the rigid hanger connection to structure.
+        Measure from the connection to overhead structure to the ground level.
       </p>
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div class="mb-6">
         <InputField
           id="connection-height"
           :model-value="state.connectionHeight.value"
           @update:model-value="(val) => (state.connectionHeight.value = val)"
-          label="Connection Height (m) - Rigid Hanger"
+          label="Connection Height (m)"
           type="number"
           step="0.1"
           min="0"
           hint="Height from connection to overhead structure to ground level"
         />
+      </div>
+    </div>
+
+    <!-- Back Brace Section (Hidden by default, shown when button clicked) -->
+    <div
+      id="back-brace-section"
+      v-show="showBackBraceSection"
+      class="mb-8 border-t border-gray-300 pt-6"
+    >
+      <h3 class="text-lg font-semibold mb-4">
+        Step Six - Selecting Back Bracing
+      </h3>
+      <div class="space-y-4 mb-6">
+        <p>
+          Determine the maximum area of ceiling that each brace can support
+          based on seismic force, brace type and the plenum height.
+        </p>
+      </div>
+
+      <h4 class="text-md font-semibold mb-3">
+        Height of connection to structure
+      </h4>
+      <p class="text-sm text-gray-600 mb-4">
+        This is the maximum height of the back brace connection to overhead
+        structure. Measure from the connection to overhead structure to the
+        ground level.
+      </p>
+      <div class="mb-6">
         <InputField
           id="connection-height-2"
           :model-value="state.connectionHeight2.value"
           @update:model-value="(val) => (state.connectionHeight2.value = val)"
-          label="Connection Height (m) - Back Brace"
+          label="Connection Height (m)"
           type="number"
           step="0.1"
           min="0"
@@ -463,63 +546,126 @@
       </div>
     </div>
 
-    <!-- Design Recommendation Boxes -->
+    <!-- Design Recommendation Boxes (Always visible like legacy) -->
     <div class="space-y-4 mb-8">
-      <InfoBox
-        v-if="
-          state.designValidation.value.mainPass &&
-          state.designValidation.value.crossPass
-        "
-        variant="info"
-        title="Design Complete"
-      >
-        If your allowable tee length is larger than the maximum tee length which
-        you want to install, then the perimeter fixing method is appropriate and
-        your seismic design for the suspended ceiling is complete. Click here to
-        learn more about perimeter fixing.
+      <!-- Warning Box - Always visible, content changes based on validation -->
+      <InfoBox variant="warning" :title="''">
+        {{ state.designValidation.value.recommendation }}
       </InfoBox>
 
-      <InfoBox
-        v-else-if="
-          state.designValidation.value.mainPass ||
-          state.designValidation.value.crossPass
-        "
-        variant="warning"
-        title="Partial Design"
-      >
-        An edge restrained design may be used. Alternatively, a rigid
-        hanger/back braced design may be explored.
+      <!-- Success Box - Always visible -->
+      <InfoBox variant="info" title="Design Complete">
+        <p>
+          If your allowable tee length is larger than the maximum tee length
+          which you want to install, then the perimeter fixing method is
+          appropriate and your seismic design for the suspended ceiling is
+          complete.
+          <a
+            href="#"
+            class="text-blue-600 hover:text-blue-800 underline"
+            @click.prevent
+          >
+            Click here to learn more about perimeter fixing.
+          </a>
+        </p>
       </InfoBox>
 
-      <InfoBox v-else variant="warning" title="Design Options Required">
-        <div class="space-y-3">
+      <!-- Info Box - Always visible with design options -->
+      <InfoBox variant="info" title="Design Options">
+        <div class="space-y-4">
           <p>
-            The first option is to try and break the ceiling up through the use
-            of Seismic Joints...
+            If your allowable tee length is less than the maximum tee length
+            which you want to install then several options are available to
+            ensure the design is satisfactory.
           </p>
-          <button
-            type="button"
-            class="text-blue-600 hover:text-blue-800 underline"
-          >
-            About seismic joints
-          </button>
-          <p>The second option is to try Rigid Hangers...</p>
-          <button
-            type="button"
-            class="text-blue-600 hover:text-blue-800 underline"
-          >
-            Rigid Hanger Suitability >
-          </button>
-          <p>
-            The third option is using Back Braces to transfer the seismic
-            load...
-          </p>
-          <button
-            type="button"
-            class="text-blue-600 hover:text-blue-800 underline"
-          >
-            Back Brace Requirements >
-          </button>
+
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            <div>
+              <p class="mb-2">
+                The first option is to try and break the ceiling up through the
+                use of <strong>Seismic Joints</strong> to ensure that the
+                allowable tee length is not exceeded by the installation tee
+                length.
+              </p>
+              <button
+                type="button"
+                class="px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-700 transition-colors"
+                @click.prevent
+              >
+                About seismic joints
+              </button>
+            </div>
+
+            <div>
+              <p class="mb-2">
+                The second option is to try <strong>Rigid Hangers</strong>. This
+                section calculates if rigid hangers are suitable for providing
+                dead load, live load and seismic restraint of the ceiling.
+              </p>
+              <button
+                type="button"
+                @click="
+                  showRigidHangerSection = true;
+                  $nextTick(() => {
+                    document
+                      .querySelector('#rigid-hanger-section')
+                      ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  });
+                "
+                class="px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-700 transition-colors flex items-center gap-2"
+              >
+                <span>Rigid Hanger Suitability</span>
+                <svg
+                  class="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </button>
+            </div>
+
+            <div>
+              <p class="mb-2">
+                The third option is using <strong>Back Braces</strong> to
+                transfer the seismic load of the ceiling to the structure, with
+                floating edges around the sides of the ceiling.
+              </p>
+              <button
+                type="button"
+                @click="
+                  showBackBraceSection = true;
+                  $nextTick(() => {
+                    document
+                      .querySelector('#back-brace-section')
+                      ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  });
+                "
+                class="px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-700 transition-colors flex items-center gap-2"
+              >
+                <span>Back Brace Requirements</span>
+                <svg
+                  class="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
         </div>
       </InfoBox>
     </div>
@@ -576,6 +722,8 @@
   const showClipDetail = ref(false);
   const showConnectionExplain = ref(false);
   const showStrengtheningExample = ref(false);
+  const showRigidHangerSection = ref(false);
+  const showBackBraceSection = ref(false);
 
   // Connection capacity display
   const connectionCapacity = computed(() => {

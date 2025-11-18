@@ -142,7 +142,9 @@ export function useCalculatorState() {
   const step5Complete = computed(() => true);
 
   const step6Complete = computed(
-    () => maxMainTee.value > 0 && maxCrossTee.value > 0
+    // Legacy: 0 is a valid value, so check for >= 0 (not null/undefined)
+    () => (maxMainTee.value !== null && maxMainTee.value !== undefined && maxMainTee.value >= 0) &&
+          (maxCrossTee.value !== null && maxCrossTee.value !== undefined && maxCrossTee.value >= 0)
   );
 
   // ============================================================================
