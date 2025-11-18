@@ -199,6 +199,7 @@ export function calculateLimitingLengths(params) {
     teeCapacityMain,
     teeCapacityCross,
     connectionCapacity,
+    connectionCapacitySLS, // SLS capacity (can be different from ULS)
     wallCapacity,
     gridCapacityMain,
     gridCapacityCross,
@@ -220,7 +221,14 @@ export function calculateLimitingLengths(params) {
   } = params;
 
   // Calculate for each limit state
-  const calculateForState = (force) => {
+  const calculateForState = (force, limitState = 'uls') => {
+    // Use SLS capacity for SLS/SLS2, ULS capacity for ULS
+    // Legacy: SLS uses slscap, ULS uses ulscap (can be different)
+    const connCap = (limitState === 'sls' || limitState === 'sls2') 
+      ? (connectionCapacitySLS ?? connectionCapacity) 
+      : connectionCapacity;
+    // Wall capacity uses the same capacity as connection for the current limit state
+    const wallCap = connCap;
     // Main tee calculations
     const mainFromTee = calculateLimitingLength(
       teeCapacityMain,
@@ -229,16 +237,18 @@ export function calculateLimitingLengths(params) {
     );
     
     // Connection capacity calculation
-    // Legacy: ULSteea = ulscap / tspace / total2b (no addmt)
-    // When clipmain == 1, uses ULSteea directly (connection capacity without addmt)
+    // Legacy: SLSteea = slscap / tspace / total2 (SLS uses slscap)
+    // Legacy: ULSteea = ulscap / tspace / total2b (ULS uses ulscap)
+    // When clipmain == 1, uses connection capacity directly (without addmt)
     const mainFromConnection = calculateLimitingLength(
-      connectionCapacity,
+      connCap,
       mainTeeSpacing,
       force
     );
     
+    // Wall capacity uses the same capacity as connection for the current limit state
     const mainFromWall = calculateLimitingLength(
-      wallCapacity,
+      wallCap,
       mainTeeSpacing,
       force
     );
@@ -258,15 +268,17 @@ export function calculateLimitingLengths(params) {
     );
     
     // Cross connection capacity calculation
-    // Legacy: ULStee2a = ulscap / tspace2 / total2b (no addct, and addct is always 0 anyway)
+    // Legacy: SLStee2a = slscap / tspace2 / total2 (SLS uses slscap)
+    // Legacy: ULStee2a = ulscap / tspace2 / total2b (ULS uses ulscap)
     const crossFromConnection = calculateLimitingLength(
-      connectionCapacity,
+      connCap,
       crossTeeSpacing,
       force
     );
     
+    // Wall capacity uses the same capacity as connection for the current limit state
     const crossFromWall = calculateLimitingLength(
-      wallCapacity,
+      wallCap,
       crossTeeSpacing,
       force
     );
@@ -319,9 +331,9 @@ export function calculateLimitingLengths(params) {
   };
 
   return {
-    sls: calculateForState(seismicForceSLS),
-    sls2: calculateForState(seismicForceSLS2),
-    uls: calculateForState(seismicForceULS),
+    sls: calculateForState(seismicForceSLS, 'sls'),
+    sls2: calculateForState(seismicForceSLS2, 'sls2'),
+    uls: calculateForState(seismicForceULS, 'uls'),
   };
 }
 

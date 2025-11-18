@@ -253,10 +253,16 @@ export function useCalculatorState() {
       };
     }
 
-    const connectionCap = getConnectionCapacity(
+    // Legacy: SLS uses slscap, ULS uses ulscap (can be different)
+    const connectionCapULS = getConnectionCapacity(
       Number(studType.value),
       Number(connectionType.value),
       'uls'
+    );
+    const connectionCapSLS = getConnectionCapacity(
+      Number(studType.value),
+      Number(connectionType.value),
+      'sls'
     );
 
     const gridCap = getGridCapacity(Number(gridType.value));
@@ -282,8 +288,9 @@ export function useCalculatorState() {
     const result = calculateLimitingLengths({
       teeCapacityMain: gridCap.mainTee,
       teeCapacityCross: gridCap.crossTee1200,
-      connectionCapacity: connectionCap,
-      wallCapacity: connectionCap,
+      connectionCapacity: connectionCapULS,
+      connectionCapacitySLS: connectionCapSLS,
+      wallCapacity: connectionCapULS,
       gridCapacityMain: gridCap.mainTee,
       gridCapacityCross: gridCap.crossTee1200,
       mainTeeSpacing: gridSpacing.value.main,
