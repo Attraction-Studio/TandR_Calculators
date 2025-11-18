@@ -46,8 +46,8 @@ export function useCalculatorState() {
   // ============================================================================
   // STATE - Step 2: Site Information
   // ============================================================================
-  const zoneFactor = ref('0.1'); // Legacy default: first option (Kaitaia) - no selected attribute, so defaults to first
-  const importanceLevel = ref('2'); // Legacy default: <option value="2" selected="">Importance Level 2</option>
+  const zoneFactor = ref(0.1); // Legacy default: first option (Kaitaia) - value must match option value type (number)
+  const importanceLevel = ref(2); // Legacy default: <option value="2" selected="">Importance Level 2</option> - value must match option value type (number)
   const floorHeight = ref(0); // Default to ground floor
   const ceilingHeight = ref(2.4); // Default ceiling height
   const ductility = ref(1); // Legacy default: <option value="1" selected="">1</option>
@@ -456,8 +456,8 @@ export function useCalculatorState() {
     q3Answer.value = '';
     q4Answer.value = '';
     q5Answer.value = '';
-    zoneFactor.value = '0.1'; // Legacy default: first option
-    importanceLevel.value = '2';
+    zoneFactor.value = 0.1; // Legacy default: first option (Kaitaia)
+    importanceLevel.value = 2; // Legacy default: Importance Level 2
     floorHeight.value = 0;
     ceilingHeight.value = 2.4;
     ductility.value = 1;
