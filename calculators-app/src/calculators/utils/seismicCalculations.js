@@ -257,11 +257,12 @@ export function calculateLimitingLengths(params) {
       force
     );
     
+    // Cross connection capacity calculation
+    // Legacy: ULStee2a = ulscap / tspace2 / total2b (no addct, and addct is always 0 anyway)
     const crossFromConnection = calculateLimitingLength(
       connectionCapacity,
       crossTeeSpacing,
-      force,
-      additionalCrossLength
+      force
     );
     
     const crossFromWall = calculateLimitingLength(
@@ -300,10 +301,15 @@ export function calculateLimitingLengths(params) {
     }
     
     if (strengthenCross) {
-      // Only limited by tee capacity when strengthened
-      limitingCross = crossFromTee;
+      // Legacy: when clipcross == 1, uses ULStee2a (connection capacity) directly
+      // ULStee2a doesn't include addct and is used as-is
+      console.log('calculateForState - strengthenCross=true, crossFromConnection:', crossFromConnection);
+      limitingCross = crossFromConnection;
+      console.log('calculateForState - strengthenCross=true, limitingCross:', limitingCross);
     } else {
-      limitingCross = Math.min(crossFromTee, crossFromConnection, crossFromWall, crossFromGrid);
+      // Legacy: Math.min(ULStee2a, ULStee2z, ULStee2y) - does NOT include tee capacity
+      // ULStee2a = connection capacity, ULStee2z = grid capacity (with addct), ULStee2y = wall capacity
+      limitingCross = Math.min(crossFromConnection, crossFromWall, crossFromGrid);
     }
 
     return {
