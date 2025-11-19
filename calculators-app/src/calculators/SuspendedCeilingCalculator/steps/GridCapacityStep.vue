@@ -589,8 +589,8 @@
               </p>
               <button
                 type="button"
-                class="px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-700 transition-colors"
-                @click.prevent
+                class="px-4 py-2 bg-[#333] !text-white hover:bg-[#333]/80 transition-colors mt-4"
+                @click="showSeismicJointsModal = true"
               >
                 About seismic joints
               </button>
@@ -612,7 +612,7 @@
                       ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
                   });
                 "
-                class="px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-700 transition-colors flex items-center gap-2"
+                class="px-4 py-2 bg-[#333] !text-white hover:bg-[#333]/80 transition-colors flex items-center gap-2 mt-4"
               >
                 <span>Rigid Hanger Suitability</span>
                 <svg
@@ -647,7 +647,7 @@
                       ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
                   });
                 "
-                class="px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-700 transition-colors flex items-center gap-2"
+                class="px-4 py-2 bg-[#333] !text-white hover:bg-[#333]/80 transition-colors flex items-center gap-2 mt-4"
               >
                 <span>Back Brace Requirements</span>
                 <svg
@@ -693,6 +693,38 @@
         Download Result
       </button>
     </div>
+
+    <!-- Seismic Joints Modal -->
+    <Modal v-model="showSeismicJointsModal" title="Seismic Joints" size="lg">
+      <div class="space-y-4">
+        <h3 class="text-lg font-semibold">Seismic Joints</h3>
+        <p>
+          Seismic joints are used to break up the ceiling into smaller areas
+          when the ceiling installation tee length exceeds that of the maximum
+          allowable length based on tee capacity, connection capacity or the
+          wall capacity.
+        </p>
+        <p>
+          The seismic joint effectively creates a fixed / floating edge breaking
+          up the tee lengths in the installation. This allows the ceiling to
+          still use perimeter fixing with a seismic joint, rather than back
+          bracing the ceiling - providing a cost effect solution for some
+          installations.
+        </p>
+        <p>
+          The other situation in which Seismic Joints are required is where a
+          seismic joint already exists in the structure above the suspended
+          ceiling.
+        </p>
+        <div class="mt-4">
+          <img
+            src="https://cdn.prod.website-files.com/68ec24dc82bba0539e7b250e/691ce63cd6d56bb52c09cf33_seismicpic3.jpg"
+            alt="Seismic Joint Detail"
+            class="max-w-full h-auto rounded"
+          />
+        </div>
+      </div>
+    </Modal>
   </div>
 </template>
 
@@ -704,6 +736,7 @@
   import QuestionCard from "../../../components/QuestionCard.vue";
   import ConditionalSection from "../../../components/ConditionalSection.vue";
   import InfoBox from "../../../components/InfoBox.vue";
+  import Modal from "../../../components/Modal.vue";
   import {
     STUD_TYPES,
     CONNECTION_TYPES,
@@ -724,6 +757,7 @@
   const showStrengtheningExample = ref(false);
   const showRigidHangerSection = ref(false);
   const showBackBraceSection = ref(false);
+  const showSeismicJointsModal = ref(false);
 
   // Connection capacity display
   const connectionCapacity = computed(() => {
