@@ -604,14 +604,7 @@
               </p>
               <button
                 type="button"
-                @click="
-                  showRigidHangerSection = true;
-                  $nextTick(() => {
-                    document
-                      .querySelector('#rigid-hanger-section')
-                      ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                  });
-                "
+                @click="showRigidHanger = true"
                 class="px-4 py-2 bg-[#333] !text-white hover:bg-[#333]/80 transition-colors flex items-center gap-2 mt-4"
               >
                 <span>Rigid Hanger Suitability</span>
@@ -639,14 +632,7 @@
               </p>
               <button
                 type="button"
-                @click="
-                  showBackBraceSection = true;
-                  $nextTick(() => {
-                    document
-                      .querySelector('#back-brace-section')
-                      ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                  });
-                "
+                @click="showBackBrace = true"
                 class="px-4 py-2 bg-[#333] !text-white hover:bg-[#333]/80 transition-colors flex items-center gap-2 mt-4"
               >
                 <span>Back Brace Requirements</span>
@@ -729,7 +715,7 @@
 </template>
 
 <script setup>
-  import { inject, ref, computed } from "vue";
+  import { inject, ref, computed, toRefs } from "vue";
   import SelectField from "../../../components/SelectField.vue";
   import InputField from "../../../components/InputField.vue";
   import RadioGroup from "../../../components/RadioGroup.vue";
@@ -743,9 +729,14 @@
     GRID_TYPES,
     YES_NO_OPTIONS,
   } from "../../data/suspendedCeilingData.js";
-  import { getConnectionCapacity } from "../../data/suspendedCeilingData.js";
+  import {
+    getConnectionCapacity,
+    getGridCapacity,
+  } from "../../data/suspendedCeilingData.js";
 
   const state = inject("calculatorState");
+  const { showRigidHanger, showBackBrace } = toRefs(state);
+
   const studTypeOptions = STUD_TYPES;
   const connectionTypeOptions = CONNECTION_TYPES;
   const gridTypeOptions = GRID_TYPES;
@@ -755,8 +746,6 @@
   const showClipDetail = ref(false);
   const showConnectionExplain = ref(false);
   const showStrengtheningExample = ref(false);
-  const showRigidHangerSection = ref(false);
-  const showBackBraceSection = ref(false);
   const showSeismicJointsModal = ref(false);
 
   // Connection capacity display

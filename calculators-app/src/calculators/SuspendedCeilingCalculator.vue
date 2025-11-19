@@ -219,8 +219,11 @@
               >
                 Next Step →
               </button>
-              
-              <div v-if="currentStep === totalSteps" class="text-center text-sm text-gray-600 py-2">
+
+              <div
+                v-if="currentStep === totalSteps"
+                class="text-center text-sm text-gray-600 py-2"
+              >
                 Final Step - Complete
               </div>
 
@@ -252,7 +255,7 @@
 
     <!-- Bottom Navigation (Final Step Only) -->
     <div
-      v-if="currentStep === 6"
+      v-if="currentStep === totalSteps"
       class="flex justify-between items-center mt-8 pt-6 border-t border-brand-black"
     >
       <button
@@ -287,21 +290,36 @@
   import SiteInformationStep from "./SuspendedCeilingCalculator/steps/SiteInformationStep.vue";
   import SeismicWeightStep from "./SuspendedCeilingCalculator/steps/SeismicWeightStep.vue";
   import GridCapacityStep from "./SuspendedCeilingCalculator/steps/GridCapacityStep.vue";
+  import RigidHangerStep from "./SuspendedCeilingCalculator/steps/RigidHangerStep.vue";
+  import BackBraceStep from "./SuspendedCeilingCalculator/steps/BackBraceStep.vue";
 
   // ============================================================================
   // WIZARD STATE
   // ============================================================================
   const currentStep = ref(1);
-  const totalSteps = 6; // Consolidated from 9 to 6 steps
 
-  const wizardSteps = [
-    { number: 1, label: "Introduction" },
-    { number: 2, label: "Design Methods" },
-    { number: 3, label: "Limit State" },
-    { number: 4, label: "Weight" },
-    { number: 5, label: "Seismic Actions" },
-    { number: 6, label: "Grid Capacity" },
-  ];
+  const wizardSteps = computed(() => {
+    const steps = [
+      { number: 1, label: "Introduction" },
+      { number: 2, label: "Design Methods" },
+      { number: 3, label: "Limit State" },
+      { number: 4, label: "Weight" },
+      { number: 5, label: "Seismic Actions" },
+      { number: 6, label: "Grid Capacity" },
+    ];
+
+    if (state.showRigidHanger.value) {
+      steps.push({ number: steps.length + 1, label: "Rigid Hanger" });
+    }
+
+    if (state.showBackBrace.value) {
+      steps.push({ number: steps.length + 1, label: "Back Brace" });
+    }
+
+    return steps;
+  });
+
+  const totalSteps = computed(() => wizardSteps.value.length);
 
   // ============================================================================
   // SHARED STATE (via composable)
@@ -324,7 +342,14 @@
   ];
 
   const currentStepComponent = computed(() => {
-    return stepComponents[currentStep.value - 1];
+    const steps = [...stepComponents];
+    if (state.showRigidHanger.value) {
+      steps.push(RigidHangerStep);
+    }
+    if (state.showBackBrace.value) {
+      steps.push(BackBraceStep);
+    }
+    return steps[currentStep.value - 1];
   });
 
   // ============================================================================
@@ -353,12 +378,14 @@
       case 6: // Grid Capacity (consolidated final step)
         return state.step4Complete.value; // Can proceed once grid config is complete
       default:
-        return false;
+        // For optional steps (Rigid Hanger, Back Brace), always allow proceeding
+        // as they are calculation/result steps without strict blocking validation
+        return true;
     }
   });
 
   function nextStep() {
-    if (canProceed.value && currentStep.value < totalSteps) {
+    if (canProceed.value && currentStep.value < totalSteps.value) {
       currentStep.value++;
       scrollToTop();
     }
@@ -382,19 +409,64 @@
   }
 
   // Debug watchers
-  watch(() => state.zoneFactor.value, (val) => {
-    console.log('zoneFactor changed:', val);
-  });
-  
-  watch(() => state.seismicWeight.value, (val) => {
-    console.log('seismicWeight changed:', val);
-  });
-  
-  watch(() => state.seismicForces.value, (val) => {
-    console.log('seismicForces changed:', val);
-  });
-  
-  watch(() => state.step2Complete.value, (val) => {
-    console.log('step2Complete changed:', val);
-  });
+  watch(
+    () => state.zoneFactor.value,
+    (val) => {
+      console.log("zoneFactor changed:", val);
+    }
+  );
+
+  watch(
+    () => state.seismicWeight.value,
+    (val) => {
+      console.log("seismicWeight changed:", val);
+    }
+  );
+
+  watch(
+    () => state.seismicForces.value,
+    (val) => {
+      console.log("seismicForces changed:", val);
+    }
+  );
+
+  watch(
+    () => state.step2Complete.value,
+    (val) => {
+      console.log("step2Complete changed:", val);
+    }
+  );
+
+  // Watch for optional steps activation to auto-navigate
+  watch(
+    () => state.showRigidHanger.value,
+    (val) => {
+      if (val) {
+        // Find the index of Rigid Hanger step
+        const index = wizardSteps.value.findIndex(
+          (s) => s.label === "Rigid Hanger"
+        );
+        if (index !== -1) {
+          currentStep.value = index + 1;
+          scrollToTop();
+        }
+      }
+    }
+  );
+
+  watch(
+    () => state.showBackBrace.value,
+    (val) => {
+      if (val) {
+        // Find the index of Back Brace step
+        const index = wizardSteps.value.findIndex(
+          (s) => s.label === "Back Brace"
+        );
+        if (index !== -1) {
+          currentStep.value = index + 1;
+          scrollToTop();
+        }
+      }
+    }
+  );
 </script>

@@ -1,4 +1,4 @@
-import { ref, computed, watch } from 'vue';
+import { ref, computed, watch } from "vue";
 import {
   calculateSeismicWeight,
   validateSeismicWeight,
@@ -9,7 +9,7 @@ import {
   adjustForRakeAngle,
   validateRakeAngle,
   getReturnPeriodFactor,
-} from '../../utils/seismicCalculations.js';
+} from "../../utils/seismicCalculations.js";
 import {
   getFloorFactor,
   getConnectionCapacity,
@@ -17,8 +17,8 @@ import {
   getGridSpacing,
   BACK_BRACE_OPTIONS,
   CONSTANTS,
-} from '../../data/suspendedCeilingData.js';
-import { useLimitStateLogic } from './useLimitStateLogic.js';
+} from "../../data/suspendedCeilingData.js";
+import { useLimitStateLogic } from "./useLimitStateLogic.js";
 
 /**
  * Shared calculator state and computed properties
@@ -28,11 +28,11 @@ export function useCalculatorState() {
   // ============================================================================
   // STATE - Step 1: Limit State (Question Answers)
   // ============================================================================
-  const q1Answer = ref(''); // Life safety hazard
-  const q2Answer = ref(''); // Part weight > 7.5kg
-  const q3Answer = ref(''); // Height >= 3m
-  const q4Answer = ref(''); // Blocks emergency egress
-  const q5Answer = ref(''); // Complies with assumptions
+  const q1Answer = ref(""); // Life safety hazard
+  const q2Answer = ref(""); // Part weight > 7.5kg
+  const q3Answer = ref(""); // Height >= 3m
+  const q4Answer = ref(""); // Blocks emergency egress
+  const q5Answer = ref(""); // Complies with assumptions
 
   // ============================================================================
   // COMPUTED - Limit State Logic
@@ -58,12 +58,12 @@ export function useCalculatorState() {
   // STATE - Step 3: Seismic Weight
   // ============================================================================
   const gridMass = ref(1.1); // Default to first option: Main Tee @ 1200 | Cross Tee @ 600
-  const tileMass = ref('');
+  const tileMass = ref("");
   const luminaries = ref(1.5); // Legacy default: value="1.5"
   const insulation = ref(0);
   const otherLoads = ref(0);
   const deadLoad = ref(CONSTANTS.DEFAULT_DEAD_LOAD);
-  
+
   // Enforce dead load minimum (legacy: if (ddload < 3) { ddload = 3; })
   watch(deadLoad, (newValue) => {
     if (newValue < CONSTANTS.MIN_DEAD_LOAD) {
@@ -74,17 +74,17 @@ export function useCalculatorState() {
   // ============================================================================
   // STATE - Step 4: Grid Configuration
   // ============================================================================
-  const studType = ref('2'); // Legacy default: <option value="2" selected="">Min 0.75mm BMT steel, or timber studs</option>
-  const connectionType = ref('1'); // Legacy default: <option value="1" selected="">Double Rivet</option>
-  const gridType = ref('1'); // Legacy default: <option value="1" selected="">CBI</option>
+  const studType = ref("2"); // Legacy default: <option value="2" selected="">Min 0.75mm BMT steel, or timber studs</option>
+  const connectionType = ref("1"); // Legacy default: <option value="1" selected="">Double Rivet</option>
+  const gridType = ref("1"); // Legacy default: <option value="1" selected="">CBI</option>
 
   // ============================================================================
   // STATE - Step 5: Design Options
   // ============================================================================
-  const strengthenMain = ref('no');
-  const strengthenCross = ref('no');
-  const specifyMainConnection = ref('no');
-  const isRaked = ref('no');
+  const strengthenMain = ref("no");
+  const strengthenCross = ref("no");
+  const specifyMainConnection = ref("no");
+  const isRaked = ref("no");
   const rakeAngle = ref(0);
 
   // ============================================================================
@@ -92,18 +92,41 @@ export function useCalculatorState() {
   // ============================================================================
   const maxMainTee = ref(0);
   const maxCrossTee = ref(0);
-  
+
   // ============================================================================
   // STATE - Connection Heights (for back brace calculations)
   // ============================================================================
   const connectionHeight = ref(0); // Legacy: connectionheight - for rigid hanger
   const connectionHeight2 = ref(0); // Legacy: connectionheight2 - for back brace
-  
+
   // ============================================================================
   // STATE - Back Brace (for area per brace and max tee space calculations)
   // ============================================================================
   const braceType = ref(3); // Legacy default: <option value="3" selected="">StratoBrace (recommended)</option>
-  const pendantHeight = ref(250); // Legacy default: pheightC value="250" selected="" (200mm height)
+  const pendantHeight = ref(200); // Default to 200mm (first option for StratoBrace)
+  const ceilingArea = ref(0); // Legacy: carea - for back brace layout
+
+  // Watch brace type to reset pendant height to first valid option
+  watch(braceType, (newVal) => {
+    const typeOption = BACK_BRACE_OPTIONS.find(
+      (opt) => opt.value === Number(newVal)
+    );
+    if (typeOption && typeOption.heights.length > 0) {
+      pendantHeight.value = typeOption.heights[0].height;
+    }
+  });
+
+  // ============================================================================
+  // STATE - Rigid Hanger (for suitability check)
+  // ============================================================================
+  const maxPlenumHeight = ref(0); // Legacy: maxph (mm)
+  const hangerSpacing = ref(1.2); // Legacy: hangerspace (1.2m or 2.4m)
+
+  // ============================================================================
+  // STATE - Optional Steps Visibility
+  // ============================================================================
+  const showRigidHanger = ref(false);
+  const showBackBrace = ref(false);
 
   // ============================================================================
   // COMPUTED - Step Completion
@@ -111,15 +134,20 @@ export function useCalculatorState() {
   const step1Complete = computed(() => {
     // Must have a limit state result
     if (!limitStateLogic.limitStateMain.value) return false;
-    
+
     // If Q1=Yes, must also answer Q5
-    if (q1Answer.value === 'yes' && !q5Answer.value) return false;
-    
+    if (q1Answer.value === "yes" && !q5Answer.value) return false;
+
     // If Q1=No, must answer subsequent questions until a Yes is reached
-    if (q1Answer.value === 'no') {
-      return !!(q2Answer.value === 'yes' || q3Answer.value === 'yes' || q4Answer.value === 'yes' || q5Answer.value === 'yes');
+    if (q1Answer.value === "no") {
+      return !!(
+        q2Answer.value === "yes" ||
+        q3Answer.value === "yes" ||
+        q4Answer.value === "yes" ||
+        q5Answer.value === "yes"
+      );
     }
-    
+
     return true;
   });
 
@@ -143,8 +171,13 @@ export function useCalculatorState() {
 
   const step6Complete = computed(
     // Legacy: 0 is a valid value, so check for >= 0 (not null/undefined)
-    () => (maxMainTee.value !== null && maxMainTee.value !== undefined && maxMainTee.value >= 0) &&
-          (maxCrossTee.value !== null && maxCrossTee.value !== undefined && maxCrossTee.value >= 0)
+    () =>
+      maxMainTee.value !== null &&
+      maxMainTee.value !== undefined &&
+      maxMainTee.value >= 0 &&
+      maxCrossTee.value !== null &&
+      maxCrossTee.value !== undefined &&
+      maxCrossTee.value >= 0
   );
 
   // ============================================================================
@@ -200,7 +233,7 @@ export function useCalculatorState() {
     const il = Number(importanceLevel.value);
     const ch = Number(ceilingHeight.value);
     const sw = Number(seismicWeight.value);
-    
+
     if (!zf || !il || ch <= 0 || sw <= 0) {
       return { sls: 0, sls2: 0, uls: 0 };
     }
@@ -213,7 +246,7 @@ export function useCalculatorState() {
       partFactorULS: ductilityFactor.value,
       seismicWeight: sw,
     });
-    
+
     // Legacy rounds seismic forces to 1 decimal place before using in calculations
     // (suspended_ceiling_calculator.js:449-451)
     return {
@@ -259,12 +292,12 @@ export function useCalculatorState() {
     const connectionCapULS = getConnectionCapacity(
       Number(studType.value),
       Number(connectionType.value),
-      'uls'
+      "uls"
     );
     const connectionCapSLS = getConnectionCapacity(
       Number(studType.value),
       Number(connectionType.value),
-      'sls'
+      "sls"
     );
 
     const gridCap = getGridCapacity(Number(gridType.value));
@@ -274,18 +307,27 @@ export function useCalculatorState() {
     // Force reactivity by explicitly reading the value
     const connectionHeight2Val = connectionHeight2.value;
     const specifyMainConnectionVal = specifyMainConnection.value;
-    
-    console.log('limitingLengths computed - specifyMainConnectionVal:', specifyMainConnectionVal);
-    console.log('limitingLengths computed - connectionHeight2Val:', connectionHeight2Val);
-    
+
+    console.log(
+      "limitingLengths computed - specifyMainConnectionVal:",
+      specifyMainConnectionVal
+    );
+    console.log(
+      "limitingLengths computed - connectionHeight2Val:",
+      connectionHeight2Val
+    );
+
     let additionalMainLength = 0;
     if (connectionHeight2Val > 0) {
       additionalMainLength = 0; // Back bracing overrides
     } else {
-      additionalMainLength = specifyMainConnectionVal === 'yes' ? 3.0 : 0;
+      additionalMainLength = specifyMainConnectionVal === "yes" ? 3.0 : 0;
     }
-    
-    console.log('limitingLengths computed - additionalMainLength:', additionalMainLength);
+
+    console.log(
+      "limitingLengths computed - additionalMainLength:",
+      additionalMainLength
+    );
 
     const result = calculateLimitingLengths({
       teeCapacityMain: gridCap.mainTee,
@@ -300,40 +342,64 @@ export function useCalculatorState() {
       seismicForceSLS: seismicForces.value.sls,
       seismicForceSLS2: seismicForces.value.sls2,
       seismicForceULS: seismicForces.value.uls,
-      strengthenMain: strengthenMain.value === 'yes',
-      strengthenCross: strengthenCross.value === 'yes',
+      strengthenMain: strengthenMain.value === "yes",
+      strengthenCross: strengthenCross.value === "yes",
       additionalMainLength: additionalMainLength,
       additionalCrossLength: 0,
     });
-    
-    console.log('limitingLengths computed - result.uls.main:', result.uls.main);
-    console.log('limitingLengths computed - result.uls.cross:', result.uls.cross);
-    
+
+    console.log("limitingLengths computed - result.uls.main:", result.uls.main);
+    console.log(
+      "limitingLengths computed - result.uls.cross:",
+      result.uls.cross
+    );
+
     return result;
   });
 
   const adjustedLimitingLengths = computed(() => {
-    console.log('adjustedLimitingLengths computed - isRaked.value:', isRaked.value, 'rakeAngle.value:', rakeAngle.value);
-    if (isRaked.value !== 'yes' || rakeAngle.value === 0) {
-      console.log('adjustedLimitingLengths - no adjustment needed, returning limitingLengths.value');
+    console.log(
+      "adjustedLimitingLengths computed - isRaked.value:",
+      isRaked.value,
+      "rakeAngle.value:",
+      rakeAngle.value
+    );
+    if (isRaked.value !== "yes" || rakeAngle.value === 0) {
+      console.log(
+        "adjustedLimitingLengths - no adjustment needed, returning limitingLengths.value"
+      );
       return limitingLengths.value;
     }
 
     const adjusted = {
       sls: {
-        main: adjustForRakeAngle(limitingLengths.value.sls.main, rakeAngle.value),
+        main: adjustForRakeAngle(
+          limitingLengths.value.sls.main,
+          rakeAngle.value
+        ),
         cross: limitingLengths.value.sls.cross,
       },
       sls2: {
-        main: adjustForRakeAngle(limitingLengths.value.sls2.main, rakeAngle.value),
+        main: adjustForRakeAngle(
+          limitingLengths.value.sls2.main,
+          rakeAngle.value
+        ),
         cross: limitingLengths.value.sls2.cross,
       },
       uls: {
-        main: adjustForRakeAngle(limitingLengths.value.uls.main, rakeAngle.value),
+        main: adjustForRakeAngle(
+          limitingLengths.value.uls.main,
+          rakeAngle.value
+        ),
         cross: limitingLengths.value.uls.cross,
       },
     };
-    console.log('adjustedLimitingLengths - adjusted.uls.main:', adjusted.uls.main, 'from', limitingLengths.value.uls.main);
+    console.log(
+      "adjustedLimitingLengths - adjusted.uls.main:",
+      adjusted.uls.main,
+      "from",
+      limitingLengths.value.uls.main
+    );
     return adjusted;
   });
 
@@ -343,7 +409,7 @@ export function useCalculatorState() {
   const designValidation = computed(() => {
     if (!step6Complete.value) {
       return {
-        recommendation: '',
+        recommendation: "",
         mainPass: false,
         crossPass: false,
         governingMain: 0,
@@ -364,7 +430,7 @@ export function useCalculatorState() {
   });
 
   const strengtheningDistances = computed(() => {
-    if (strengthenMain.value !== 'yes' && strengthenCross.value !== 'yes') {
+    if (strengthenMain.value !== "yes" && strengthenCross.value !== "yes") {
       return null;
     }
 
@@ -374,12 +440,12 @@ export function useCalculatorState() {
       connectionCapacity: getConnectionCapacity(
         Number(studType.value),
         Number(connectionType.value),
-        'uls'
+        "uls"
       ),
       wallCapacity: getConnectionCapacity(
         Number(studType.value),
         Number(connectionType.value),
-        'uls'
+        "uls"
       ),
       gridCapacityMain: getGridCapacity(Number(gridType.value)).mainTee,
       gridCapacityCross: getGridCapacity(Number(gridType.value)).crossTee1200,
@@ -396,14 +462,14 @@ export function useCalculatorState() {
 
     return {
       main:
-        strengthenMain.value === 'yes'
+        strengthenMain.value === "yes"
           ? calculateStrengtheningDistance(
               maxMainTee.value,
               withoutStrengthening.uls.main
             )
           : 0,
       cross:
-        strengthenCross.value === 'yes'
+        strengthenCross.value === "yes"
           ? calculateStrengtheningDistance(
               maxCrossTee.value,
               withoutStrengthening.uls.cross
@@ -413,9 +479,9 @@ export function useCalculatorState() {
   });
 
   const rakeAngleError = computed(() => {
-    if (isRaked.value !== 'yes' || rakeAngle.value === 0) return '';
+    if (isRaked.value !== "yes" || rakeAngle.value === 0) return "";
     const validation = validateRakeAngle(rakeAngle.value);
-    return validation.error || '';
+    return validation.error || "";
   });
 
   // ============================================================================
@@ -426,33 +492,50 @@ export function useCalculatorState() {
     // total2b_bb uses connectionheight2 if set, otherwise connectionheight, otherwise floor+ceiling height
     // Uses the back brace seismic force calculation
     if (!step2Complete.value || !step3Complete.value) return 0;
-    
-    // Legacy: var bracecap = blookup.val(); where blookup is pheightC (default)
-    // The select value IS the capacity (e.g., value="250" = 250kg capacity)
-    const braceCapacity = Number(pendantHeight.value);
+
+    // Find the selected brace option and height option
+    const selectedBraceType = BACK_BRACE_OPTIONS.find(
+      (b) => b.value === Number(braceType.value)
+    );
+    if (!selectedBraceType) return 0;
+
+    const selectedHeightOption = selectedBraceType.heights.find(
+      (h) => h.height === Number(pendantHeight.value)
+    );
+    // If not found (e.g. switching types), default to 0 or first option's capacity?
+    // Legacy defaults to 250 for StratoBrace.
+    const braceCapacity = selectedHeightOption
+      ? selectedHeightOption.capacity
+      : 0;
+
     if (braceCapacity === 0) return 0;
-    
+
     // Calculate back brace seismic force (uses connectionheight2 or connectionheight if set)
     // Legacy: if (connectionheight2 != 0) { floorfactorx = connectionheight2; } else if (connectionheight != 0) { floorfactorx = connectionheight; } else { floorfactorx = ceilheight + floorheight; }
-    const heightForBB = connectionHeight2.value > 0 
-      ? connectionHeight2.value 
-      : (connectionHeight.value > 0 ? connectionHeight.value : (floorHeight.value + ceilingHeight.value));
+    const heightForBB =
+      connectionHeight2.value > 0
+        ? connectionHeight2.value
+        : connectionHeight.value > 0
+        ? connectionHeight.value
+        : floorHeight.value + ceilingHeight.value;
     const floorFactorBB = getFloorFactor(heightForBB);
-    
+
     const zf = Number(zoneFactor.value);
     const il = Number(importanceLevel.value);
-    const returnFactorULS = getReturnPeriodFactor('ULS', il);
+    const returnFactorULS = getReturnPeriodFactor("ULS", il);
     let zfrfb = zf * returnFactorULS;
     if (zfrfb > CONSTANTS.MAX_RETURN_FACTOR) {
       zfrfb = CONSTANTS.MAX_RETURN_FACTOR;
     }
-    
+
     // Legacy: total2b_bb = (zfrfb * floorfactor_bb * partULS * total1).toFixed(1)
     // Note: total1 is the seismic weight (gridmass + tilemass + luminaries + insulation + other + ddload)
     const total1 = seismicWeight.value;
     const partULS = ductilityFactor.value;
-    const total2b_bb = Number((zfrfb * floorFactorBB * partULS * total1).toFixed(1));
-    
+    const total2b_bb = Number(
+      (zfrfb * floorFactorBB * partULS * total1).toFixed(1)
+    );
+
     // Legacy: bracearea = bracecap / total2b_bb
     if (total2b_bb === 0) return 0;
     return braceCapacity / total2b_bb;
@@ -465,23 +548,153 @@ export function useCalculatorState() {
     if (braceArea.value === 0) {
       return { main: gridSpacing.value.main, cross: gridSpacing.value.cross };
     }
-    
+
     const bsum = 6; // Legacy constant
     const tspace = gridSpacing.value.main;
     const tspace2 = gridSpacing.value.cross;
-    
+
     const idealSpacing = Math.sqrt(braceArea.value);
     let bspace = idealSpacing - (idealSpacing % tspace); // modulus operation
-    
+
     const bspace2 = braceArea.value / bspace;
     const bspace2Rounded = bspace2 - (bspace2 % tspace2);
-    
+
     const teespace1 = Math.min(bsum, bspace);
     const teespace2 = Math.min(bsum, bspace2Rounded);
-    
+
     return {
       main: teespace1,
       cross: teespace2,
+    };
+  });
+
+  const backBraceClearance = computed(() => {
+    // Legacy: clearance1 = pheighttxt * 0.0075
+    // clearance2 = pheighttxt * 0.025
+    // pheighttxt comes from the selected option text (e.g. 200, 400...)
+    // But here pendantHeight IS the capacity (250), not the height.
+    // Wait, in legacy JS: var pheighttxt = Number(blookup.find(":selected").text());
+    // And blookup options have text like "200", "400".
+    // In our data, we have 'height' property in BACK_BRACE_OPTIONS.
+
+    // We need to find the selected height from the options based on pendantHeight (capacity)
+    // Actually, the UI should bind to the height, and we derive capacity.
+    // But currently pendantHeight seems to be used as capacity in braceArea calculation.
+    // Let's assume pendantHeight ref holds the CAPACITY for now (as per legacy logic bracecap = blookup.val()),
+    // but we need another state for the actual HEIGHT selected to calculate clearance.
+
+    // However, looking at legacy HTML:
+    // <option value="250" ...>200</option>
+    // The value is capacity (250), text is height (200).
+    // So we need to know which option is selected.
+    // Since multiple options have the same value (250), we can't reverse lookup easily.
+    // We should probably store the selected HEIGHT in state, and derive capacity.
+    // But for now, let's assume we will fix the UI to store the height or the full option object.
+    // Let's add a temporary fix or assume pendantHeight is actually the height if we change the UI binding.
+
+    // Actually, let's look at how I updated suspendedCeilingData.js.
+    // I added `height` and `capacity` to the options.
+    // So in the UI, we should bind to the `height` (unique), and look up `capacity`.
+    // So let's change `pendantHeight` to mean the HEIGHT (mm).
+    // And update `braceArea` to look up capacity.
+
+    // For now, I'll add the clearance logic assuming `pendantHeight` is the HEIGHT in mm.
+    // I will update `braceArea` calculation below to reflect this change in assumption.
+
+    const height = Number(pendantHeight.value);
+    return {
+      min: (height * 0.0075).toFixed(1),
+      max: (height * 0.025).toFixed(1),
+    };
+  });
+
+  const numberOfBraces = computed(() => {
+    if (braceArea.value <= 0 || ceilingArea.value <= 0) return 0;
+    return Math.ceil(ceilingArea.value / braceArea.value);
+  });
+
+  // ============================================================================
+  // COMPUTED - Rigid Hanger Calculations
+  // ============================================================================
+  const rigidHangerCalculations = computed(() => {
+    // Legacy logic (suspended_ceiling_calculator.js:757-794)
+
+    const maxph = Number(maxPlenumHeight.value) / 1000; // mm to m
+    const hSpace = Number(hangerSpacing.value);
+
+    // Calculate floor factor for rigid hanger (uses connectionHeight or default)
+    // Legacy: if (connectionheight != 0) ...
+    // Note: The legacy code for rigid hanger (Step 5) uses 'connectionheight' input.
+    // Step 6 (Back Brace) uses 'connectionheight2'.
+    // Our state has both.
+
+    const heightForRH =
+      connectionHeight.value > 0
+        ? connectionHeight.value
+        : floorHeight.value + ceilingHeight.value;
+
+    const floorFactorRH = getFloorFactor(heightForRH);
+
+    const zf = Number(zoneFactor.value);
+    const il = Number(importanceLevel.value);
+
+    // Return factors
+    const rfSLS = getReturnPeriodFactor("SLS", il);
+    const rfSLS2 = getReturnPeriodFactor("SLS2", il);
+    const rfULS = getReturnPeriodFactor("ULS", il);
+
+    // Cap return factors at 0.7 (legacy: if (zfrf > 0.7) ...)
+    const zfrf = Math.min(zf * rfSLS, CONSTANTS.MAX_RETURN_FACTOR);
+    const zfrfa = Math.min(zf * rfSLS2, CONSTANTS.MAX_RETURN_FACTOR);
+    const zfrfb = Math.min(zf * rfULS, CONSTANTS.MAX_RETURN_FACTOR);
+
+    const sw = seismicWeight.value; // total1
+    const partULS = ductilityFactor.value;
+    const partSLS = 1.0; // Legacy hardcoded
+
+    // Seismic Forces for Rigid Hanger
+    const total2_rh = Number((zfrf * floorFactorRH * partSLS * sw).toFixed(1));
+    const total2a_rh = Number(
+      (zfrfa * floorFactorRH * partSLS * sw).toFixed(1)
+    );
+    const total2b_rh = Number(
+      (zfrfb * floorFactorRH * partULS * sw).toFixed(1)
+    );
+
+    // Seismic Moments (kgm)
+    // sm = 1.2 * hangerspace * force * plenum_height_m
+    const smuls = Number((1.2 * hSpace * total2b_rh * maxph).toFixed(1));
+    const smsls2 = Number((1.2 * hSpace * total2a_rh * maxph).toFixed(1));
+    const smsls = Number((1.2 * hSpace * total2_rh * maxph).toFixed(1));
+
+    // Dead and Live Load per Hanger
+    // loadcombo = 1.4 * total1b (dead load only) + 1.7 * ddload
+    // total1b = gridmass + tilemass + luminaries + insulation + other
+    // We can reconstruct total1b from seismicWeight - ddload (since seismicWeight includes ddload)
+    // Or just sum the parts again.
+    const total1b =
+      (Number(gridMass.value) || 0) +
+      (Number(tileMass.value) || 0) +
+      (Number(luminaries.value) || 0) +
+      (Number(insulation.value) || 0) +
+      (Number(otherLoads.value) || 0);
+
+    const loadCombo = 1.4 * total1b + 1.7 * Number(deadLoad.value);
+    let dllPerH = Number((1.2 * hSpace * loadCombo).toFixed(1));
+    if (dllPerH < 50) dllPerH = 50;
+
+    // Suitability Check
+    const smBest = Math.max(smuls, smsls2, smsls);
+    const designTick = dllPerH / 412 + smBest / 4.5;
+
+    return {
+      smuls,
+      smsls2,
+      smsls,
+      dllPerH,
+      smBest,
+      designTick: Number(designTick.toFixed(2)),
+      isSuitable: designTick < 1,
     };
   });
 
@@ -489,11 +702,11 @@ export function useCalculatorState() {
   // METHODS
   // ============================================================================
   function resetState() {
-    q1Answer.value = '';
-    q2Answer.value = '';
-    q3Answer.value = '';
-    q4Answer.value = '';
-    q5Answer.value = '';
+    q1Answer.value = "";
+    q2Answer.value = "";
+    q3Answer.value = "";
+    q4Answer.value = "";
+    q5Answer.value = "";
     zoneFactor.value = 0.1; // Legacy default: first option (Kaitaia)
     importanceLevel.value = 2; // Legacy default: Importance Level 2
     floorHeight.value = 0;
@@ -504,21 +717,26 @@ export function useCalculatorState() {
     braceType.value = 3; // Legacy default: StratoBrace
     pendantHeight.value = 250; // Legacy default: pheightC value="250"
     gridMass.value = 1.1;
-    tileMass.value = '';
+    tileMass.value = "";
     luminaries.value = 1.5; // Legacy default
     insulation.value = 0;
     otherLoads.value = 0;
     deadLoad.value = CONSTANTS.DEFAULT_DEAD_LOAD;
-    studType.value = '2'; // Legacy default: Steel Stud
-    connectionType.value = '1'; // Legacy default: Double Rivet
-    gridType.value = '1'; // Legacy default: CBI
-    strengthenMain.value = 'no';
-    strengthenCross.value = 'no';
-    specifyMainConnection.value = 'no';
-    isRaked.value = 'no';
+    studType.value = "2"; // Legacy default: Steel Stud
+    connectionType.value = "1"; // Legacy default: Double Rivet
+    gridType.value = "1"; // Legacy default: CBI
+    strengthenMain.value = "no";
+    strengthenCross.value = "no";
+    specifyMainConnection.value = "no";
+    isRaked.value = "no";
     rakeAngle.value = 0;
     maxMainTee.value = 0;
     maxCrossTee.value = 0;
+    maxPlenumHeight.value = 0;
+    hangerSpacing.value = 1.2;
+    ceilingArea.value = 0;
+    showRigidHanger.value = false;
+    showBackBrace.value = false;
   }
 
   return {
@@ -528,10 +746,10 @@ export function useCalculatorState() {
     q3Answer,
     q4Answer,
     q5Answer,
-    
+
     // Limit State Logic (computed)
     limitStateLogic,
-    
+
     // State - Site Info
     zoneFactor,
     importanceLevel,
@@ -558,7 +776,12 @@ export function useCalculatorState() {
     rakeAngle,
     maxMainTee,
     maxCrossTee,
-    
+    maxPlenumHeight,
+    hangerSpacing,
+    ceilingArea,
+    showRigidHanger,
+    showBackBrace,
+
     // Computed
     step1Complete,
     step2Complete,
@@ -578,7 +801,10 @@ export function useCalculatorState() {
     rakeAngleError,
     braceArea,
     maxTeeSpace,
-    
+    backBraceClearance,
+    numberOfBraces,
+    rigidHangerCalculations,
+
     // Methods
     resetState,
   };
