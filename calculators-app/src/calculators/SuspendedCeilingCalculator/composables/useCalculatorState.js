@@ -695,6 +695,12 @@ export function useCalculatorState() {
       smBest,
       designTick: Number(designTick.toFixed(2)),
       isSuitable: designTick < 1,
+      // Intermediate values for UI display
+      total2b_rh,
+      total2a_rh,
+      total2_rh,
+      floorFactorRH,
+      maxph,
     };
   });
 
