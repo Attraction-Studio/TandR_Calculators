@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2 class="global-step-title">Step Four - Calculating the Grid Capacity</h2>
+    <h2 class="global-step-title">Calculating the Grid Capacity</h2>
 
     <!-- Introduction -->
     <div class="paragraph-18px mb-6 space-y-4">

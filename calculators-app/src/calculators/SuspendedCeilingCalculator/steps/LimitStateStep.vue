@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2 class="global-step-title">Step One - Limit State Type</h2>
+    <h2 class="global-step-title">Limit State Type</h2>
 
     <div class="prose max-w-none space-y-6">
       <h3 class="text-2xl font-semibold mb-4">

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2 class="global-step-title">Step Eight - Back Brace Requirements</h2>
+    <h2 class="global-step-title">Back Brace Requirements</h2>
 
     <div class="paragraph-18px mb-6 space-y-4">
       <p>

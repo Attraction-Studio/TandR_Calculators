@@ -1,8 +1,6 @@
 <template>
   <div>
-    <h2 class="global-step-title">
-      Step Seven - Calculating Rigid Hanger suitability
-    </h2>
+    <h2 class="global-step-title">Calculating Rigid Hanger suitability</h2>
 
     <div class="paragraph-18px mb-6 space-y-4">
       <p>
