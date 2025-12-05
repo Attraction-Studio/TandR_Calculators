@@ -547,6 +547,7 @@
         v-if="state.step6Complete.value"
         type="button"
         class="px-8 py-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
+        @click="showExportDialog = true"
       >
         <svg
           class="w-5 h-5"
@@ -564,6 +565,13 @@
         Download Result
       </button>
     </div>
+
+    <!-- Export Dialog -->
+    <ExportDialog
+      :is-open="showExportDialog"
+      @close="showExportDialog = false"
+      @export="handleExport"
+    />
 
     <!-- Seismic Joints Modal -->
     <Modal v-model="showSeismicJointsModal" title="Seismic Joints" size="lg">
@@ -608,6 +616,8 @@
   import ConditionalSection from "../../../components/ConditionalSection.vue";
   import InfoBox from "../../../components/InfoBox.vue";
   import Modal from "../../../components/Modal.vue";
+  import ExportDialog from "../../../components/ExportDialog.vue";
+  import { exportSuspendedCeilingPDF } from "../../utils/pdfExport.js";
   import {
     STUD_TYPES,
     CONNECTION_TYPES,
@@ -619,7 +629,8 @@
     getGridCapacity,
   } from "../../data/suspendedCeilingData.js";
 
-  const state = inject("calculatorState");
+  const calculatorState = inject("calculatorState");
+  const state = calculatorState;
   const { showRigidHanger, showBackBrace } = toRefs(state);
 
   const studTypeOptions = STUD_TYPES;
@@ -632,6 +643,7 @@
   const showConnectionExplain = ref(false);
   const showStrengtheningExample = ref(false);
   const showSeismicJointsModal = ref(false);
+  const showExportDialog = ref(false);
 
   // Connection capacity display
   const connectionCapacity = computed(() => {
@@ -695,5 +707,16 @@
       "adjustedLimitingLengths.value.uls.main:",
       state.adjustedLimitingLengths.value.uls.main
     );
+  }
+
+  // PDF Export handler
+  function handleExport(options) {
+    try {
+      // Use the calculatorState that was injected at the top level
+      exportSuspendedCeilingPDF(calculatorState, options);
+    } catch (error) {
+      console.error("PDF Export Error:", error);
+      throw new Error("Failed to generate PDF. Please try again.");
+    }
   }
 </script>

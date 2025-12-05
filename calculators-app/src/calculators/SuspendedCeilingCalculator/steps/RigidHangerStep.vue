@@ -319,11 +319,12 @@
         </span>
       </div>
 
-      <!-- Download Result Button (Placeholder) -->
+      <!-- Download Result Button -->
       <div class="flex justify-center mt-8">
         <button
           type="button"
           class="px-8 py-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
+          @click="showExportDialog = true"
         >
           <svg
             class="w-5 h-5"
@@ -341,12 +342,21 @@
           Download Result
         </button>
       </div>
+
+      <!-- Export Dialog -->
+      <ExportDialog
+        :is-open="showExportDialog"
+        @close="showExportDialog = false"
+        @export="handleExport"
+      />
     </div>
   </div>
 </template>
 
 <script setup>
-  import { inject, toRefs } from "vue";
+  import { inject, toRefs, ref } from "vue";
+  import ExportDialog from "../../../components/ExportDialog.vue";
+  import { exportSuspendedCeilingPDF } from "../../utils/pdfExport.js";
 
   const calculatorState = inject("calculatorState");
   const {
@@ -355,4 +365,16 @@
     hangerSpacing,
     rigidHangerCalculations,
   } = toRefs(calculatorState);
+
+  const showExportDialog = ref(false);
+
+  function handleExport(options) {
+    try {
+      // Use the calculatorState that was already injected at the top level
+      exportSuspendedCeilingPDF(calculatorState, options);
+    } catch (error) {
+      console.error("PDF Export Error:", error);
+      throw new Error("Failed to generate PDF. Please try again.");
+    }
+  }
 </script>
