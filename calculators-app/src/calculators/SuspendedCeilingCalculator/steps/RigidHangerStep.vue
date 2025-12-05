@@ -132,7 +132,7 @@
                 </th>
                 <th class="px-1 py-2 font-medium text-gray-500">x</th>
                 <th class="px-2 py-2 font-medium text-gray-500">
-                  Seismic Force (kg/m²)
+                  Seismic Force (kg)
                 </th>
                 <th class="px-1 py-2 font-medium text-gray-500">x</th>
                 <th class="px-2 py-2 font-medium text-gray-500">

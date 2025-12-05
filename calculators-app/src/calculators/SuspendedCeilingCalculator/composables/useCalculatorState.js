@@ -652,7 +652,8 @@ export function useCalculatorState() {
     const partULS = ductilityFactor.value;
     const partSLS = 1.0; // Legacy hardcoded
 
-    // Seismic Forces for Rigid Hanger
+    // Seismic Forces for Rigid Hanger (total force in kg, not kg/m²)
+    // Legacy: total2b_bb = (zfrfb * floorfactor_bb * partULS * total1).toFixed(1)
     const total2_rh = Number((zfrf * floorFactorRH * partSLS * sw).toFixed(1));
     const total2a_rh = Number(
       (zfrfa * floorFactorRH * partSLS * sw).toFixed(1)
@@ -662,7 +663,8 @@ export function useCalculatorState() {
     );
 
     // Seismic Moments (kgm)
-    // sm = 1.2 * hangerspace * force * plenum_height_m
+    // Legacy formula: sm = 1.2 * hangerspace * total2b_bb * maxph
+    // where total2b_bb is total force (kg), not force per area (kg/m²)
     const smuls = Number((1.2 * hSpace * total2b_rh * maxph).toFixed(1));
     const smsls2 = Number((1.2 * hSpace * total2a_rh * maxph).toFixed(1));
     const smsls = Number((1.2 * hSpace * total2_rh * maxph).toFixed(1));
