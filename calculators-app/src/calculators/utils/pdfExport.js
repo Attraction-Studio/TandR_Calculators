@@ -218,8 +218,8 @@ class PDFExporter {
     this.doc.text(
       number.toString(),
       badgeX + badgeSize / 2,
-      this.currentY + badgeSize / 2 + 3,
-      { align: "center" }
+      this.currentY + badgeSize / 2,
+      { align: "center", baseline: "middle" }
     );
 
     // Section title
