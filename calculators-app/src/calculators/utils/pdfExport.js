@@ -196,134 +196,287 @@ class PDFExporter {
   }
 
   /**
-   * Generate cover page
+   * Add numbered badge section header (like in the example PDF)
    */
-  generateCoverPage() {
+  addBadgeSection(number, title, resultText = "") {
+    const badgeSize = 8;
+    const badgeX = this.margin;
+
+    // Draw circular badge
+    this.doc.setFillColor(...COLORS.primary);
+    this.doc.circle(
+      badgeX + badgeSize / 2,
+      this.currentY + badgeSize / 2,
+      badgeSize / 2,
+      "F"
+    );
+
+    // Badge number
+    this.doc.setTextColor(...COLORS.white);
+    this.doc.setFont("helvetica", "bold");
+    this.doc.setFontSize(10);
+    this.doc.text(
+      number.toString(),
+      badgeX + badgeSize / 2,
+      this.currentY + badgeSize / 2 + 3,
+      { align: "center" }
+    );
+
+    // Section title
+    this.doc.setTextColor(...COLORS.primary);
+    this.doc.setFontSize(11);
+    this.doc.text(title, badgeX + badgeSize + 5, this.currentY + 6);
+
+    // Result text (right aligned)
+    if (resultText) {
+      this.doc.setTextColor(...COLORS.text);
+      this.doc.setFont("helvetica", "bold");
+      this.doc.text(
+        resultText,
+        this.pageWidth - this.margin,
+        this.currentY + 6,
+        { align: "right" }
+      );
+    }
+
+    this.currentY += badgeSize + 5;
+    this.doc.setTextColor(...COLORS.text);
+    this.doc.setFont("helvetica", "normal");
+  }
+
+  /**
+   * Generate consolidated main page with all calculations
+   */
+  generateMainPage() {
     this.addHeader();
 
     // Title
-    this.doc.setFontSize(18);
+    this.doc.setFontSize(14);
     this.doc.setFont("helvetica", "bold");
     this.doc.setTextColor(...COLORS.primary);
     this.doc.text("T&R Seismic Calculator", this.margin, this.currentY);
-    this.currentY += 10;
+    this.currentY += 8;
 
-    // Job details
-    const jobDetails = {
-      "Job Name": this.options.jobName,
-      "Prepared for": this.options.preparedFor || "N/A",
-      Date: new Date().toLocaleDateString("en-NZ", {
-        day: "numeric",
+    // Job details - compact
+    this.doc.setFontSize(9);
+    this.doc.setFont("helvetica", "bold");
+    this.doc.setTextColor(...COLORS.text);
+    this.doc.text("Job Name", this.margin, this.currentY);
+    this.doc.setFont("helvetica", "normal");
+    this.doc.text(this.options.jobName, this.margin + 40, this.currentY);
+    this.currentY += 5;
+
+    this.doc.setFont("helvetica", "bold");
+    this.doc.text("Prepared for", this.margin, this.currentY);
+    this.doc.setFont("helvetica", "normal");
+    this.doc.text(
+      this.options.preparedFor || "N/A",
+      this.margin + 40,
+      this.currentY
+    );
+    this.currentY += 5;
+
+    this.doc.setFont("helvetica", "bold");
+    this.doc.text("Date", this.margin, this.currentY);
+    this.doc.setFont("helvetica", "normal");
+    this.doc.text(
+      new Date().toLocaleDateString("en-NZ", {
+        day: "2-digit",
         month: "long",
         year: "numeric",
       }),
-    };
+      this.margin + 40,
+      this.currentY
+    );
+    this.currentY += 8;
 
-    this.addKeyValueTable(jobDetails, 1);
-
-    // Warning box
-    this.currentY += 10;
-    this.doc.setDrawColor(...COLORS.warning);
+    // Warning box - more compact
+    this.doc.setDrawColor(220, 53, 69);
     this.doc.setFillColor(255, 243, 205);
     this.doc.roundedRect(
       this.margin,
       this.currentY,
       this.pageWidth - 2 * this.margin,
-      20,
+      12,
       2,
       2,
       "FD"
     );
-
-    this.doc.setFontSize(9);
-    this.doc.setTextColor(...COLORS.text);
+    this.doc.setFontSize(8);
+    this.doc.setTextColor(220, 53, 69);
     const warningText =
-      "WARNING: This calculator is for T&R Interiors suspended ceiling grid systems only. Results may not be applicable to other grid systems.";
+      "© This design is for 2 way exposed 24mm CBI or Phonic 1 grid only and cannot be used with any other manufacturer's grid";
     const splitWarning = this.doc.splitTextToSize(
       warningText,
-      this.pageWidth - 2 * this.margin - 10
+      this.pageWidth - 2 * this.margin - 6
     );
-    this.doc.text(splitWarning, this.margin + 5, this.currentY + 5);
+    this.doc.text(splitWarning, this.margin + 3, this.currentY + 4);
+    this.currentY += 15;
 
-    this.currentY += 25;
-
-    // Limit State Type
-    this.addSectionHeader("Limit State Type", "1");
+    // 1. Limit State Type
     const limitState =
-      this.getValue("limitStateType") === "uls_sls2" ? "ULS + SLS2" : "ULS";
-    this.addKeyValueTable({ "Limit State Type": limitState }, 1);
+      this.getValue("limitStateType") === "uls_sls2" ? "ULS +SLS2" : "ULS";
+    this.addBadgeSection(1, "Limit State Type", limitState);
+    this.currentY += 3;
 
-    this.addFooter();
-  }
+    // 2. Seismic Weight
+    const seismicWeight = this.getValue("seismicWeight");
+    const weightResult = `${
+      typeof seismicWeight === "number" ? seismicWeight.toFixed(1) : "0.0"
+    } kg/m²`;
+    this.addBadgeSection(2, "Seismic Weight", weightResult);
 
-  /**
-   * Generate seismic weight page
-   */
-  generateSeismicWeightPage() {
-    this.addPage();
-
-    this.addSectionHeader("Seismic Weight", "2");
-
+    this.doc.setFontSize(8);
     const gridType =
       this.getValue("gridType") === 1
         ? "Main Tee @ 1200 | Cross Tee @ 600"
         : "Main Tee @ 600";
-
-    const weightData = {
-      "Grid Type": gridType,
-      "Tile Mass": `${this.getValue("tileMass") || 0} kg`,
-      Services: this.getValue("services") || "Luminaires",
-      Insulation: `${this.getValue("insulation") || 0} kg`,
-      Other: `${this.getValue("other") || 0} kg`,
-      "Design Distributed Load": `${
-        this.getValue("designDistributedLoad") || 0
-      } kg`,
-    };
-
-    this.addKeyValueTable(weightData, 2);
-
-    this.currentY += 5;
-    this.doc.setFont("helvetica", "bold");
-    this.doc.setFontSize(10);
-    const seismicWeight = this.getValue("seismicWeight");
+    this.doc.text(`Grid Type`, this.margin + 5, this.currentY);
+    this.doc.text(gridType, this.margin + 50, this.currentY);
+    this.currentY += 4;
+    this.doc.text(`Tile Mass`, this.margin + 5, this.currentY);
     this.doc.text(
-      `Total Seismic Weight: ${
-        typeof seismicWeight === "number" ? seismicWeight.toFixed(1) : "0.0"
-      } kg/m²`,
-      this.margin,
+      `${this.getValue("tileMass") || 0} kg`,
+      this.margin + 50,
       this.currentY
     );
+    this.currentY += 4;
+    this.doc.text(`Services`, this.margin + 5, this.currentY);
+    this.doc.text(
+      this.getValue("services") || "Luminaires",
+      this.margin + 50,
+      this.currentY
+    );
+    this.currentY += 4;
+    this.doc.text(`Insulation`, this.margin + 5, this.currentY);
+    this.doc.text(
+      `${this.getValue("insulation") || 0} kg`,
+      this.margin + 50,
+      this.currentY
+    );
+    this.currentY += 4;
+    this.doc.text(`Other`, this.margin + 5, this.currentY);
+    this.doc.text(
+      `${this.getValue("other") || 0} kg`,
+      this.margin + 50,
+      this.currentY
+    );
+    this.currentY += 4;
+    this.doc.text(`Design Distributed Load`, this.margin + 5, this.currentY);
+    this.doc.text(
+      `${this.getValue("designDistributedLoad") || 0} kg`,
+      this.margin + 50,
+      this.currentY
+    );
+    this.currentY += 8;
 
-    this.addFooter();
-  }
-
-  /**
-   * Generate seismic force page
-   */
-  generateSeismicForcePage() {
-    this.addPage();
-
-    this.addSectionHeader("Seismic Force", "3");
-
-    const forceData = {
-      "Zone Factor": this.getValue("zoneFactor") || "N/A",
-      "Type of Installation": this.getValue("installationType") || "N/A",
-      "Floor Height Factor": this.getValue("floorHeightFactor") || "N/A",
-      "ULS Ductility": this.getValue("ductilityFactor") || "N/A",
-    };
-
-    this.addKeyValueTable(forceData, 2);
-
-    this.currentY += 5;
+    // 3. Seismic Force
     const seismicForces = this.getValue("seismicForces");
     const ulsForce = seismicForces?.uls || 0;
-    this.doc.setFont("helvetica", "bold");
-    this.doc.setFontSize(10);
+    const forceResult = `ULS = ${
+      typeof ulsForce === "number" ? ulsForce.toFixed(1) : "0.0"
+    } kg/m²`;
+    this.addBadgeSection(3, "Seismic Force", forceResult);
+
+    this.doc.setFontSize(8);
+    this.doc.text(`Zone Factor`, this.margin + 5, this.currentY);
     this.doc.text(
-      `ULS = ${
-        typeof ulsForce === "number" ? ulsForce.toFixed(1) : "0.0"
-      } kg/m²`,
-      this.margin,
+      String(this.getValue("zoneFactor") || "N/A"),
+      this.margin + 50,
+      this.currentY
+    );
+    this.currentY += 4;
+    this.doc.text(`Type of Installation`, this.margin + 5, this.currentY);
+    this.doc.text(
+      String(this.getValue("installationType") || "N/A"),
+      this.margin + 50,
+      this.currentY
+    );
+    this.currentY += 4;
+    this.doc.text(`Floor Height Factor`, this.margin + 5, this.currentY);
+    this.doc.text(
+      String(this.getValue("floorHeightFactor") || "N/A"),
+      this.margin + 50,
+      this.currentY
+    );
+    this.currentY += 4;
+    this.doc.text(`ULS Ductility`, this.margin + 5, this.currentY);
+    this.doc.text(
+      String(this.getValue("ductilityFactor") || "N/A"),
+      this.margin + 50,
+      this.currentY
+    );
+    this.currentY += 8;
+
+    // 4. Limiting Main Tee Length
+    const gridCapacityCalcs = this.getValue("gridCapacityCalculations");
+    const mainTeeLength = gridCapacityCalcs?.limitingMainTeeLength || 0;
+    const mainResult = `ULS = ${
+      typeof mainTeeLength === "number" ? mainTeeLength.toFixed(1) : "0.0"
+    } m`;
+    this.addBadgeSection(4, "Limiting Main Tee Length (max)", mainResult);
+    this.currentY += 3;
+
+    // 5. Limiting Cross Tee Length
+    const crossTeeLength = gridCapacityCalcs?.limitingCrossTeeLength || 0;
+    const crossResult = `ULS = ${
+      typeof crossTeeLength === "number" ? crossTeeLength.toFixed(1) : "0.0"
+    } m`;
+    this.addBadgeSection(5, "Limiting Cross Tee Length (max)", crossResult);
+    this.currentY += 5;
+
+    // Grid details
+    this.doc.setFontSize(8);
+    this.doc.text(`Grid Type`, this.margin + 5, this.currentY);
+    this.doc.text(
+      String(this.getValue("gridType") || "CBI"),
+      this.margin + 50,
+      this.currentY
+    );
+    this.currentY += 4;
+    this.doc.text(`Connection Type`, this.margin + 5, this.currentY);
+    const connType = String(this.getValue("connectionType") || "N/A");
+    this.doc.text(connType, this.margin + 50, this.currentY);
+    this.currentY += 4;
+    this.doc.text(`Main Tee Spacing`, this.margin + 5, this.currentY);
+    this.doc.text(
+      String(this.getValue("maxMainTee") || 0) + " m",
+      this.margin + 50,
+      this.currentY
+    );
+    this.currentY += 4;
+    this.doc.text(`Cross Tee Spacing`, this.margin + 5, this.currentY);
+    this.doc.text(
+      String(this.getValue("maxCrossTee") || 0) + " m",
+      this.margin + 50,
+      this.currentY
+    );
+    this.currentY += 4;
+
+    // Validation results
+    this.doc.text(
+      `Maximum measured Main Tee Length as per plans supplied`,
+      this.margin + 5,
+      this.currentY
+    );
+    this.doc.setTextColor(...COLORS.success);
+    this.doc.text("✓", this.pageWidth - this.margin - 5, this.currentY);
+    this.doc.setTextColor(...COLORS.text);
+    this.currentY += 4;
+    this.doc.text(
+      `Maximum measured Cross Tee Length as per plans supplied`,
+      this.margin + 5,
+      this.currentY
+    );
+    this.doc.setTextColor(...COLORS.success);
+    this.doc.text("✓", this.pageWidth - this.margin - 5, this.currentY);
+    this.doc.setTextColor(...COLORS.text);
+    this.currentY += 6;
+
+    this.doc.setFont("helvetica", "bold");
+    this.doc.text(
+      "No seismic breaks required. Fix two, float two.",
+      this.margin + 5,
       this.currentY
     );
 
@@ -331,87 +484,153 @@ class PDFExporter {
   }
 
   /**
-   * Generate grid capacity page
-   */
-  generateGridCapacityPage() {
-    this.addPage();
-
-    this.addSectionHeader("Grid Capacity", "4");
-
-    const gridCapacityCalcs = this.getValue("gridCapacityCalculations");
-
-    const capacityData = {
-      "Grid Type": this.getValue("gridType") || "N/A",
-      "Connection Type": this.getValue("connectionType") || "N/A",
-      "Stud Type": this.getValue("studType") || "N/A",
-      "Limiting Main Tee Length": `${
-        gridCapacityCalcs?.limitingMainTeeLength?.toFixed(1) || "0.0"
-      } m`,
-      "Limiting Cross Tee Length": `${
-        gridCapacityCalcs?.limitingCrossTeeLength?.toFixed(1) || "0.0"
-      } m`,
-      "Max Main Tee": `${this.getValue("maxMainTee") || 0} m`,
-      "Max Cross Tee": `${this.getValue("maxCrossTee") || 0} m`,
-    };
-
-    this.addKeyValueTable(capacityData, 2);
-
-    this.addFooter();
-  }
-
-  /**
-   * Generate back brace page
+   * Generate back brace page (matches example PDF page 2)
    */
   generateBackBracePage() {
     this.addPage();
 
-    this.addSectionHeader("Back Brace Requirements", "5");
-
-    const braceData = {
-      "Brace Type": this.getValue("braceType") || "N/A",
-      "Brace Capacity": `${this.getValue("braceCapacity") || 0} kg`,
-      "Ceiling Area": `${this.getValue("ceilingArea") || 0} m²`,
-      "Area per Brace": `${this.getValue("braceArea") || 0} m²`,
-      "Number of Braces": this.getValue("numberOfBraces") || 0,
-    };
-
-    this.addKeyValueTable(braceData, 2);
-
-    // Maximum Spacing
-    this.currentY += 10;
-    this.doc.setFontSize(12);
+    // Back Bracing header
+    this.doc.setFontSize(14);
     this.doc.setFont("helvetica", "bold");
-    this.doc.text("Maximum Tee Spacing", this.margin, this.currentY);
-    this.currentY += 8;
+    this.doc.setTextColor(...COLORS.primary);
+    this.doc.text("Back Bracing", this.margin, this.currentY);
+    this.currentY += 10;
 
-    const maxSpacing = this.getValue("backBraceCalculations") || {};
+    // Brace details table
     this.doc.setFontSize(9);
     this.doc.setFont("helvetica", "normal");
+    this.doc.setTextColor(...COLORS.text);
+
+    const braceData = [
+      [
+        "Brace Type",
+        String(this.getValue("braceType") || "StratoBrace (recommended)"),
+      ],
+      ["Plenum Height (mm)", String(this.getValue("plenumHeight") || "400")],
+      ["Brace Capacity (kg)", String(this.getValue("braceCapacity") || "250")],
+      [
+        "Stud Type / Bracing requirement",
+        "Please refer to Specification Drawing",
+      ],
+    ];
+
+    autoTable(this.doc, {
+      startY: this.currentY,
+      body: braceData,
+      theme: "plain",
+      styles: {
+        fontSize: 9,
+        cellPadding: 3,
+      },
+      columnStyles: {
+        0: { fontStyle: "bold", cellWidth: 80 },
+        1: { cellWidth: "auto" },
+      },
+      margin: { left: this.margin, right: this.margin },
+    });
+
+    this.currentY = this.doc.lastAutoTable.finalY + 10;
+
+    // Back Brace Layout Spacing
+    this.doc.setFontSize(14);
+    this.doc.setFont("helvetica", "bold");
+    this.doc.setTextColor(...COLORS.primary);
+    this.doc.text("Back Brace Layout Spacing", this.margin, this.currentY);
+    this.currentY += 8;
+
+    this.doc.setFontSize(9);
+    this.doc.setFont("helvetica", "normal");
+    this.doc.setTextColor(...COLORS.text);
+    const layoutText =
+      "The back bracing should be arranged as per AS/NZS 2785:2020. A summary of requirements is below:";
+    this.doc.text(layoutText, this.margin, this.currentY);
+    this.currentY += 8;
+
+    // Requirements bullets
+    const requirements = [
+      "All ceiling edges should be floated (unless single direction back bracing is used)",
+      "Braces should be laid out in a 'grid' pattern, the area supported by each brace must not exceed the area per brace calculated below.",
+      "The distance between the first line of bracing and the perimeter walls should not exceed half the brace spacing",
+      "Position braces at grid connections between main and cross tees.",
+      "Typically, there should be at least 4 braces per ceiling, however 2 braces can be used if the ceiling is very small.",
+    ];
+
+    this.doc.setFontSize(8);
+    requirements.forEach((req) => {
+      const bullet = "• ";
+      const lines = this.doc.splitTextToSize(
+        req,
+        this.pageWidth - 2 * this.margin - 5
+      );
+      this.doc.text(bullet, this.margin, this.currentY);
+      this.doc.text(lines, this.margin + 5, this.currentY);
+      this.currentY += lines.length * 4 + 2;
+    });
+
+    this.currentY += 5;
+
+    // Maximum Spacing for Tees
+    const maxSpacing = this.getValue("backBraceCalculations") || {};
+    this.doc.setFontSize(10);
+    this.doc.setFont("helvetica", "bold");
+    this.doc.setTextColor(...COLORS.text);
+    this.doc.text("Maximum Spacing for Tees", this.margin, this.currentY);
+
+    // MT badge
+    this.doc.setFillColor(0, 128, 0);
+    this.doc.setTextColor(...COLORS.white);
+    this.doc.rect(
+      this.pageWidth - this.margin - 40,
+      this.currentY - 5,
+      15,
+      6,
+      "F"
+    );
+    this.doc.text("MT", this.pageWidth - this.margin - 32.5, this.currentY);
+    this.currentY += 8;
+
+    this.doc.setTextColor(...COLORS.text);
+    this.doc.setFont("helvetica", "normal");
+    this.doc.setFontSize(9);
     this.doc.text(
-      `Main Tee: ${maxSpacing.maxMainTeeSpace || "6.0"} m`,
+      `Main Tee = ${String(maxSpacing.maxMainTeeSpace || "6.0")} m`,
       this.margin,
       this.currentY
     );
     this.currentY += 5;
     this.doc.text(
-      `Cross Tee: ${maxSpacing.maxCrossTeeSpace || "6.0"} m`,
+      `Cross Tee = ${String(maxSpacing.maxCrossTeeSpace || "6.0")} m`,
       this.margin,
       this.currentY
     );
     this.currentY += 10;
 
-    // Clearance table
-    this.doc.setFontSize(12);
+    // Back Bracing Seismic Clearance
+    this.doc.setFontSize(14);
     this.doc.setFont("helvetica", "bold");
-    this.doc.text("Seismic Clearance", this.margin, this.currentY);
+    this.doc.setTextColor(...COLORS.primary);
+    this.doc.text("Back Bracing Seismic Clearance", this.margin, this.currentY);
     this.currentY += 8;
 
+    this.doc.setFontSize(9);
+    this.doc.setFont("helvetica", "normal");
+    this.doc.setTextColor(...COLORS.text);
+    const clearanceText =
+      "Round the required seismic clearance up to the nearest 5mm and ensure that this clearance is used on the floating edges required in the back braced design.";
+    const splitClearance = this.doc.splitTextToSize(
+      clearanceText,
+      this.pageWidth - 2 * this.margin
+    );
+    this.doc.text(splitClearance, this.margin, this.currentY);
+    this.currentY += splitClearance.length * 4 + 5;
+
+    // Clearance table
     autoTable(this.doc, {
       startY: this.currentY,
       head: [
         [
           "Type of Design",
-          "Plenum Height (mm)",
+          "Plenum height (mm)",
           "",
           "Interstory Drift Factor",
           "",
@@ -421,19 +640,19 @@ class PDFExporter {
       body: [
         [
           "SLS",
-          this.getValue("plenumHeight") || "400",
+          String(this.getValue("plenumHeight") || "400"),
           "X",
           "0.0075",
           "=",
-          maxSpacing.clearanceSLS || "3.0",
+          String(maxSpacing.clearanceSLS || "3.0"),
         ],
         [
           "ULS",
-          this.getValue("plenumHeight") || "400",
+          String(this.getValue("plenumHeight") || "400"),
           "X",
           "0.025",
           "=",
-          maxSpacing.clearanceULS || "10.0",
+          String(maxSpacing.clearanceULS || "10.0"),
         ],
       ],
       theme: "grid",
@@ -453,43 +672,58 @@ class PDFExporter {
   }
 
   /**
-   * Generate notes page
+   * Generate notes page (matches example PDF page 3)
    */
   generateNotesPage() {
     this.addPage();
 
-    this.addSectionHeader("Notes");
+    // Notes header
+    this.doc.setFontSize(14);
+    this.doc.setFont("helvetica", "bold");
+    this.doc.setTextColor(...COLORS.primary);
+    this.doc.text("Notes", this.margin, this.currentY);
+    this.currentY += 10;
 
+    // User notes
     if (this.options.notes) {
       this.doc.setFontSize(9);
       this.doc.setFont("helvetica", "normal");
+      this.doc.setTextColor(...COLORS.text);
       const splitNotes = this.doc.splitTextToSize(
         this.options.notes,
         this.pageWidth - 2 * this.margin
       );
       this.doc.text(splitNotes, this.margin, this.currentY);
       this.currentY += splitNotes.length * 5 + 10;
-    } else {
-      this.doc.setFontSize(9);
-      this.doc.setFont("helvetica", "italic");
-      this.doc.setTextColor(...COLORS.secondary);
-      this.doc.text(
-        "No additional notes provided.",
-        this.margin,
-        this.currentY
-      );
-      this.currentY += 10;
     }
+
+    // Warning
+    this.doc.setFontSize(9);
+    this.doc.setTextColor(220, 53, 69);
+    this.doc.setFont("helvetica", "bold");
+    const warning =
+      "© This design is for 2 way exposed 24mm CBI or Phonic 1 grid only and cannot be used with any other manufacturer's grid";
+    const splitWarning = this.doc.splitTextToSize(
+      warning,
+      this.pageWidth - 2 * this.margin
+    );
+    this.doc.text(splitWarning, this.margin, this.currentY);
+    this.currentY += splitWarning.length * 5 + 8;
 
     // Disclaimers
     this.doc.setFontSize(8);
     this.doc.setFont("helvetica", "normal");
     this.doc.setTextColor(...COLORS.text);
+    this.doc.setFont("helvetica", "italic");
 
     const disclaimers = [
-      "This calculation is provided as a guide only and should be verified by a qualified engineer.",
-      "T&R Interior Systems Ltd accepts no responsibility for errors or omissions.",
-      "All calculations are based on NZS 1170.5:2004 and manufacturer specifications.",
+      "This guide allows a designer to calculate required bracing for suspended ceilings. The calculations are based on conservative assumptions. Reduced seismic bracing designs for individual sites may be possible if a suitably qualified Chartered Professional Engineer carries out a site-specific design. This guide should not be used as a calculation template for PS-1; specific seismic design should be carried out for these cases.",
+      "Please note: all services and systems above the ceiling must be individually restrained. This is a separate exercise and not covered by the T&R Suspended Ceiling Calculator. Clearance must be maintained between components so that they do not interact during a seismic event.",
+      "This guide has been prepared by JSK Consulting Engineers for T&R Interior Systems with the usual care and thoroughness of the consulting profession. Interpretation and application of this guide is outside the control of the engineer and therefore is the users' responsibility. It does not constitute a producer statement or engineer's certification, and is not valid for use with trafficable ceilings or ceilings which support partition walls or any other service load.",
+      "Allowance for relative motion between the ceiling and structure must be provided by floating edges. If the perimeter bracing method is used then two perpendicular edges must be fixed with the remaining two floating. If back bracing to the upper structure is used, then all edges must be floating. Floating edges must be detailed around rigid items or separately braced items that pass through the ceiling. The amount of clearance should be checked by an engineer on a case-by-case basis.",
+      "Consult a structural engineer for the expected earthquake deflections of the structure.",
+      "© The T&R Seismic System has been developed in conjunction with JSK Consulting Engineers, the University of Canterbury and T&R Interior Systems.",
+      "It remains the intellectual property of T&R Interior Systems and may not be used with other products.",
     ];
 
     disclaimers.forEach((disclaimer) => {
@@ -498,25 +732,25 @@ class PDFExporter {
         this.pageWidth - 2 * this.margin
       );
       this.doc.text(lines, this.margin, this.currentY);
-      this.currentY += lines.length * 4 + 3;
+      this.currentY += lines.length * 3.5 + 4;
     });
 
     this.addFooter();
   }
 
   /**
-   * Generate complete PDF
+   * Generate complete PDF (consolidated layout)
    */
   generate() {
-    this.generateCoverPage();
-    this.generateSeismicWeightPage();
-    this.generateSeismicForcePage();
-    this.generateGridCapacityPage();
+    // Page 1: All main calculations
+    this.generateMainPage();
 
+    // Page 2: Back bracing (if applicable)
     if (this.getValue("showBackBrace")) {
       this.generateBackBracePage();
     }
 
+    // Page 3: Notes and disclaimers
     this.generateNotesPage();
   }
 
