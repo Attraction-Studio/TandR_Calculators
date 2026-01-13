@@ -774,3 +774,1029 @@ export function exportSuspendedCeilingPDF(calculatorState, options) {
   const exporter = new PDFExporter(calculatorState, options);
   exporter.save();
 }
+
+/**
+ * Plasterboard Ceiling PDF Exporter
+ * Generates professional PDF reports for the Plasterboard Ceiling Calculator
+ */
+class PlasterboardPDFExporter {
+  constructor(calculatorState, options = {}) {
+    this.state = calculatorState;
+    this.options = {
+      jobName: options.jobName || "Untitled Project",
+      preparedFor: options.preparedFor || "",
+      notes: options.notes || "",
+      maxMainTeeSupplied: options.maxMainTeeSupplied || 0,
+      maxCrossTeeSupplied: options.maxCrossTeeSupplied || 0,
+      ...options,
+    };
+
+    this.doc = new jsPDF();
+    this.pageWidth = this.doc.internal.pageSize.getWidth();
+    this.pageHeight = this.doc.internal.pageSize.getHeight();
+    this.margin = 20;
+    this.currentY = this.margin;
+  }
+
+  getValue(key) {
+    const value = this.state[key];
+    return value?.value !== undefined ? value.value : value;
+  }
+
+  addHeader() {
+    this.doc.setFontSize(24);
+    this.doc.setTextColor(...COLORS.primary);
+    this.doc.setFont("helvetica", "bold");
+    this.doc.text("T&R INTERIOR SYSTEMS", this.margin, this.currentY);
+
+    this.doc.setFontSize(10);
+    this.doc.setTextColor(...COLORS.secondary);
+    this.doc.setFont("helvetica", "normal");
+    this.currentY += 8;
+    this.doc.text(
+      "Suspended Plasterboard Grid System Seismic Calculator",
+      this.margin,
+      this.currentY
+    );
+    this.currentY += 10;
+  }
+
+  addFooter() {
+    const footerY = this.pageHeight - 25;
+
+    this.doc.setFontSize(7);
+    this.doc.setTextColor(...COLORS.secondary);
+    this.doc.setFont("helvetica", "normal");
+
+    const colWidth = (this.pageWidth - 2 * this.margin) / 3;
+    let xPos = this.margin;
+
+    Object.values(OFFICE_INFO).forEach((office) => {
+      this.doc.setFont("helvetica", "bold");
+      this.doc.text(office.name, xPos, footerY);
+      this.doc.setFont("helvetica", "normal");
+      this.doc.text(office.address, xPos, footerY + 3);
+      this.doc.text(`Ph: ${office.phone}`, xPos, footerY + 6);
+      this.doc.text(office.email, xPos, footerY + 9);
+      xPos += colWidth;
+    });
+
+    const pageNum = this.doc.internal.getCurrentPageInfo().pageNumber;
+    this.doc.setFont("helvetica", "italic");
+    this.doc.text(`Page ${pageNum}`, this.pageWidth / 2, this.pageHeight - 10, {
+      align: "center",
+    });
+  }
+
+  addPage() {
+    this.doc.addPage();
+    this.currentY = this.margin;
+    this.addHeader();
+  }
+
+  addBadgeSection(number, title, resultText = "") {
+    const badgeSize = 8;
+    const badgeX = this.margin;
+
+    this.doc.setFillColor(...COLORS.primary);
+    this.doc.circle(
+      badgeX + badgeSize / 2,
+      this.currentY + badgeSize / 2,
+      badgeSize / 2,
+      "F"
+    );
+
+    this.doc.setTextColor(...COLORS.white);
+    this.doc.setFont("helvetica", "bold");
+    this.doc.setFontSize(10);
+    this.doc.text(
+      number.toString(),
+      badgeX + badgeSize / 2,
+      this.currentY + badgeSize / 2,
+      { align: "center", baseline: "middle" }
+    );
+
+    this.doc.setTextColor(...COLORS.primary);
+    this.doc.setFontSize(11);
+    this.doc.text(title, badgeX + badgeSize + 5, this.currentY + 6);
+
+    if (resultText) {
+      this.doc.setTextColor(...COLORS.text);
+      this.doc.setFont("helvetica", "bold");
+      this.doc.text(
+        resultText,
+        this.pageWidth - this.margin,
+        this.currentY + 6,
+        { align: "right" }
+      );
+    }
+
+    this.currentY += badgeSize + 5;
+    this.doc.setTextColor(...COLORS.text);
+    this.doc.setFont("helvetica", "normal");
+  }
+
+  generateMainPage() {
+    this.addHeader();
+
+    // Title
+    this.doc.setFontSize(14);
+    this.doc.setFont("helvetica", "bold");
+    this.doc.setTextColor(...COLORS.primary);
+    this.doc.text(
+      "T&R Seismic Calculator - Suspended Plasterboard Grid System",
+      this.margin,
+      this.currentY
+    );
+    this.currentY += 8;
+
+    // Job details
+    this.doc.setFontSize(9);
+    this.doc.setFont("helvetica", "bold");
+    this.doc.setTextColor(...COLORS.text);
+    this.doc.text("Job Name", this.margin, this.currentY);
+    this.doc.setFont("helvetica", "normal");
+    this.doc.text(this.options.jobName, this.margin + 40, this.currentY);
+    this.currentY += 5;
+
+    this.doc.setFont("helvetica", "bold");
+    this.doc.text("Prepared for", this.margin, this.currentY);
+    this.doc.setFont("helvetica", "normal");
+    this.doc.text(
+      this.options.preparedFor || "N/A",
+      this.margin + 40,
+      this.currentY
+    );
+    this.currentY += 5;
+
+    this.doc.setFont("helvetica", "bold");
+    this.doc.text("Date", this.margin, this.currentY);
+    this.doc.setFont("helvetica", "normal");
+    this.doc.text(
+      new Date().toLocaleDateString("en-NZ", {
+        day: "2-digit",
+        month: "long",
+        year: "numeric",
+      }),
+      this.margin + 40,
+      this.currentY
+    );
+    this.currentY += 8;
+
+    // Warning box
+    this.doc.setDrawColor(220, 53, 69);
+    this.doc.setFillColor(255, 243, 205);
+    this.doc.roundedRect(
+      this.margin,
+      this.currentY,
+      this.pageWidth - 2 * this.margin,
+      12,
+      2,
+      2,
+      "FD"
+    );
+    this.doc.setFontSize(8);
+    this.doc.setTextColor(220, 53, 69);
+    const warningText =
+      "© This design is for T&R Suspended Plasterboard Grid System only and cannot be used with other manufacturer's ceiling products.";
+    const splitWarning = this.doc.splitTextToSize(
+      warningText,
+      this.pageWidth - 2 * this.margin - 6
+    );
+    this.doc.text(splitWarning, this.margin + 3, this.currentY + 4);
+    this.currentY += 15;
+
+    // 1. Limit State Type
+    const limitStateLogic = this.getValue("limitStateLogic");
+    const limitState = limitStateLogic?.limitStateMain?.value || "SLS";
+    const sls2Display = limitStateLogic?.liveCalcSLS2Display?.value || "";
+    this.addBadgeSection(1, "Limit State Type", `${limitState} ${sls2Display}`);
+    this.currentY += 3;
+
+    // 2. Seismic Weight
+    const seismicWeight = this.getValue("seismicWeight");
+    const weightResult = `${
+      typeof seismicWeight === "number" ? seismicWeight.toFixed(2) : "0.00"
+    } kg/m²`;
+    this.addBadgeSection(2, "Seismic Weight", weightResult);
+
+    this.doc.setFontSize(8);
+    const mainTee = this.getValue("mainTeeSpacing");
+    const crossTee = this.getValue("crossTeeSpacing");
+    this.doc.text(`Grid Layout`, this.margin + 5, this.currentY);
+    this.doc.text(
+      `Main Tee @ ${mainTee}mm | Cross Tee @ ${crossTee}mm`,
+      this.margin + 50,
+      this.currentY
+    );
+    this.currentY += 4;
+    this.doc.text(`Grid Mass`, this.margin + 5, this.currentY);
+    this.doc.text(
+      `${this.getValue("gridMass")?.toFixed(2) || 0} kg/m²`,
+      this.margin + 50,
+      this.currentY
+    );
+    this.currentY += 4;
+    this.doc.text(`Lining Weight`, this.margin + 5, this.currentY);
+    this.doc.text(
+      `${this.getValue("liningWeight") || 0} kg/m²`,
+      this.margin + 50,
+      this.currentY
+    );
+    this.currentY += 4;
+    this.doc.text(`Luminaires`, this.margin + 5, this.currentY);
+    this.doc.text(
+      `${this.getValue("luminaries") || 0} kg/m²`,
+      this.margin + 50,
+      this.currentY
+    );
+    this.currentY += 4;
+    this.doc.text(`Insulation`, this.margin + 5, this.currentY);
+    this.doc.text(
+      `${this.getValue("insulation") || 0} kg/m²`,
+      this.margin + 50,
+      this.currentY
+    );
+    this.currentY += 4;
+    this.doc.text(`Other`, this.margin + 5, this.currentY);
+    this.doc.text(
+      `${this.getValue("otherLoads") || 0} kg/m²`,
+      this.margin + 50,
+      this.currentY
+    );
+    this.currentY += 4;
+    this.doc.text(`Design Distributed Load`, this.margin + 5, this.currentY);
+    this.doc.text(
+      `${this.getValue("deadLoad") || 3} kg/m²`,
+      this.margin + 50,
+      this.currentY
+    );
+    this.currentY += 8;
+
+    // 3. Seismic Force
+    const seismicForces = this.getValue("seismicForces");
+    const forceResult = `SLS=${seismicForces?.sls || 0} | ULS=${
+      seismicForces?.uls || 0
+    } kg/m²`;
+    this.addBadgeSection(3, "Seismic Force", forceResult);
+
+    this.doc.setFontSize(8);
+    this.doc.text(`Zone Factor`, this.margin + 5, this.currentY);
+    this.doc.text(
+      String(this.getValue("zoneFactor") || "N/A"),
+      this.margin + 50,
+      this.currentY
+    );
+    this.currentY += 4;
+    this.doc.text(`Importance Level`, this.margin + 5, this.currentY);
+    this.doc.text(
+      String(this.getValue("importanceLevel") || "N/A"),
+      this.margin + 50,
+      this.currentY
+    );
+    this.currentY += 4;
+    this.doc.text(`Height Factor`, this.margin + 5, this.currentY);
+    this.doc.text(
+      String(this.getValue("heightFactor") || "N/A"),
+      this.margin + 50,
+      this.currentY
+    );
+    this.currentY += 8;
+
+    // 4. Limiting Main Tee Length
+    const maxTeeLengths = this.getValue("maxAllowableTeeLengths");
+    const mainTeeLength = maxTeeLengths?.main?.uls || 0;
+    const mainResult = `SLS=${
+      maxTeeLengths?.main?.sls?.toFixed(2) || 0
+    }m | ULS=${mainTeeLength.toFixed(2)}m`;
+    this.addBadgeSection(4, "Limiting Main Tee Length (max)", mainResult);
+    this.currentY += 3;
+
+    // 5. Limiting Cross Tee Length
+    const crossTeeLength = maxTeeLengths?.cross?.uls || 0;
+    const crossResult = `SLS=${
+      maxTeeLengths?.cross?.sls?.toFixed(2) || 0
+    }m | ULS=${crossTeeLength.toFixed(2)}m`;
+    this.addBadgeSection(5, "Limiting Cross Tee Length (max)", crossResult);
+    this.currentY += 5;
+
+    // Capacity details
+    this.doc.setFontSize(8);
+    this.doc.text(`Wall Fastener Spacing`, this.margin + 5, this.currentY);
+    this.doc.text(
+      `${this.getValue("wallFastenerSpacing") || 600}mm`,
+      this.margin + 60,
+      this.currentY
+    );
+    this.currentY += 4;
+    this.doc.text(
+      `Plasterboard Fixing Spacing`,
+      this.margin + 5,
+      this.currentY
+    );
+    this.doc.text(
+      `${this.getValue("plasterboardFixingSpacing") || 300}mm`,
+      this.margin + 60,
+      this.currentY
+    );
+    this.currentY += 6;
+
+    // Validation results
+    this.doc.text(
+      `Maximum measured Main Tee Length as per plans supplied: ${this.options.maxMainTeeSupplied}m`,
+      this.margin + 5,
+      this.currentY
+    );
+    const mainValid = this.options.maxMainTeeSupplied <= mainTeeLength;
+    this.doc.setTextColor(...(mainValid ? COLORS.success : COLORS.danger));
+    this.doc.text(
+      mainValid ? "✓" : "✗",
+      this.pageWidth - this.margin - 5,
+      this.currentY
+    );
+    this.doc.setTextColor(...COLORS.text);
+    this.currentY += 4;
+
+    this.doc.text(
+      `Maximum measured Cross Tee Length as per plans supplied: ${this.options.maxCrossTeeSupplied}m`,
+      this.margin + 5,
+      this.currentY
+    );
+    const crossValid = this.options.maxCrossTeeSupplied <= crossTeeLength;
+    this.doc.setTextColor(...(crossValid ? COLORS.success : COLORS.danger));
+    this.doc.text(
+      crossValid ? "✓" : "✗",
+      this.pageWidth - this.margin - 5,
+      this.currentY
+    );
+    this.doc.setTextColor(...COLORS.text);
+    this.currentY += 6;
+
+    if (mainValid && crossValid && !this.getValue("showBackBrace")) {
+      this.doc.setFont("helvetica", "bold");
+      this.doc.text(
+        "No seismic breaks required. Fix two, float two.",
+        this.margin + 5,
+        this.currentY
+      );
+    }
+
+    this.addFooter();
+  }
+
+  generateBackBracePage() {
+    this.addPage();
+
+    // Back Bracing header
+    this.doc.setFontSize(14);
+    this.doc.setFont("helvetica", "bold");
+    this.doc.setTextColor(...COLORS.primary);
+    this.doc.text("Back Bracing", this.margin, this.currentY);
+    this.currentY += 10;
+
+    // Brace details table
+    this.doc.setFontSize(9);
+    this.doc.setFont("helvetica", "normal");
+    this.doc.setTextColor(...COLORS.text);
+
+    const braceCapacityResult = this.getValue("braceCapacityResult");
+    const braceData = [
+      ["Brace Type", String(this.getValue("braceType") || "A")],
+      ["Plenum Height (mm)", String(this.getValue("plenumHeight") || "400")],
+      ["Brace Capacity (kg)", String(braceCapacityResult?.capacity || "N/A")],
+      [
+        "Bracing Requirement",
+        String(braceCapacityResult?.requirement || "N/A"),
+      ],
+    ];
+
+    autoTable(this.doc, {
+      startY: this.currentY,
+      body: braceData,
+      theme: "plain",
+      styles: { fontSize: 9, cellPadding: 3 },
+      columnStyles: {
+        0: { fontStyle: "bold", cellWidth: 80 },
+        1: { cellWidth: "auto" },
+      },
+      margin: { left: this.margin, right: this.margin },
+    });
+
+    this.currentY = this.doc.lastAutoTable.finalY + 10;
+
+    // Area Per Brace
+    this.doc.setFontSize(12);
+    this.doc.setFont("helvetica", "bold");
+    this.doc.setTextColor(...COLORS.primary);
+    this.doc.text("Area Per Brace", this.margin, this.currentY);
+    this.currentY += 8;
+
+    this.doc.setFontSize(9);
+    this.doc.setFont("helvetica", "normal");
+    this.doc.setTextColor(...COLORS.text);
+    this.doc.text(
+      `Area per Brace = ${this.getValue("areaPerBrace")?.toFixed(1) || 0} m²`,
+      this.margin,
+      this.currentY
+    );
+    this.currentY += 10;
+
+    // Back Brace Layout
+    this.doc.setFontSize(12);
+    this.doc.setFont("helvetica", "bold");
+    this.doc.setTextColor(...COLORS.primary);
+    this.doc.text("Back Brace Layout", this.margin, this.currentY);
+    this.currentY += 8;
+
+    this.doc.setFontSize(9);
+    this.doc.setFont("helvetica", "normal");
+    this.doc.setTextColor(...COLORS.text);
+    this.doc.text(
+      `Total Ceiling Area: ${this.getValue("ceilingArea") || 0} m²`,
+      this.margin,
+      this.currentY
+    );
+    this.currentY += 5;
+    this.doc.text(
+      `Minimum Number of Braces: ${this.getValue("minimumBraces") || 0}`,
+      this.margin,
+      this.currentY
+    );
+    this.currentY += 10;
+
+    // Brace placement guidelines
+    const requirements = [
+      "Place braces near ceiling corners.",
+      "Place braces near discontinuities / breaks in the ceiling.",
+      "Place braces near the ceiling edges.",
+      "Evenly distribute the remaining number of braces throughout the ceiling.",
+      "Check that the area that is supported by each brace does not exceed the maximum area per brace.",
+    ];
+
+    this.doc.setFontSize(8);
+    requirements.forEach((req) => {
+      const bullet = "• ";
+      this.doc.text(bullet + req, this.margin, this.currentY);
+      this.currentY += 4;
+    });
+
+    this.currentY += 8;
+
+    // Seismic Clearance
+    this.doc.setFontSize(12);
+    this.doc.setFont("helvetica", "bold");
+    this.doc.setTextColor(...COLORS.primary);
+    this.doc.text("Back Bracing Seismic Clearance", this.margin, this.currentY);
+    this.currentY += 8;
+
+    const seismicClearance = this.getValue("seismicClearance");
+    autoTable(this.doc, {
+      startY: this.currentY,
+      head: [["Type of Design", "Required Clearance (mm)"]],
+      body: [
+        ["SLS", String(seismicClearance?.sls || "10")],
+        ["ULS", String(seismicClearance?.uls || "10")],
+      ],
+      theme: "grid",
+      styles: { fontSize: 9, cellPadding: 3 },
+      headStyles: {
+        fillColor: COLORS.lightGray,
+        textColor: COLORS.text,
+        fontStyle: "bold",
+      },
+      margin: { left: this.margin, right: this.margin },
+    });
+
+    this.addFooter();
+  }
+
+  generateNotesPage() {
+    this.addPage();
+
+    // Notes header
+    this.doc.setFontSize(14);
+    this.doc.setFont("helvetica", "bold");
+    this.doc.setTextColor(...COLORS.primary);
+    this.doc.text("Notes", this.margin, this.currentY);
+    this.currentY += 10;
+
+    // User notes
+    if (this.options.notes) {
+      this.doc.setFontSize(9);
+      this.doc.setFont("helvetica", "normal");
+      this.doc.setTextColor(...COLORS.text);
+      const splitNotes = this.doc.splitTextToSize(
+        this.options.notes,
+        this.pageWidth - 2 * this.margin
+      );
+      this.doc.text(splitNotes, this.margin, this.currentY);
+      this.currentY += splitNotes.length * 5 + 10;
+    }
+
+    // Warning
+    this.doc.setFontSize(9);
+    this.doc.setTextColor(220, 53, 69);
+    this.doc.setFont("helvetica", "bold");
+    const warning =
+      "© This design is for T&R Suspended Plasterboard Grid System only and cannot be used with other manufacturer's ceiling products.";
+    const splitWarning = this.doc.splitTextToSize(
+      warning,
+      this.pageWidth - 2 * this.margin
+    );
+    this.doc.text(splitWarning, this.margin, this.currentY);
+    this.currentY += splitWarning.length * 5 + 8;
+
+    // Disclaimers
+    this.doc.setFontSize(8);
+    this.doc.setFont("helvetica", "normal");
+    this.doc.setTextColor(...COLORS.text);
+    this.doc.setFont("helvetica", "italic");
+
+    const disclaimers = [
+      "This seismic design guide is provided to determine the installation requirements and details for the ceiling system. The calculations are based on conservative assumptions. Reduced seismic bracing for individual sites may be possible if a suitably qualified engineer carries out a site specific design.",
+      "This guide has been prepared by JSK Consulting Engineers for T&R Interior Systems with the usual care and thoroughness of the consulting profession. On the basis of the assumptions and limitations presented in the guide, application of the guide is up to the users discretion and outside the control of JSK Consulting Engineers.",
+      "If the building is outside the assumptions and limitations detailed then a suitable site specific seismic design should be performed by a qualified Chartered Professional Engineer. This guide should not be used as a calculation template for a PS1; site specific design should be carried out for these cases also.",
+      "Allowance for relative motion between the ceiling and structure must be provided by floating edges. If the perimeter bracing method is used then two perpendicular edges must be fixed with the remaining two floating. If back bracing to the upper structure is used, then all edges must be floating. Floating edges must also be provided around rigid or separately braced items that pass through the ceiling.",
+      "Consult a structural engineer for the expected earthquake deflections of the structure.",
+      "© The T&R Seismic System has been developed in conjunction with JSK Consulting Engineers and T&R Interior Systems. It remains the intellectual property of T&R Interior Systems and may not be used with other products.",
+    ];
+
+    disclaimers.forEach((disclaimer) => {
+      const lines = this.doc.splitTextToSize(
+        disclaimer,
+        this.pageWidth - 2 * this.margin
+      );
+      this.doc.text(lines, this.margin, this.currentY);
+      this.currentY += lines.length * 3.5 + 4;
+    });
+
+    this.addFooter();
+  }
+
+  generate() {
+    // Page 1: All main calculations
+    this.generateMainPage();
+
+    // Page 2: Back bracing (if applicable)
+    if (this.getValue("showBackBrace")) {
+      this.generateBackBracePage();
+    }
+
+    // Page 3: Notes and disclaimers
+    this.generateNotesPage();
+  }
+
+  save() {
+    this.generate();
+    const fileName = `TR-Plasterboard-Seismic-${this.options.jobName.replace(
+      /[^a-z0-9]/gi,
+      "_"
+    )}-${new Date().toISOString().split("T")[0]}.pdf`;
+    this.doc.save(fileName);
+  }
+}
+
+/**
+ * Export function to generate and download PDF for Plasterboard Calculator
+ */
+export function exportPlasterboardCeilingPDF(calculatorState, options) {
+  const exporter = new PlasterboardPDFExporter(calculatorState, options);
+  exporter.save();
+}
+
+/**
+ * Baffle Ceiling PDF Exporter
+ * Generates professional PDF reports for the Baffle Ceiling Calculator
+ */
+class BafflePDFExporter {
+  constructor(calculatorState, options = {}) {
+    this.state = calculatorState;
+    this.options = {
+      jobName: options.jobName || "Untitled Project",
+      preparedFor: options.preparedFor || "",
+      notes: options.notes || "",
+      ...options,
+    };
+
+    this.doc = new jsPDF();
+    this.pageWidth = this.doc.internal.pageSize.getWidth();
+    this.pageHeight = this.doc.internal.pageSize.getHeight();
+    this.margin = 20;
+    this.currentY = this.margin;
+  }
+
+  getValue(key) {
+    const value = this.state[key];
+    return value?.value !== undefined ? value.value : value;
+  }
+
+  addHeader() {
+    this.doc.setFontSize(24);
+    this.doc.setTextColor(...COLORS.primary);
+    this.doc.setFont("helvetica", "bold");
+    this.doc.text("T&R INTERIOR SYSTEMS", this.margin, this.currentY);
+
+    this.doc.setFontSize(10);
+    this.doc.setTextColor(...COLORS.secondary);
+    this.doc.setFont("helvetica", "normal");
+    this.currentY += 8;
+    this.doc.text(
+      "Baffle Ceiling Seismic Calculator",
+      this.margin,
+      this.currentY
+    );
+    this.currentY += 10;
+  }
+
+  addFooter() {
+    const footerY = this.pageHeight - 25;
+
+    this.doc.setFontSize(7);
+    this.doc.setTextColor(...COLORS.secondary);
+    this.doc.setFont("helvetica", "normal");
+
+    const colWidth = (this.pageWidth - 2 * this.margin) / 3;
+    let xPos = this.margin;
+
+    Object.values(OFFICE_INFO).forEach((office) => {
+      this.doc.setFont("helvetica", "bold");
+      this.doc.text(office.name, xPos, footerY);
+      this.doc.setFont("helvetica", "normal");
+      this.doc.text(office.address, xPos, footerY + 3);
+      this.doc.text(`Ph: ${office.phone}`, xPos, footerY + 6);
+      this.doc.text(office.email, xPos, footerY + 9);
+      xPos += colWidth;
+    });
+
+    const pageNum = this.doc.internal.getCurrentPageInfo().pageNumber;
+    this.doc.setFont("helvetica", "italic");
+    this.doc.text(`Page ${pageNum}`, this.pageWidth / 2, this.pageHeight - 10, {
+      align: "center",
+    });
+  }
+
+  addPage() {
+    this.doc.addPage();
+    this.currentY = this.margin;
+    this.addHeader();
+  }
+
+  addBadgeSection(number, title, resultText = "") {
+    const badgeSize = 8;
+    const badgeX = this.margin;
+
+    this.doc.setFillColor(...COLORS.primary);
+    this.doc.circle(
+      badgeX + badgeSize / 2,
+      this.currentY + badgeSize / 2,
+      badgeSize / 2,
+      "F"
+    );
+
+    this.doc.setTextColor(...COLORS.white);
+    this.doc.setFont("helvetica", "bold");
+    this.doc.setFontSize(10);
+    this.doc.text(
+      number.toString(),
+      badgeX + badgeSize / 2,
+      this.currentY + badgeSize / 2,
+      { align: "center", baseline: "middle" }
+    );
+
+    this.doc.setTextColor(...COLORS.primary);
+    this.doc.setFontSize(11);
+    this.doc.text(title, badgeX + badgeSize + 5, this.currentY + 6);
+
+    if (resultText) {
+      this.doc.setTextColor(...COLORS.text);
+      this.doc.setFont("helvetica", "bold");
+      this.doc.text(
+        resultText,
+        this.pageWidth - this.margin,
+        this.currentY + 6,
+        { align: "right" }
+      );
+    }
+
+    this.currentY += badgeSize + 5;
+    this.doc.setTextColor(...COLORS.text);
+    this.doc.setFont("helvetica", "normal");
+  }
+
+  generateMainPage() {
+    this.addHeader();
+
+    // Title
+    this.doc.setFontSize(14);
+    this.doc.setFont("helvetica", "bold");
+    this.doc.setTextColor(...COLORS.primary);
+    this.doc.text(
+      "T&R Seismic Calculator - Baffle Ceiling",
+      this.margin,
+      this.currentY
+    );
+    this.currentY += 8;
+
+    // Job details
+    this.doc.setFontSize(9);
+    this.doc.setFont("helvetica", "bold");
+    this.doc.setTextColor(...COLORS.text);
+    this.doc.text("Job Name", this.margin, this.currentY);
+    this.doc.setFont("helvetica", "normal");
+    this.doc.text(this.options.jobName, this.margin + 40, this.currentY);
+    this.currentY += 5;
+
+    this.doc.setFont("helvetica", "bold");
+    this.doc.text("Prepared for", this.margin, this.currentY);
+    this.doc.setFont("helvetica", "normal");
+    this.doc.text(
+      this.options.preparedFor || "N/A",
+      this.margin + 40,
+      this.currentY
+    );
+    this.currentY += 5;
+
+    this.doc.setFont("helvetica", "bold");
+    this.doc.text("Date", this.margin, this.currentY);
+    this.doc.setFont("helvetica", "normal");
+    this.doc.text(
+      new Date().toLocaleDateString("en-NZ", {
+        day: "2-digit",
+        month: "long",
+        year: "numeric",
+      }),
+      this.margin + 40,
+      this.currentY
+    );
+    this.currentY += 8;
+
+    // Warning box
+    this.doc.setDrawColor(220, 53, 69);
+    this.doc.setFillColor(255, 243, 205);
+    this.doc.roundedRect(
+      this.margin,
+      this.currentY,
+      this.pageWidth - 2 * this.margin,
+      12,
+      2,
+      2,
+      "FD"
+    );
+    this.doc.setFontSize(8);
+    this.doc.setTextColor(220, 53, 69);
+    const warningText =
+      "© This design is for T&R Baffle Ceiling Systems only and cannot be used with other manufacturer's ceiling products.";
+    const splitWarning = this.doc.splitTextToSize(
+      warningText,
+      this.pageWidth - 2 * this.margin - 6
+    );
+    this.doc.text(splitWarning, this.margin + 3, this.currentY + 4);
+    this.currentY += 15;
+
+    // 1. Limit State Type
+    const limitStateLogic = this.getValue("limitStateLogic");
+    const limitState = limitStateLogic?.limitStateMain?.value || "SLS";
+    const sls2Display = limitStateLogic?.liveCalcSLS2Display?.value || "";
+    this.addBadgeSection(1, "Limit State Type", `${limitState} ${sls2Display}`);
+    this.currentY += 3;
+
+    // 2. Seismic Weight
+    const seismicWeight = this.getValue("seismicWeight");
+    const weightResult = `${
+      typeof seismicWeight === "number" ? seismicWeight.toFixed(2) : "0.00"
+    } kg/m²`;
+    this.addBadgeSection(2, "Seismic Weight", weightResult);
+
+    this.doc.setFontSize(8);
+    this.doc.text(`Profile Mass`, this.margin + 5, this.currentY);
+    this.doc.text(
+      `${this.getValue("profileMass") || 0} kg/m`,
+      this.margin + 50,
+      this.currentY
+    );
+    this.currentY += 4;
+    this.doc.text(`Baffle Spacing`, this.margin + 5, this.currentY);
+    this.doc.text(
+      `${this.getValue("baffleSpacing") || 0} m`,
+      this.margin + 50,
+      this.currentY
+    );
+    this.currentY += 4;
+    this.doc.text(`Baffle Mass`, this.margin + 5, this.currentY);
+    this.doc.text(
+      `${this.getValue("baffleMass")?.toFixed(2) || 0} kg/m²`,
+      this.margin + 50,
+      this.currentY
+    );
+    this.currentY += 4;
+    this.doc.text(`Strongback Mass`, this.margin + 5, this.currentY);
+    this.doc.text(`1.27 kg/m²`, this.margin + 50, this.currentY);
+    this.currentY += 4;
+    this.doc.text(`Luminaires`, this.margin + 5, this.currentY);
+    this.doc.text(
+      `${this.getValue("luminaries") || 0} kg/m²`,
+      this.margin + 50,
+      this.currentY
+    );
+    this.currentY += 4;
+    this.doc.text(`Services`, this.margin + 5, this.currentY);
+    this.doc.text(
+      `${this.getValue("services") || 0} kg/m²`,
+      this.margin + 50,
+      this.currentY
+    );
+    this.currentY += 4;
+    this.doc.text(`Other`, this.margin + 5, this.currentY);
+    this.doc.text(
+      `${this.getValue("otherLoads") || 0} kg/m²`,
+      this.margin + 50,
+      this.currentY
+    );
+    this.currentY += 8;
+
+    // 3. Seismic Force
+    const seismicForces = this.getValue("seismicForces");
+    const forceResult = `SLS=${seismicForces?.sls || 0} | ULS=${
+      seismicForces?.uls || 0
+    } kg/m²`;
+    this.addBadgeSection(3, "Seismic Force", forceResult);
+
+    this.doc.setFontSize(8);
+    this.doc.text(`Zone Factor`, this.margin + 5, this.currentY);
+    this.doc.text(
+      String(this.getValue("zoneFactor") || "N/A"),
+      this.margin + 50,
+      this.currentY
+    );
+    this.currentY += 4;
+    this.doc.text(`Importance Level`, this.margin + 5, this.currentY);
+    this.doc.text(
+      String(this.getValue("importanceLevel") || "N/A"),
+      this.margin + 50,
+      this.currentY
+    );
+    this.currentY += 4;
+    this.doc.text(`Height Factor`, this.margin + 5, this.currentY);
+    this.doc.text(
+      String(this.getValue("heightFactor") || "N/A"),
+      this.margin + 50,
+      this.currentY
+    );
+    this.currentY += 8;
+
+    // 4. Area Per Brace
+    const areaPerBrace = this.getValue("areaPerBrace");
+    this.addBadgeSection(
+      4,
+      "Area Per Brace",
+      `${areaPerBrace?.toFixed(1) || 0} m²`
+    );
+    this.currentY += 3;
+
+    // 5. Minimum Braces
+    const minimumBraces = this.getValue("minimumBraces");
+    this.addBadgeSection(
+      5,
+      "Minimum Number of Braces",
+      `${minimumBraces || 0}`
+    );
+    this.currentY += 3;
+
+    // 6. Max Brace Spacing
+    const maxBraceSpacing = this.getValue("maxBraceSpacing");
+    this.addBadgeSection(
+      6,
+      "Max Brace Spacing",
+      `${maxBraceSpacing?.toFixed(1) || 0} m`
+    );
+    this.currentY += 5;
+
+    // Brace details
+    this.doc.setFontSize(8);
+    this.doc.text(`Plenum Height`, this.margin + 5, this.currentY);
+    this.doc.text(
+      `${this.getValue("plenumHeight") || 0} m`,
+      this.margin + 50,
+      this.currentY
+    );
+    this.currentY += 4;
+    this.doc.text(`Ceiling Area`, this.margin + 5, this.currentY);
+    this.doc.text(
+      `${this.getValue("ceilingArea") || 0} m²`,
+      this.margin + 50,
+      this.currentY
+    );
+    this.currentY += 4;
+    this.doc.text(`StratoBrace Capacity`, this.margin + 5, this.currentY);
+    this.doc.text(`250 kg`, this.margin + 50, this.currentY);
+    this.currentY += 8;
+
+    // Seismic Clearance
+    const seismicClearance = this.getValue("seismicClearance");
+    this.doc.setFont("helvetica", "bold");
+    this.doc.text(
+      `Required Seismic Clearance:`,
+      this.margin + 5,
+      this.currentY
+    );
+    this.doc.setFont("helvetica", "normal");
+    this.currentY += 4;
+    this.doc.text(
+      `SLS = ${seismicClearance?.sls || 0} mm`,
+      this.margin + 5,
+      this.currentY
+    );
+    this.currentY += 4;
+    this.doc.text(
+      `ULS = ${seismicClearance?.uls || 0} mm`,
+      this.margin + 5,
+      this.currentY
+    );
+
+    this.addFooter();
+  }
+
+  generateNotesPage() {
+    this.addPage();
+
+    // Notes header
+    this.doc.setFontSize(14);
+    this.doc.setFont("helvetica", "bold");
+    this.doc.setTextColor(...COLORS.primary);
+    this.doc.text("Notes", this.margin, this.currentY);
+    this.currentY += 10;
+
+    // User notes
+    if (this.options.notes) {
+      this.doc.setFontSize(9);
+      this.doc.setFont("helvetica", "normal");
+      this.doc.setTextColor(...COLORS.text);
+      const splitNotes = this.doc.splitTextToSize(
+        this.options.notes,
+        this.pageWidth - 2 * this.margin
+      );
+      this.doc.text(splitNotes, this.margin, this.currentY);
+      this.currentY += splitNotes.length * 5 + 10;
+    }
+
+    // Warning
+    this.doc.setFontSize(9);
+    this.doc.setTextColor(220, 53, 69);
+    this.doc.setFont("helvetica", "bold");
+    const warning =
+      "© This design is for T&R Baffle Ceiling Systems only and cannot be used with other manufacturer's ceiling products.";
+    const splitWarning = this.doc.splitTextToSize(
+      warning,
+      this.pageWidth - 2 * this.margin
+    );
+    this.doc.text(splitWarning, this.margin, this.currentY);
+    this.currentY += splitWarning.length * 5 + 8;
+
+    // Disclaimers
+    this.doc.setFontSize(8);
+    this.doc.setFont("helvetica", "normal");
+    this.doc.setTextColor(...COLORS.text);
+    this.doc.setFont("helvetica", "italic");
+
+    const disclaimers = [
+      "This seismic design guide is provided to determine the installation requirements and details for the ceiling system. The calculations are based on conservative assumptions. Reduced seismic bracing for individual sites may be possible if a suitably qualified engineer carries out a site specific design.",
+      "This guide has been prepared by JSK Consulting Engineers for T&R Interior Systems with the usual care and thoroughness of the consulting profession. Application of the guide is up to the users discretion and outside the control of JSK Consulting Engineers.",
+      "If the building is outside the assumptions and limitations detailed then a suitable site specific seismic design should be performed by a qualified Chartered Professional Engineer.",
+      "Consult a structural engineer for the expected earthquake deflections of the structure.",
+      "© The T&R Seismic System has been developed in conjunction with JSK Consulting Engineers and T&R Interior Systems. It remains the intellectual property of T&R Interior Systems and may not be used with other products.",
+    ];
+
+    disclaimers.forEach((disclaimer) => {
+      const lines = this.doc.splitTextToSize(
+        disclaimer,
+        this.pageWidth - 2 * this.margin
+      );
+      this.doc.text(lines, this.margin, this.currentY);
+      this.currentY += lines.length * 3.5 + 4;
+    });
+
+    this.addFooter();
+  }
+
+  generate() {
+    this.generateMainPage();
+    this.generateNotesPage();
+  }
+
+  save() {
+    this.generate();
+    const fileName = `TR-Baffle-Seismic-${this.options.jobName.replace(
+      /[^a-z0-9]/gi,
+      "_"
+    )}-${new Date().toISOString().split("T")[0]}.pdf`;
+    this.doc.save(fileName);
+  }
+}
+
+/**
+ * Export function to generate and download PDF for Baffle Calculator
+ */
+export function exportBaffleCeilingPDF(calculatorState, options) {
+  const exporter = new BafflePDFExporter(calculatorState, options);
+  exporter.save();
+}

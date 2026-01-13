@@ -21,6 +21,8 @@
   import CalculatorNav from "./components/CalculatorNav.vue";
   import CeilingComponentsEstimator from "./calculators/CeilingComponentsEstimator.vue";
   import SuspendedCeilingCalculator from "./calculators/SuspendedCeilingCalculator.vue";
+  import PlasterboardCeilingCalculator from "./calculators/PlasterboardCeilingCalculator.vue";
+  import BaffleCeilingCalculator from "./calculators/BaffleCeilingCalculator.vue";
 
   // Calculator registry
   const calculators = [
@@ -39,14 +41,14 @@
     {
       id: "3",
       name: "Seismic Calculator - Plasterboard",
-      component: null,
-      available: false,
+      component: PlasterboardCeilingCalculator,
+      available: true,
     },
     {
       id: "4",
       name: "Seismic Calculator - Baffle Ceilings",
-      component: null,
-      available: false,
+      component: BaffleCeilingCalculator,
+      available: true,
     },
   ];
 
