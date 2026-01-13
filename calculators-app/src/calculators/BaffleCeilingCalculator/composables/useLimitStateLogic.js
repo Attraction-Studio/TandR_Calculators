@@ -5,7 +5,12 @@ import { computed } from "vue";
  * Determines the limit state based on user answers to questions
  */
 export function useBaffleLimitStateLogic(answers) {
-  const { q1Answer, q2Answer, q3Answer, q4Answer } = answers;
+  const { q0Answer, q1Answer, q2Answer, q3Answer, q4Answer } = answers;
+
+  // SLS2 is triggered by Q0 = Yes (operational state required)
+  const isSLS2Triggered = computed(() => {
+    return q0Answer.value === "yes";
+  });
 
   // Main limit state determination
   // ULS if any of Q1, Q2, Q3 are Yes
@@ -31,7 +36,7 @@ export function useBaffleLimitStateLogic(answers) {
 
   // SLS2 display for live calculations
   const liveCalcSLS2Display = computed(() => {
-    if (limitStateMain.value === "ULS") {
+    if (isSLS2Triggered.value || limitStateMain.value === "ULS") {
       return "+SLS2";
     }
     return "";
@@ -39,7 +44,7 @@ export function useBaffleLimitStateLogic(answers) {
 
   // SLS2 display for footer result
   const footerSLS2Display = computed(() => {
-    if (limitStateMain.value === "ULS") {
+    if (isSLS2Triggered.value || limitStateMain.value === "ULS") {
       return "+SLS2";
     }
     return "";
@@ -50,14 +55,14 @@ export function useBaffleLimitStateLogic(answers) {
     return limitStateMain.value !== "";
   });
 
-  // Show multi-state note when ULS is selected (includes SLS2)
+  // Show multi-state note when ULS is selected (includes SLS2) or SLS2 is triggered
   const showMultiStateNote = computed(() => {
-    return limitStateMain.value === "ULS";
+    return limitStateMain.value === "ULS" || isSLS2Triggered.value;
   });
 
   // Show SLS2 note
   const showSLS2Note = computed(() => {
-    return limitStateMain.value === "ULS";
+    return isSLS2Triggered.value || limitStateMain.value === "ULS";
   });
 
   // Show error when Q4 (assumptions) is No
@@ -67,12 +72,12 @@ export function useBaffleLimitStateLogic(answers) {
 
   // Should show SLS2 calculations
   const showSLS2Calculations = computed(() => {
-    return limitStateMain.value === "ULS";
+    return isSLS2Triggered.value || limitStateMain.value === "ULS";
   });
 
   // Is SLS2 required
   const isSLS2Required = computed(() => {
-    return limitStateMain.value === "ULS";
+    return isSLS2Triggered.value || limitStateMain.value === "ULS";
   });
 
   return {

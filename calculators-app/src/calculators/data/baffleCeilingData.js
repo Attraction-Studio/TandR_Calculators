@@ -190,7 +190,8 @@ export const BRACE_ARM_TYPES = {
 // Constants
 export const CONSTANTS = {
   STRONGBACK_MASS: 1.27, // 41x21x1.2 PST Channel kg/m²
-  STRONGBACK_SPACING: 1.2, // m
+  STRONGBACK_SPACING: 1.2, // m (hanger rod spacing)
+  STRONGBACK_BRACE_SPACING: 2.4, // m (used for max brace spacing calculation)
   STRATOBRACE_CAPACITY: 250, // kg
   MOTION_LIMITING_FACTOR: 0.7,
   MIN_BAFFLE_SPACING: 0.1, // m
@@ -331,7 +332,7 @@ export function calculateMinimumBraces(ceilingArea, areaPerBrace) {
  * @returns {number} Maximum brace spacing in m
  */
 export function calculateBraceSpacing(areaPerBrace) {
-  return areaPerBrace / CONSTANTS.STRONGBACK_SPACING;
+  return areaPerBrace / CONSTANTS.STRONGBACK_BRACE_SPACING;
 }
 
 /**

@@ -8,6 +8,64 @@
       </p>
       <hr class="my-6" />
 
+      <!-- Question 0: Operational State (SLS2 trigger) -->
+      <div v-show="showQuestion0">
+        <p class="paragraph-18px font-semibold">
+          <b
+            >Is the suspended ceiling and/or elements which directly interact
+            with the ceiling required to be returned to an operational state
+            within an acceptably short time frame in order for the structure to
+            be occupied?</b
+          >
+        </p>
+        <div class="flex gap-2 my-4">
+          <button
+            type="button"
+            class="px-6 py-2 font-semibold transition-colors"
+            :class="
+              q0Answer === 'yes'
+                ? 'bg-[#333] !text-white'
+                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            "
+            @click="answerQuestion0('yes')"
+          >
+            Yes
+          </button>
+          <button
+            type="button"
+            class="px-6 py-2 font-semibold transition-colors"
+            :class="
+              q0Answer === 'no'
+                ? 'bg-[#333] !text-white'
+                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            "
+            @click="answerQuestion0('no')"
+          >
+            No
+          </button>
+        </div>
+        <p class="paragraph-18px text-sm italic">
+          As per the supplement to NZS 1170.5, this category can apply to
+          ceilings which interact with fire suppression systems, emergency
+          lighting installations and other parts.
+        </p>
+        <p class="paragraph-18px text-sm italic mt-2">
+          Note that this applies for all parts and components that are essential
+          for a building to be occupied. These would include; fire protection
+          systems, critical plumbing systems, electrical systems and lifts. For
+          all structures these will be elements required to be returned to an
+          operational state within an acceptably short time frame (hours or days
+          rather than weeks) in order for the structure to be reoccupied.
+        </p>
+        <p class="paragraph-18px text-sm italic mt-2">
+          For example reinstatement of lightweight fallen tiles may be
+          considered a viable option within the time frame indicated to allow
+          reoccupation of an office but may be unsuitable for an operating
+          theatre.
+        </p>
+        <hr class="my-6" />
+      </div>
+
       <!-- Question 1: Part Weight -->
       <div v-show="showQuestion1">
         <p class="paragraph-18px font-semibold">
@@ -253,17 +311,25 @@
 
   const state = inject("calculatorState");
 
-  const { q1Answer, q2Answer, q3Answer, q4Answer, limitStateLogic } = state;
+  const { q0Answer, q1Answer, q2Answer, q3Answer, q4Answer, limitStateLogic } =
+    state;
 
   const showAssumptions = ref(false);
 
-  // Question visibility - simplified flow for baffle
-  const showQuestion1 = computed(() => true);
-  const showQuestion2 = computed(() => q1Answer.value === "no");
+  // Question visibility - flow for baffle ceiling
+  const showQuestion0 = computed(() => true);
+  const showQuestion1 = computed(() => q0Answer.value !== "");
+  const showQuestion2 = computed(
+    () => q0Answer.value !== "" && q1Answer.value === "no"
+  );
   const showQuestion3 = computed(
-    () => q1Answer.value === "no" && q2Answer.value === "no"
+    () =>
+      q0Answer.value !== "" &&
+      q1Answer.value === "no" &&
+      q2Answer.value === "no"
   );
   const showQuestion4 = computed(() => {
+    if (q0Answer.value === "") return false;
     if (q1Answer.value === "yes") return true;
     if (q2Answer.value === "yes") return true;
     if (q3Answer.value === "yes") return true;
@@ -281,6 +347,10 @@
   const showResult = limitStateLogic.showFooterResult;
 
   // Question handlers
+  function answerQuestion0(answer) {
+    q0Answer.value = answer;
+  }
+
   function answerQuestion1(answer) {
     q1Answer.value = answer;
     if (answer === "yes") {

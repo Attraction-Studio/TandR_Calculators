@@ -20,6 +20,7 @@ export function useCalculatorState() {
   // ============================================================================
   // STATE - Step 1: Limit State (Question Answers)
   // ============================================================================
+  const q0Answer = ref(""); // Operational state required (SLS2 trigger)
   const q1Answer = ref(""); // Part weight > 7.5kg
   const q2Answer = ref(""); // Height >= 3m
   const q3Answer = ref(""); // Blocks emergency egress
@@ -29,6 +30,7 @@ export function useCalculatorState() {
   // COMPUTED - Limit State Logic
   // ============================================================================
   const limitStateLogic = useBaffleLimitStateLogic({
+    q0Answer,
     q1Answer,
     q2Answer,
     q3Answer,
@@ -202,6 +204,7 @@ export function useCalculatorState() {
   // ============================================================================
   function resetState() {
     // Reset limit state questions
+    q0Answer.value = "";
     q1Answer.value = "";
     q2Answer.value = "";
     q3Answer.value = "";
@@ -231,6 +234,7 @@ export function useCalculatorState() {
   // ============================================================================
   return {
     // Limit state questions
+    q0Answer,
     q1Answer,
     q2Answer,
     q3Answer,
