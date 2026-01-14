@@ -182,37 +182,24 @@
           Click on a lining to select it. The weight will be applied to your
           calculation.
         </p>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
           <button
             v-for="lining in liningOptions"
             :key="lining.label"
             type="button"
             @click="selectLining(lining.value)"
-            class="p-4 border-2 rounded-lg text-left transition-all hover:border-blue-500 hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            class="cal-tiles group"
             :class="
               liningWeight == lining.value
-                ? 'border-blue-600 bg-blue-50 ring-2 ring-blue-200'
+                ? 'border-blue-600 bg-blue-50 ring-1 ring-blue-200'
                 : 'border-gray-200 bg-white'
             "
           >
-            <div class="flex justify-between items-center">
-              <span class="font-medium">{{ lining.label }}</span>
-              <span
-                class="text-lg font-bold"
-                :class="
-                  liningWeight == lining.value
-                    ? 'text-blue-600'
-                    : 'text-gray-900'
-                "
-              >
+            <div class="cal-tile-inner">
+              <span class="font-semibold text-lg">{{ lining.label }}</span>
+              <span class="text-sm/tight font-base">
                 {{ lining.value }} kg/m²
               </span>
-            </div>
-            <div
-              v-if="liningWeight == lining.value"
-              class="mt-2 text-sm text-blue-600 font-medium"
-            >
-              ✓ Selected
             </div>
           </button>
         </div>

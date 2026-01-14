@@ -77,3 +77,10 @@
 .alert-success {
   @apply bg-green-100 text-green-700;
 }
+
+.cal-tiles {
+  @apply px-4 py-6 border overflow-hidden text-left transition-all border-gray-100 relative hover:border-blue-500 hover:bg-blue-50 focus:outline-none focus:ring-1 focus:ring-blue-500;
+}
+.cal-tile-inner {
+  @apply flex flex-col justify-start items-start;
+}
