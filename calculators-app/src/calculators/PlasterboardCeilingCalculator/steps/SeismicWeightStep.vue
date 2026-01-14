@@ -64,38 +64,11 @@
               <td class="py-3">
                 <button
                   type="button"
-                  @click="showLiningOptions = !showLiningOptions"
-                  class="text-sm text-blue-600 hover:underline mb-2"
+                  @click="showLiningOptions = true"
+                  class="calc-button calc-button-primary"
                 >
-                  {{ showLiningOptions ? "Hide" : "Show" }} Common Linings
+                  Select Common Lining
                 </button>
-                <div
-                  v-if="showLiningOptions"
-                  class="mb-3 border rounded overflow-hidden"
-                >
-                  <table class="w-full text-sm">
-                    <thead class="bg-gray-100">
-                      <tr>
-                        <th class="px-3 py-2 text-left">Lining</th>
-                        <th class="px-3 py-2 text-right">Weight kg/m²</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr
-                        v-for="lining in liningOptions"
-                        :key="lining.label"
-                        @click="selectLining(lining.value)"
-                        class="cursor-pointer hover:bg-blue-50 border-t"
-                        :class="{
-                          'bg-green-100': liningWeight == lining.value,
-                        }"
-                      >
-                        <td class="px-3 py-2">{{ lining.label }}</td>
-                        <td class="px-3 py-2 text-right">{{ lining.value }}</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
               </td>
               <td class="py-3 text-right w-24">
                 <input
@@ -201,11 +174,56 @@
         cross tee spacing of 400mm should be used.
       </p>
     </div>
+
+    <!-- Common Linings Modal -->
+    <Modal v-model="showLiningOptions" title="Select Common Lining" size="lg">
+      <div class="space-y-3">
+        <p class="text-sm text-gray-600 mb-4">
+          Click on a lining to select it. The weight will be applied to your
+          calculation.
+        </p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <button
+            v-for="lining in liningOptions"
+            :key="lining.label"
+            type="button"
+            @click="selectLining(lining.value)"
+            class="p-4 border-2 rounded-lg text-left transition-all hover:border-blue-500 hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            :class="
+              liningWeight == lining.value
+                ? 'border-blue-600 bg-blue-50 ring-2 ring-blue-200'
+                : 'border-gray-200 bg-white'
+            "
+          >
+            <div class="flex justify-between items-center">
+              <span class="font-medium">{{ lining.label }}</span>
+              <span
+                class="text-lg font-bold"
+                :class="
+                  liningWeight == lining.value
+                    ? 'text-blue-600'
+                    : 'text-gray-900'
+                "
+              >
+                {{ lining.value }} kg/m²
+              </span>
+            </div>
+            <div
+              v-if="liningWeight == lining.value"
+              class="mt-2 text-sm text-blue-600 font-medium"
+            >
+              ✓ Selected
+            </div>
+          </button>
+        </div>
+      </div>
+    </Modal>
   </div>
 </template>
 
 <script setup>
   import { inject, ref } from "vue";
+  import Modal from "../../../components/Modal.vue";
   import {
     MAIN_TEE_SPACING_OPTIONS,
     CROSS_TEE_SPACING_OPTIONS,
@@ -233,5 +251,9 @@
 
   function selectLining(value) {
     liningWeight.value = value;
+    // Keep modal open briefly to show selection feedback
+    setTimeout(() => {
+      showLiningOptions.value = false;
+    }, 300);
   }
 </script>

@@ -51,53 +51,11 @@
 
           <button
             type="button"
-            @click="showCommonTiles = !showCommonTiles"
-            class="bg-[#333] !text-white px-4 py-2 text-sm mt-2 flex items-center gap-2"
+            @click="showCommonTiles = true"
+            class="calc-button calc-button-primary mt-2"
           >
-            {{ showCommonTiles ? "Hide" : "Show" }} Common Tiles
-            <svg
-              class="w-4 h-4 transition-transform duration-200"
-              :class="{ 'rotate-180': showCommonTiles }"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M19 9l-7 7-7-7"
-              />
-            </svg>
+            Select Common Tile
           </button>
-
-          <div
-            v-if="showCommonTiles"
-            class="mt-4 border border-gray-300 rounded overflow-hidden"
-          >
-            <table class="w-full text-sm">
-              <thead class="bg-gray-100">
-                <tr>
-                  <th class="text-left p-2 border-b border-gray-300">Tile</th>
-                  <th class="text-left p-2 border-b border-gray-300">
-                    Weight kg/m²
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr
-                  v-for="tile in tileMassOptions"
-                  :key="tile.type"
-                  @click="selectTile(tile.mass)"
-                  class="cursor-pointer hover:bg-blue-50 transition-colors"
-                  :class="{ 'bg-blue-100': state.tileMass.value === tile.mass }"
-                >
-                  <td class="p-2 border-b border-gray-200">{{ tile.type }}</td>
-                  <td class="p-2 border-b border-gray-200">{{ tile.mass }}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
         </div>
 
         <!-- Services Section -->
@@ -247,6 +205,50 @@
         </div>
       </div>
     </div>
+
+    <!-- Common Tiles Modal -->
+    <Modal v-model="showCommonTiles" title="Select Common Tile" size="lg">
+      <div class="space-y-3">
+        <p class="text-sm text-gray-600 mb-4">
+          Click on a tile to select it. The weight will be applied to your
+          calculation.
+        </p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <button
+            v-for="tile in tileMassOptions"
+            :key="tile.type"
+            type="button"
+            @click="selectTile(tile.mass)"
+            class="p-4 border-2 rounded-lg text-left transition-all hover:border-blue-500 hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            :class="
+              state.tileMass.value === tile.mass
+                ? 'border-blue-600 bg-blue-50 ring-2 ring-blue-200'
+                : 'border-gray-200 bg-white'
+            "
+          >
+            <div class="flex justify-between items-center">
+              <span class="font-medium">{{ tile.type }}</span>
+              <span
+                class="text-lg font-bold"
+                :class="
+                  state.tileMass.value === tile.mass
+                    ? 'text-blue-600'
+                    : 'text-gray-900'
+                "
+              >
+                {{ tile.mass }} kg/m²
+              </span>
+            </div>
+            <div
+              v-if="state.tileMass.value === tile.mass"
+              class="mt-2 text-sm text-blue-600 font-medium"
+            >
+              ✓ Selected
+            </div>
+          </button>
+        </div>
+      </div>
+    </Modal>
   </div>
 </template>
 
@@ -256,6 +258,7 @@
   import InputField from "../../../components/InputField.vue";
   import ConditionalSection from "../../../components/ConditionalSection.vue";
   import InfoBox from "../../../components/InfoBox.vue";
+  import Modal from "../../../components/Modal.vue";
   import {
     GRID_MASS_OPTIONS,
     TILE_MASS_OPTIONS,
@@ -307,6 +310,9 @@
 
   function selectTile(mass) {
     state.tileMass.value = Number(mass);
-    showCommonTiles.value = false;
+    // Keep modal open briefly to show selection feedback
+    setTimeout(() => {
+      showCommonTiles.value = false;
+    }, 300);
   }
 </script>

@@ -25,22 +25,12 @@
       <p>
         <button
           type="button"
-          @click="showClipDetail = !showClipDetail"
+          @click="showClipDetail = true"
           class="text-blue-600 hover:text-blue-800 underline focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 rounded px-1"
         >
           T&R Seismic Clip Detail
         </button>
       </p>
-      <div
-        v-show="showClipDetail"
-        class="mt-4 border border-gray-300 rounded-lg p-4 bg-gray-50"
-      >
-        <img
-          src="https://cdn.prod.website-files.com/68ec24dc82bba0539e7b250e/691bcae29bfa2a5724011c6b_SeismicClipDetail.png"
-          alt="Seismic Clip Detail"
-          class="max-w-full h-auto rounded"
-        />
-      </div>
     </div>
 
     <!-- Grid Configuration -->
@@ -119,34 +109,11 @@
         <h3 class="text-lg font-semibold">Connection Location</h3>
         <button
           type="button"
-          @click="showConnectionExplain = !showConnectionExplain"
+          @click="showConnectionExplain = true"
           class="text-sm px-3 py-1 border border-gray-300 hover:bg-gray-100 rounded"
         >
           explain
         </button>
-      </div>
-
-      <div
-        v-show="showConnectionExplain"
-        class="mb-4 p-4 bg-gray-50 border border-gray-300 rounded"
-      >
-        <p class="mb-3">
-          If you wish to specify the location of the first tee connections, a
-          note is to be added to the installation information stating that full
-          lengths of main/cross tees are to be used around the fixed edges of
-          the ceilings. Refer to the diagram below.
-        </p>
-        <img
-          src="https://cdn.prod.website-files.com/68ec24dc82bba0539e7b250e/691bcb4d4d19d424fab719e5_specifyconnection.png"
-          alt="Specify Connection"
-          class="max-w-full h-auto rounded mb-3"
-        />
-        <ul class="list-disc pl-5 space-y-1">
-          <li>
-            When yes is selected for the main tee direction, the limiting
-            lengths are increased by 3.0m
-          </li>
-        </ul>
       </div>
 
       <QuestionCard
@@ -181,26 +148,11 @@
         </h3>
         <button
           type="button"
-          @click="showStrengtheningExample = !showStrengtheningExample"
+          @click="showStrengtheningExample = true"
           class="text-sm px-3 py-1 border border-gray-300 hover:bg-gray-100 rounded"
         >
           View Grid Strengthening Example
         </button>
-      </div>
-
-      <div
-        v-show="showStrengtheningExample"
-        class="mb-4 p-4 bg-gray-50 border border-gray-300 rounded"
-      >
-        <p class="text-sm mb-3">
-          The T&R 4-way clip can be installed at main or cross tee connections,
-          this allows the limiting tee length to be increased in some cases.
-        </p>
-        <img
-          src="https://cdn.prod.website-files.com/68ec24dc82bba0539e7b250e/691bcb4de5af37993362275a_4wayclip.jpg"
-          alt="4-way clip installed on cross tee connection"
-          class="max-w-full h-auto rounded mb-3"
-        />
       </div>
 
       <QuestionCard question-title="Grid Strengthening Options">
@@ -572,6 +524,63 @@
       @close="showExportDialog = false"
       @export="handleExport"
     />
+
+    <!-- Grid Strengthening Example Modal -->
+    <Modal
+      v-model="showStrengtheningExample"
+      title="Grid Strengthening Example"
+      size="lg"
+    >
+      <div class="space-y-4">
+        <p>
+          The T&R 4-way clip can be installed at main or cross tee connections,
+          this allows the limiting tee length to be increased in some cases.
+        </p>
+        <img
+          src="https://cdn.prod.website-files.com/68ec24dc82bba0539e7b250e/691bcb4de5af37993362275a_4wayclip.jpg"
+          alt="4-way clip installed on cross tee connection"
+          class="max-w-full h-auto rounded"
+        />
+      </div>
+    </Modal>
+
+    <!-- Connection Location Explain Modal -->
+    <Modal
+      v-model="showConnectionExplain"
+      title="Connection Location"
+      size="lg"
+    >
+      <div class="space-y-4">
+        <p>
+          If you wish to specify the location of the first tee connections, a
+          note is to be added to the installation information stating that full
+          lengths of main/cross tees are to be used around the fixed edges of
+          the ceilings. Refer to the diagram below.
+        </p>
+        <img
+          src="https://cdn.prod.website-files.com/68ec24dc82bba0539e7b250e/691bcb4d4d19d424fab719e5_specifyconnection.png"
+          alt="Specify Connection"
+          class="max-w-full h-auto rounded"
+        />
+        <ul class="list-disc pl-5 space-y-1">
+          <li>
+            When yes is selected for the main tee direction, the limiting
+            lengths are increased by 3.0m
+          </li>
+        </ul>
+      </div>
+    </Modal>
+
+    <!-- Seismic Clip Detail Modal -->
+    <Modal v-model="showClipDetail" title="T&R Seismic Clip Detail" size="lg">
+      <div>
+        <img
+          src="https://cdn.prod.website-files.com/68ec24dc82bba0539e7b250e/691bcae29bfa2a5724011c6b_SeismicClipDetail.png"
+          alt="Seismic Clip Detail"
+          class="max-w-full h-auto rounded"
+        />
+      </div>
+    </Modal>
 
     <!-- Seismic Joints Modal -->
     <Modal v-model="showSeismicJointsModal" title="Seismic Joints" size="lg">

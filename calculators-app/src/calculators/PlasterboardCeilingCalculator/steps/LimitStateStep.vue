@@ -197,7 +197,7 @@
             >Does the ceiling comply with all of the
             <a
               href="#"
-              @click.prevent="showAssumptions = !showAssumptions"
+              @click.prevent="showAssumptions = true"
               class="text-blue-600 hover:underline"
             >
               assumptions and limitations</a
@@ -205,81 +205,105 @@
           >
         </p>
 
-        <div v-if="showAssumptions" class="bg-gray-100 p-4 my-4 rounded">
-          <h4 class="text-xl font-semibold mb-3">
-            Assumptions and Limitations
-          </h4>
-          <p class="text-sm mb-2">
-            The following assumptions have been made while developing this
-            seismic design guide. Installers should ensure that the assumptions
-            are accurate for the specific installation. If the project falls
-            outside of the scope of these limitations, a suitably qualified
-            engineer should be engaged.
-          </p>
-          <ul class="list-disc pl-6 space-y-1 text-sm">
-            <li>The design guide is only intended for use within NZ</li>
-            <li>The building height must not exceed 40m</li>
-            <li>The design working life of the ceiling is 50 years</li>
-            <li>This guide only cover buildings of importance level 2 and 3</li>
-            <li>
-              For other importance level structures, specific seismic design is
-              required
-            </li>
-            <li>
-              Part Category 6 is not included in this generic design guide. If
-              required then it is recommended that a suitably qualified
-              chartered professional engineer carry out a specific design.
-            </li>
-            <li>
-              Horizontal seismic loads have been treated as the limiting case
-              since they are typically the loads that have the most effect on
-              the performance of suspended ceilings
-            </li>
-            <li>The period of the part is less than 0.75s</li>
-            <li>
-              Part ductility is dependent on whether the design is SLS or ULS
-            </li>
-            <li>
-              For ULS design ceiling ductility of 2 has been used as per NZS
-              1170.5 Supplement 1
-            </li>
-            <li>
-              Class C soils have been assumed, this is the worst case for
-              determination of the seismic action for parts
-            </li>
-            <li>
-              For perimeter fixed ceilings, a continuous ceiling dwang or cross
-              nog is assumed for suitable attachment to the perimeter trim
-            </li>
-            <li>The maximum main tee spacing is 1200mm</li>
-            <li>
-              The maximum cross tee spacing is 600mm, but is primarily based on
-              the lining manufacturer's recommendations
-            </li>
-            <li>The ceiling is non-trafficable</li>
-            <li>The ceiling must be flat in the horizontal plane</li>
-            <li>
-              The seismic loads transferred to structure by the suspended
-              ceiling (via back braces, rigid hangers or fixed edges) should be
-              confirmed by a suitably qualified engineer
-            </li>
-            <li>
-              Any additional body weighing more than 7.5kg is to be separately
-              suspended and braced
-            </li>
-            <li>
-              The guide is for use with the T&R suspended plasterboard grid
-              system only
-            </li>
-            <li>
-              Ceiling movement/damage should not cause an unusually high level
-              of damage
-            </li>
-            <li>
-              The design guide is only to be used for flat ceilings, or ceilings
-              with a rake angle of less than 10 degrees to the horizontal
-            </li>
-          </ul>
+        <!-- Assumptions Modal -->
+        <div
+          v-if="showAssumptions"
+          class="fixed inset-0 z-50 flex items-center justify-center p-4"
+          @click.self="showAssumptions = false"
+        >
+          <div class="fixed inset-0 bg-black/50" aria-hidden="true"></div>
+          <div
+            class="relative bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-auto"
+          >
+            <div class="flex items-center justify-between p-4 border-b">
+              <h3 class="text-xl font-semibold">Assumptions and Limitations</h3>
+              <button
+                type="button"
+                class="text-gray-500 hover:text-gray-700 text-2xl leading-none"
+                @click="showAssumptions = false"
+              >
+                &times;
+              </button>
+            </div>
+            <div class="p-4">
+              <p class="text-sm mb-4">
+                The following assumptions have been made while developing this
+                seismic design guide. Installers should ensure that the
+                assumptions are accurate for the specific installation. If the
+                project falls outside of the scope of these limitations, a
+                suitably qualified engineer should be engaged.
+              </p>
+              <ul class="list-disc pl-6 space-y-1 text-sm">
+                <li>The design guide is only intended for use within NZ</li>
+                <li>The building height must not exceed 40m</li>
+                <li>The design working life of the ceiling is 50 years</li>
+                <li>
+                  This guide only cover buildings of importance level 2 and 3
+                </li>
+                <li>
+                  For other importance level structures, specific seismic design
+                  is required
+                </li>
+                <li>
+                  Part Category 6 is not included in this generic design guide.
+                  If required then it is recommended that a suitably qualified
+                  chartered professional engineer carry out a specific design.
+                </li>
+                <li>
+                  Horizontal seismic loads have been treated as the limiting
+                  case since they are typically the loads that have the most
+                  effect on the performance of suspended ceilings
+                </li>
+                <li>The period of the part is less than 0.75s</li>
+                <li>
+                  Part ductility is dependent on whether the design is SLS or
+                  ULS
+                </li>
+                <li>
+                  For ULS design ceiling ductility of 2 has been used as per NZS
+                  1170.5 Supplement 1
+                </li>
+                <li>
+                  Class C soils have been assumed, this is the worst case for
+                  determination of the seismic action for parts
+                </li>
+                <li>
+                  For perimeter fixed ceilings, a continuous ceiling dwang or
+                  cross nog is assumed for suitable attachment to the perimeter
+                  trim
+                </li>
+                <li>The maximum main tee spacing is 1200mm</li>
+                <li>
+                  The maximum cross tee spacing is 600mm, but is primarily based
+                  on the lining manufacturer's recommendations
+                </li>
+                <li>The ceiling is non-trafficable</li>
+                <li>The ceiling must be flat in the horizontal plane</li>
+                <li>
+                  The seismic loads transferred to structure by the suspended
+                  ceiling (via back braces, rigid hangers or fixed edges) should
+                  be confirmed by a suitably qualified engineer
+                </li>
+                <li>
+                  Any additional body weighing more than 7.5kg is to be
+                  separately suspended and braced
+                </li>
+                <li>
+                  The guide is for use with the T&R suspended plasterboard grid
+                  system only
+                </li>
+                <li>
+                  Ceiling movement/damage should not cause an unusually high
+                  level of damage
+                </li>
+                <li>
+                  The design guide is only to be used for flat ceilings, or
+                  ceilings with a rake angle of less than 10 degrees to the
+                  horizontal
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
 
         <div class="flex gap-2 my-4">

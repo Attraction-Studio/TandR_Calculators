@@ -133,24 +133,44 @@
         </ul>
       </div>
 
-      <!-- Bracing Guidance Toggle -->
+      <!-- Bracing Guidance Button -->
       <div class="mt-6">
         <button
           type="button"
-          class="flex items-center gap-2 text-blue-600 hover:text-blue-800 font-semibold"
-          @click="showBracingGuidance = !showBracingGuidance"
+          class="calc-button calc-button-primary"
+          @click="showBracingGuidance = true"
         >
-          <span v-if="!showBracingGuidance">▶</span>
-          <span v-else>▼</span>
           Show Bracing Guidance Diagram
         </button>
+      </div>
 
-        <div v-if="showBracingGuidance" class="mt-4">
-          <img
-            src="https://cdn.prod.website-files.com/68ec24dc82bba0539e7b250e/6966ea71f6f170575cafd180_BackBracingGuidance.png"
-            alt="Back Bracing Guidance"
-            class="w-full max-w-2xl mx-auto rounded border"
-          />
+      <!-- Bracing Guidance Modal -->
+      <div
+        v-if="showBracingGuidance"
+        class="fixed inset-0 z-50 flex items-center justify-center p-4"
+        @click.self="showBracingGuidance = false"
+      >
+        <div class="fixed inset-0 bg-black/50" aria-hidden="true"></div>
+        <div
+          class="relative bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-auto"
+        >
+          <div class="flex items-center justify-between p-4 border-b">
+            <h3 class="text-xl font-semibold">Bracing Guidance Diagram</h3>
+            <button
+              type="button"
+              class="text-gray-500 hover:text-gray-700 text-2xl leading-none"
+              @click="showBracingGuidance = false"
+            >
+              &times;
+            </button>
+          </div>
+          <div class="p-4">
+            <img
+              src="https://cdn.prod.website-files.com/68ec24dc82bba0539e7b250e/6966ea71f6f170575cafd180_BackBracingGuidance.png"
+              alt="Back Bracing Guidance"
+              class="w-full rounded"
+            />
+          </div>
         </div>
       </div>
     </div>

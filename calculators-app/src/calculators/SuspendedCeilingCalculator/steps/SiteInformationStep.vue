@@ -19,37 +19,11 @@
         <div class="mt-1">
           <button
             type="button"
-            @click="toggleZonesMap"
+            @click="showZonesModal = true"
             class="text-sm text-blue-600 hover:text-blue-800 underline focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 rounded px-1"
-            :aria-expanded="showZonesMap"
-            aria-controls="collapsezonemap"
           >
-            {{ showZonesMap ? "Hide Zones" : "Show Zones" }}
+            Show Zones
           </button>
-        </div>
-        <div
-          v-show="showZonesMap"
-          id="collapsezonemap"
-          class="mt-4 border border-gray-300 rounded-lg overflow-hidden"
-        >
-          <div class="p-4 bg-gray-50">
-            <p class="text-sm mb-4">
-              Locate the area for which the suspended ceiling will be installed.
-              Find the Site Specific Zone Factor by locating the line closest to
-              the area of installation, or the shaded area it is within, and
-              tapping it to show the rating.
-            </p>
-            <div v-if="mapLoaded" class="w-full" style="min-height: 480px">
-              <iframe
-                :src="mapUrl"
-                width="100%"
-                height="480"
-                style="border: none; width: 100%"
-                allowfullscreen
-                loading="lazy"
-              ></iframe>
-            </div>
-          </div>
         </div>
       </div>
 
@@ -297,6 +271,28 @@
       </div>
     </Modal>
 
+    <!-- Zones Modal -->
+    <Modal v-model="showZonesModal" title="Seismic Zone Map" size="xl">
+      <div>
+        <p class="text-sm mb-4">
+          Locate the area for which the suspended ceiling will be installed.
+          Find the Site Specific Zone Factor by locating the line closest to the
+          area of installation, or the shaded area it is within, and tapping it
+          to show the rating.
+        </p>
+        <div class="w-full" style="min-height: 480px">
+          <iframe
+            :src="mapUrl"
+            width="100%"
+            height="480"
+            style="border: none; width: 100%"
+            allowfullscreen
+            loading="lazy"
+          ></iframe>
+        </div>
+      </div>
+    </Modal>
+
     <!-- Ductility Modal -->
     <Modal v-model="showDuctilityModal" title="Ductility" size="md">
       <div class="space-y-4">
@@ -357,23 +353,12 @@
     { value: 1.25, label: "1.25 (NZS4600:2018)" },
   ];
 
-  // Map toggle state
-  const showZonesMap = ref(false);
-  const mapLoaded = ref(false);
-
   // Modal state
+  const showZonesModal = ref(false);
   const showImportanceModal = ref(false);
   const showDuctilityModal = ref(false);
 
   // Google Maps embed URL (legacy: suspended_ceiling_calculator.js:109)
   const mapUrl =
     "https://www.google.com/maps/d/embed?mid=10bhne8TlErYtzZIwt3-e_dYP_yo&z=5";
-
-  function toggleZonesMap() {
-    showZonesMap.value = !showZonesMap.value;
-    // Load map only once when first opened (legacy behavior)
-    if (showZonesMap.value && !mapLoaded.value) {
-      mapLoaded.value = true;
-    }
-  }
 </script>

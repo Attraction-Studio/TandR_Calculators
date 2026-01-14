@@ -265,7 +265,7 @@
             >Does the ceiling comply with all of the
             <a
               href="#"
-              @click.prevent="showAssumptions = !showAssumptions"
+              @click.prevent="showAssumptions = true"
               class="text-blue-600 hover:underline"
             >
               assumptions and limitations</a
@@ -273,50 +273,74 @@
           >
         </p>
 
-        <div v-if="showAssumptions" class="bg-gray-100 p-4 my-4 rounded">
-          <h4 class="text-xl font-semibold mb-3">
-            Assumptions and Limitations
-          </h4>
-          <ul class="list-disc pl-6 space-y-1 text-sm">
-            <li>The design guide is only intended for use within NZ</li>
-            <li>The building height must not exceed 40m</li>
-            <li>The design working life of the ceiling is 50 years</li>
-            <li>This guide only cover buildings of importance level 2 and 3</li>
-            <li>
-              For other importance level structures, specific seismic design is
-              required
-            </li>
-            <li>
-              Part Category 6 is not included in this generic design guide.
-            </li>
-            <li>
-              Only horizontal forces have been considered in this guide.
-              Vertical forces may need to be considered on a site-specific basis
-            </li>
-            <li>The period of the part is less than 0.75s</li>
-            <li>
-              Part ductility is dependant on whether the design is SLS or ULS
-            </li>
-            <li>Class C soils have been assumed</li>
-            <li>
-              For perimeter fixed ceilings, a continuous ceiling dwang or cross
-              nog is assumed for suitable attachment to the perimeter trim
-            </li>
-            <li>The maximum tee spacing is 1200mm in any direction</li>
-            <li>The ceiling is non-trafficable</li>
-            <li>
-              The seismic loads transferred by the suspended ceiling should be
-              confirmed by a qualified structural engineer
-            </li>
-            <li>
-              Any additional body weighing more than 10kg is to be separately
-              suspended and braced
-            </li>
-            <li>
-              Tiles exceeding 3kg/m<sup>2</sup> to be clipped into the grid at
-              all egress routes and corridors.
-            </li>
-          </ul>
+        <!-- Assumptions Modal -->
+        <div
+          v-if="showAssumptions"
+          class="fixed inset-0 z-50 flex items-center justify-center p-4"
+          @click.self="showAssumptions = false"
+        >
+          <div class="fixed inset-0 bg-black/50" aria-hidden="true"></div>
+          <div
+            class="relative bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-auto"
+          >
+            <div class="flex items-center justify-between p-4 border-b">
+              <h3 class="text-xl font-semibold">Assumptions and Limitations</h3>
+              <button
+                type="button"
+                class="text-gray-500 hover:text-gray-700 text-2xl leading-none"
+                @click="showAssumptions = false"
+              >
+                &times;
+              </button>
+            </div>
+            <div class="p-4">
+              <ul class="list-disc pl-6 space-y-1 text-sm">
+                <li>The design guide is only intended for use within NZ</li>
+                <li>The building height must not exceed 40m</li>
+                <li>The design working life of the ceiling is 50 years</li>
+                <li>
+                  This guide only cover buildings of importance level 2 and 3
+                </li>
+                <li>
+                  For other importance level structures, specific seismic design
+                  is required
+                </li>
+                <li>
+                  Part Category 6 is not included in this generic design guide.
+                </li>
+                <li>
+                  Only horizontal forces have been considered in this guide.
+                  Vertical forces may need to be considered on a site-specific
+                  basis
+                </li>
+                <li>The period of the part is less than 0.75s</li>
+                <li>
+                  Part ductility is dependant on whether the design is SLS or
+                  ULS
+                </li>
+                <li>Class C soils have been assumed</li>
+                <li>
+                  For perimeter fixed ceilings, a continuous ceiling dwang or
+                  cross nog is assumed for suitable attachment to the perimeter
+                  trim
+                </li>
+                <li>The maximum tee spacing is 1200mm in any direction</li>
+                <li>The ceiling is non-trafficable</li>
+                <li>
+                  The seismic loads transferred by the suspended ceiling should
+                  be confirmed by a qualified structural engineer
+                </li>
+                <li>
+                  Any additional body weighing more than 10kg is to be
+                  separately suspended and braced
+                </li>
+                <li>
+                  Tiles exceeding 3kg/m<sup>2</sup> to be clipped into the grid
+                  at all egress routes and corridors.
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
 
         <div class="flex gap-2 my-4">

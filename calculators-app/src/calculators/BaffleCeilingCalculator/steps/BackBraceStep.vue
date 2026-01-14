@@ -92,52 +92,93 @@
         chartered professional engineer.
       </p>
 
-      <!-- Bracing Diagram Toggle -->
-      <div class="text-center">
+      <!-- Bracing Diagram & Connection Details Buttons -->
+      <div class="flex flex-wrap gap-4 justify-center">
         <button
           type="button"
-          @click="showBracingDiagram = !showBracingDiagram"
-          class="text-sm text-blue-600 hover:underline"
+          @click="showBracingDiagram = true"
+          class="calc-button calc-button-primary"
         >
-          {{ showBracingDiagram ? "Hide" : "Show" }} Bracing Diagram
+          Show Bracing Diagram
+        </button>
+        <button
+          type="button"
+          @click="showConnectionDetails = true"
+          class="calc-button calc-button-primary"
+        >
+          Show Connection Details
         </button>
       </div>
 
-      <div v-if="showBracingDiagram" class="bg-gray-100 p-4 rounded">
-        <img
-          src="https://cdn.prod.website-files.com/68ec24dc82bba0539e7b250e/6966ea719c75e19fd9e54c6a_BracingDiagram.png"
-          alt="Bracing Diagram"
-          class="w-full max-w-md mx-auto rounded mb-4"
-        />
-        <p class="text-sm text-center">
-          Installation arrangement of StratoBrace. The brace is constructed of
-          various steel stud compression posts with 2x steel studs at 45 degrees
-          in each direction, depending on the plenum height.
-        </p>
-      </div>
-
-      <!-- Connection Details Toggle -->
-      <div class="text-center">
-        <button
-          type="button"
-          @click="showConnectionDetails = !showConnectionDetails"
-          class="text-sm text-blue-600 hover:underline"
+      <!-- Bracing Diagram Modal -->
+      <div
+        v-if="showBracingDiagram"
+        class="fixed inset-0 z-50 flex items-center justify-center p-4"
+        @click.self="showBracingDiagram = false"
+      >
+        <div class="fixed inset-0 bg-black/50" aria-hidden="true"></div>
+        <div
+          class="relative bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-auto"
         >
-          {{ showConnectionDetails ? "Hide" : "Show" }} Connection Details
-        </button>
+          <div class="flex items-center justify-between p-4 border-b">
+            <h3 class="text-xl font-semibold">Bracing Diagram</h3>
+            <button
+              type="button"
+              class="text-gray-500 hover:text-gray-700 text-2xl leading-none"
+              @click="showBracingDiagram = false"
+            >
+              &times;
+            </button>
+          </div>
+          <div class="p-4">
+            <img
+              src="https://cdn.prod.website-files.com/68ec24dc82bba0539e7b250e/6966ea719c75e19fd9e54c6a_BracingDiagram.png"
+              alt="Bracing Diagram"
+              class="w-full max-w-md mx-auto rounded mb-4"
+            />
+            <p class="text-sm text-center">
+              Installation arrangement of StratoBrace. The brace is constructed
+              of various steel stud compression posts with 2x steel studs at 45
+              degrees in each direction, depending on the plenum height.
+            </p>
+          </div>
+        </div>
       </div>
 
-      <div v-if="showConnectionDetails" class="bg-gray-100 p-4 rounded">
-        <p class="text-sm">
-          All fasteners into the building structure are sufficient for the
-          loadings imparted from the back bracing, as long as the manufacturers
-          specifications are followed during the installation of the fastener.
-        </p>
-        <p class="text-sm mt-2">
-          For connections into structure which are not detailed in the table
-          please refer to our T&R representatives or a qualified chartered
-          professional engineer.
-        </p>
+      <!-- Connection Details Modal -->
+      <div
+        v-if="showConnectionDetails"
+        class="fixed inset-0 z-50 flex items-center justify-center p-4"
+        @click.self="showConnectionDetails = false"
+      >
+        <div class="fixed inset-0 bg-black/50" aria-hidden="true"></div>
+        <div
+          class="relative bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-auto"
+        >
+          <div class="flex items-center justify-between p-4 border-b">
+            <h3 class="text-xl font-semibold">Connection Details</h3>
+            <button
+              type="button"
+              class="text-gray-500 hover:text-gray-700 text-2xl leading-none"
+              @click="showConnectionDetails = false"
+            >
+              &times;
+            </button>
+          </div>
+          <div class="p-4 space-y-4">
+            <p class="text-sm">
+              All fasteners into the building structure are sufficient for the
+              loadings imparted from the back bracing, as long as the
+              manufacturers specifications are followed during the installation
+              of the fastener.
+            </p>
+            <p class="text-sm">
+              For connections into structure which are not detailed in the table
+              please refer to our T&R representatives or a qualified chartered
+              professional engineer.
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   </div>

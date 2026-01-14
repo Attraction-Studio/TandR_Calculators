@@ -8,53 +8,15 @@
         on seismic force, brace type and the plenum height.
       </p>
 
-      <!-- Brace Types Toggle -->
+      <!-- Brace Types Button -->
       <div>
         <button
           type="button"
-          @click="showBraceTypes = !showBraceTypes"
-          class="text-sm text-blue-600 hover:underline"
+          @click="showBraceTypes = true"
+          class="calc-button calc-button-primary"
         >
-          {{ showBraceTypes ? "Hide" : "Show" }} brace types
+          Show Brace Types
         </button>
-      </div>
-
-      <div
-        v-if="showBraceTypes"
-        class="grid grid-cols-1 md:grid-cols-2 gap-6 my-6"
-      >
-        <div class="border rounded p-4">
-          <h4 class="font-semibold mb-2">Type A Brace</h4>
-          <img
-            src="https://cdn.prod.website-files.com/68ec24dc82bba0539e7b250e/6966b3bc9251a20b1e9bea66_pbtypea.jpg"
-            alt="Type A Brace"
-            class="w-full rounded mb-2"
-          />
-          <p class="text-sm">
-            <b>Figure 5.1: Installation arrangement of Type A brace.</b><br />
-            The brace is constructed of 64 x 33 x 0.5mm steel stud compression
-            post, with 2x 64 x 33 x 0.5mm steel studs at 45 degrees in each
-            direction.
-          </p>
-        </div>
-        <div class="border rounded p-4">
-          <h4 class="font-semibold mb-2">Type B Brace</h4>
-          <img
-            src="https://cdn.prod.website-files.com/68ec24dc82bba0539e7b250e/6966b3ed898cc40e6054e7e6_BraceTypeC.PNG"
-            alt="Type B Brace"
-            class="w-full rounded mb-2"
-          />
-          <p class="text-sm">
-            <b
-              >Figure 5.2: Installation arrangement of StratoBrace (Type B) back
-              brace.</b
-            ><br />
-            The brace is constructed of various steel stud compression posts
-            with 2x steel studs at 45 degrees in each direction, depending on
-            the plenum height. Instead of using the steel studs fastened
-            directly onto the grid, a StratoBrace bracket is used.
-          </p>
-        </div>
       </div>
 
       <!-- Brace Capacity -->
@@ -164,26 +126,108 @@
         consulting engineer.
       </p>
 
-      <!-- Bracing Connection Details -->
+      <!-- Bracing Connection Details Button -->
       <div class="text-center mt-6">
         <button
           type="button"
-          @click="showConnectionDetails = !showConnectionDetails"
-          class="text-sm text-blue-600 hover:underline"
+          @click="showConnectionDetails = true"
+          class="calc-button calc-button-primary"
         >
-          Bracing connection details
+          Bracing Connection Details
         </button>
       </div>
-      <div v-if="showConnectionDetails" class="bg-gray-100 p-4 rounded mt-4">
-        <p class="text-sm">
-          All fasteners into the building structure are sufficient for the
-          loadings imparted from the back bracing, as long as the manufacturers
-          specifications are followed during the installation of the fastener.
-        </p>
-        <p class="text-sm mt-2">
-          For connections into structure which are not detailed in the table
-          please discuss with a suitably qualified consulting engineer.
-        </p>
+
+      <!-- Brace Types Modal -->
+      <div
+        v-if="showBraceTypes"
+        class="fixed inset-0 z-50 flex items-center justify-center p-4"
+        @click.self="showBraceTypes = false"
+      >
+        <div class="fixed inset-0 bg-black/50" aria-hidden="true"></div>
+        <div
+          class="relative bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-auto"
+        >
+          <div class="flex items-center justify-between p-4 border-b">
+            <h3 class="text-xl font-semibold">Brace Types</h3>
+            <button
+              type="button"
+              class="text-gray-500 hover:text-gray-700 text-2xl leading-none"
+              @click="showBraceTypes = false"
+            >
+              &times;
+            </button>
+          </div>
+          <div class="p-4 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="border rounded p-4">
+              <h4 class="font-semibold mb-2">Type A Brace</h4>
+              <img
+                src="https://cdn.prod.website-files.com/68ec24dc82bba0539e7b250e/6966b3bc9251a20b1e9bea66_pbtypea.jpg"
+                alt="Type A Brace"
+                class="w-full rounded mb-2"
+              />
+              <p class="text-sm">
+                <b>Figure 5.1: Installation arrangement of Type A brace.</b
+                ><br />
+                The brace is constructed of 64 x 33 x 0.5mm steel stud
+                compression post, with 2x 64 x 33 x 0.5mm steel studs at 45
+                degrees in each direction.
+              </p>
+            </div>
+            <div class="border rounded p-4">
+              <h4 class="font-semibold mb-2">Type B Brace</h4>
+              <img
+                src="https://cdn.prod.website-files.com/68ec24dc82bba0539e7b250e/6966b3ed898cc40e6054e7e6_BraceTypeC.PNG"
+                alt="Type B Brace"
+                class="w-full rounded mb-2"
+              />
+              <p class="text-sm">
+                <b
+                  >Figure 5.2: Installation arrangement of StratoBrace (Type B)
+                  back brace.</b
+                ><br />
+                The brace is constructed of various steel stud compression posts
+                with 2x steel studs at 45 degrees in each direction, depending
+                on the plenum height. Instead of using the steel studs fastened
+                directly onto the grid, a StratoBrace bracket is used.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Connection Details Modal -->
+      <div
+        v-if="showConnectionDetails"
+        class="fixed inset-0 z-50 flex items-center justify-center p-4"
+        @click.self="showConnectionDetails = false"
+      >
+        <div class="fixed inset-0 bg-black/50" aria-hidden="true"></div>
+        <div
+          class="relative bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-auto"
+        >
+          <div class="flex items-center justify-between p-4 border-b">
+            <h3 class="text-xl font-semibold">Bracing Connection Details</h3>
+            <button
+              type="button"
+              class="text-gray-500 hover:text-gray-700 text-2xl leading-none"
+              @click="showConnectionDetails = false"
+            >
+              &times;
+            </button>
+          </div>
+          <div class="p-4 space-y-4">
+            <p class="text-sm">
+              All fasteners into the building structure are sufficient for the
+              loadings imparted from the back bracing, as long as the
+              manufacturers specifications are followed during the installation
+              of the fastener.
+            </p>
+            <p class="text-sm">
+              For connections into structure which are not detailed in the table
+              please discuss with a suitably qualified consulting engineer.
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   </div>
