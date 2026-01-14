@@ -198,7 +198,7 @@
             <a
               href="#"
               @click.prevent="showAssumptions = true"
-              class="text-blue-600 hover:underline"
+              class="text-[#3C999B] hover:underline"
             >
               assumptions and limitations</a
             >?</b
