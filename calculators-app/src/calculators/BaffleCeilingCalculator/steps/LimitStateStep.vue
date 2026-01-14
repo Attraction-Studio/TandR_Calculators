@@ -284,17 +284,11 @@
         <p class="paragraph-18px">
           Your Limit State Type is
           <span class="font-bold">{{ limitStateResult }}</span>
-          <span
-            v-if="limitStateLogic.footerSLS2Display.value"
-            class="font-bold"
-          >
-            {{ limitStateLogic.footerSLS2Display.value }}
+          <span v-if="footerSLS2Display" class="font-bold">
+            {{ footerSLS2Display }}
           </span>
         </p>
-        <p
-          v-if="limitStateLogic.showMultiStateNote.value"
-          class="paragraph-18px text-sm mt-2"
-        >
+        <p v-if="showMultiStateNote" class="paragraph-18px text-sm mt-2">
           <small
             >As there are two limit states which apply to the ceiling in this
             instance, the most stringent state which results in the shortest
@@ -316,35 +310,42 @@
 
   const showAssumptions = ref(false);
 
-  // Question visibility - flow for baffle ceiling
+  // Question visibility - flow for baffle ceiling (matches reference HTML)
+  // Q0 always visible
   const showQuestion0 = computed(() => true);
+  // Q1 shows after Q0 is answered (either yes or no)
   const showQuestion1 = computed(() => q0Answer.value !== "");
+  // Q2 shows only if Q1 = No
   const showQuestion2 = computed(
     () => q0Answer.value !== "" && q1Answer.value === "no"
   );
+  // Q3 shows only if Q1 = No AND Q2 = No
   const showQuestion3 = computed(
     () =>
       q0Answer.value !== "" &&
       q1Answer.value === "no" &&
       q2Answer.value === "no"
   );
+  // Q4 (assumptions) shows ONLY if Q1, Q2, Q3 are ALL No
   const showQuestion4 = computed(() => {
-    if (q0Answer.value === "") return false;
-    if (q1Answer.value === "yes") return true;
-    if (q2Answer.value === "yes") return true;
-    if (q3Answer.value === "yes") return true;
-    if (
+    return (
+      q0Answer.value !== "" &&
       q1Answer.value === "no" &&
       q2Answer.value === "no" &&
       q3Answer.value === "no"
-    )
-      return true;
-    return false;
+    );
   });
 
-  const showError = limitStateLogic.showError;
-  const limitStateResult = limitStateLogic.limitStateMain;
-  const showResult = limitStateLogic.showFooterResult;
+  // Create computed wrappers to ensure reactivity in template
+  const showError = computed(() => limitStateLogic.showError.value);
+  const limitStateResult = computed(() => limitStateLogic.limitStateMain.value);
+  const showResult = computed(() => limitStateLogic.showFooterResult.value);
+  const footerSLS2Display = computed(
+    () => limitStateLogic.footerSLS2Display.value
+  );
+  const showMultiStateNote = computed(
+    () => limitStateLogic.showMultiStateNote.value
+  );
 
   // Question handlers
   function answerQuestion0(answer) {

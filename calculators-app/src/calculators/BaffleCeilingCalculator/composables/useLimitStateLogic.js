@@ -8,21 +8,26 @@ export function useBaffleLimitStateLogic(answers) {
   const { q0Answer, q1Answer, q2Answer, q3Answer, q4Answer } = answers;
 
   // SLS2 is triggered by Q0 = Yes (operational state required)
+  // However, SLS2 is only USED when main limit state is ULS
   const isSLS2Triggered = computed(() => {
     return q0Answer.value === "yes";
   });
 
-  // Main limit state determination
-  // ULS if any of Q1, Q2, Q3 are Yes
-  // SLS if all are No and Q4 (assumptions) is Yes
+  // Main limit state determination (matches reference HTML logic)
+  // ULS if any of Q1, Q2, Q3 are Yes - result shows IMMEDIATELY
+  // SLS if Q1, Q2, Q3 are all No AND Q4 (assumptions) is Yes
   const limitStateMain = computed(() => {
-    if (
-      q1Answer.value === "yes" ||
-      q2Answer.value === "yes" ||
-      q3Answer.value === "yes"
-    ) {
+    // ULS is determined as soon as any of Q1/Q2/Q3 = Yes
+    if (q1Answer.value === "yes") {
       return "ULS";
     }
+    if (q2Answer.value === "yes") {
+      return "ULS";
+    }
+    if (q3Answer.value === "yes") {
+      return "ULS";
+    }
+    // SLS requires all Q1/Q2/Q3 = No AND Q4 = Yes
     if (
       q1Answer.value === "no" &&
       q2Answer.value === "no" &&
@@ -34,17 +39,17 @@ export function useBaffleLimitStateLogic(answers) {
     return "";
   });
 
-  // SLS2 display for live calculations
+  // SLS2 display in limit state label - ONLY when Q0 = Yes (per reference: $(".total0a").html("+SLS2"))
   const liveCalcSLS2Display = computed(() => {
-    if (isSLS2Triggered.value || limitStateMain.value === "ULS") {
+    if (isSLS2Triggered.value) {
       return "+SLS2";
     }
     return "";
   });
 
-  // SLS2 display for footer result
+  // SLS2 display for footer result - ONLY when Q0 = Yes
   const footerSLS2Display = computed(() => {
-    if (isSLS2Triggered.value || limitStateMain.value === "ULS") {
+    if (isSLS2Triggered.value) {
       return "+SLS2";
     }
     return "";
@@ -55,29 +60,34 @@ export function useBaffleLimitStateLogic(answers) {
     return limitStateMain.value !== "";
   });
 
-  // Show multi-state note when ULS is selected (includes SLS2) or SLS2 is triggered
+  // Show multi-state note when Q0 = Yes (SLS2 triggered)
   const showMultiStateNote = computed(() => {
-    return limitStateMain.value === "ULS" || isSLS2Triggered.value;
+    return isSLS2Triggered.value;
   });
 
-  // Show SLS2 note
+  // Show SLS2 note - only when Q0 = Yes
   const showSLS2Note = computed(() => {
-    return isSLS2Triggered.value || limitStateMain.value === "ULS";
+    return isSLS2Triggered.value;
   });
 
-  // Show error when Q4 (assumptions) is No
+  // Show error when Q4 (assumptions) is No AND Q1/Q2/Q3 are all No
   const showError = computed(() => {
-    return q4Answer.value === "no";
+    return (
+      q1Answer.value === "no" &&
+      q2Answer.value === "no" &&
+      q3Answer.value === "no" &&
+      q4Answer.value === "no"
+    );
   });
 
-  // Should show SLS2 calculations
+  // Should show SLS2 calculations - only when ULS (per reference calc function)
   const showSLS2Calculations = computed(() => {
-    return isSLS2Triggered.value || limitStateMain.value === "ULS";
+    return limitStateMain.value === "ULS";
   });
 
-  // Is SLS2 required
+  // Is SLS2 required - only when ULS
   const isSLS2Required = computed(() => {
-    return isSLS2Triggered.value || limitStateMain.value === "ULS";
+    return limitStateMain.value === "ULS";
   });
 
   return {

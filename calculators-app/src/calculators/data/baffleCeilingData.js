@@ -137,9 +137,8 @@ export const ZONE_FACTORS = [
   { value: 0.14, label: "Oban" },
 ];
 
-// Importance levels
+// Importance levels (guide only covers IL2 and IL3)
 export const IMPORTANCE_LEVELS = [
-  { value: 1, label: "Importance Level 1" },
   { value: 2, label: "Importance Level 2" },
   { value: 3, label: "Importance Level 3" },
 ];
