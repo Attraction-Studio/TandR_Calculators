@@ -49,7 +49,7 @@ export function useCalculatorState() {
   // ============================================================================
   // STATE - Step 3: Seismic Actions
   // ============================================================================
-  const zoneFactor = ref(0.13); // Default: Auckland
+  const zoneFactor = ref(0.1); // Default: Kaitaia
   const importanceLevel = ref(2); // Default: IL2
   const heightFactor = ref(3); // Default: 0-3m
 
