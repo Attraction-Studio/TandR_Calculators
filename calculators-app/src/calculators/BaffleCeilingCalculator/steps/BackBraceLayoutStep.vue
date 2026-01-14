@@ -132,14 +132,37 @@
           </li>
         </ul>
       </div>
+
+      <!-- Bracing Guidance Toggle -->
+      <div class="mt-6">
+        <button
+          type="button"
+          class="flex items-center gap-2 text-blue-600 hover:text-blue-800 font-semibold"
+          @click="showBracingGuidance = !showBracingGuidance"
+        >
+          <span v-if="!showBracingGuidance">▶</span>
+          <span v-else>▼</span>
+          Show Bracing Guidance Diagram
+        </button>
+
+        <div v-if="showBracingGuidance" class="mt-4">
+          <img
+            src="https://cdn.prod.website-files.com/68ec24dc82bba0539e7b250e/6966ea71f6f170575cafd180_BackBracingGuidance.png"
+            alt="Back Bracing Guidance"
+            class="w-full max-w-2xl mx-auto rounded border"
+          />
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
-  import { inject } from "vue";
+  import { inject, ref } from "vue";
 
   const state = inject("calculatorState");
 
   const { ceilingArea } = state;
+
+  const showBracingGuidance = ref(false);
 </script>

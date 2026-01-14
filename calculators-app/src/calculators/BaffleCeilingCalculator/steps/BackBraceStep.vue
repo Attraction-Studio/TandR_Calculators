@@ -105,7 +105,7 @@
 
       <div v-if="showBracingDiagram" class="bg-gray-100 p-4 rounded">
         <img
-          src="https://cdn.prod.website-files.com/68ec24dc82bba0539e7b250e/6966b3bc9251a20b1e9bea66_pbtypea.jpg"
+          src="https://cdn.prod.website-files.com/68ec24dc82bba0539e7b250e/6966ea719c75e19fd9e54c6a_BracingDiagram.png"
           alt="Bracing Diagram"
           class="w-full max-w-md mx-auto rounded mb-4"
         />
