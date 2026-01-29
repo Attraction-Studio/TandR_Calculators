@@ -1,5 +1,11 @@
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
+import {
+  GRID_MASS_OPTIONS,
+  ZONE_FACTORS,
+  IMPORTANCE_LEVELS,
+} from "../data/suspendedCeilingData.js";
+import { BAFFLE_PROFILE_OPTIONS } from "../data/baffleCeilingData.js";
 
 /**
  * T&R Interior Systems PDF Export Utility
@@ -64,6 +70,15 @@ class PDFExporter {
   }
 
   /**
+   * Helper to get label from options array based on value
+   */
+  getLabel(options, value) {
+    if (value === undefined || value === null) return "N/A";
+    const option = options.find((opt) => opt.value === value);
+    return option ? option.label : String(value);
+  }
+
+  /**
    * Add T&R header
    */
   addHeader() {
@@ -79,7 +94,7 @@ class PDFExporter {
     this.doc.text(
       "Suspended Ceiling Seismic Calculator",
       this.margin,
-      this.currentY
+      this.currentY,
     );
     this.currentY += 10;
   }
@@ -134,7 +149,7 @@ class PDFExporter {
       this.currentY,
       this.pageWidth - 2 * this.margin,
       8,
-      "F"
+      "F",
     );
 
     this.doc.setTextColor(...COLORS.white);
@@ -208,7 +223,7 @@ class PDFExporter {
       badgeX + badgeSize / 2,
       this.currentY + badgeSize / 2,
       badgeSize / 2,
-      "F"
+      "F",
     );
 
     // Badge number
@@ -219,7 +234,7 @@ class PDFExporter {
       number.toString(),
       badgeX + badgeSize / 2,
       this.currentY + badgeSize / 2,
-      { align: "center", baseline: "middle" }
+      { align: "center", baseline: "middle" },
     );
 
     // Section title
@@ -235,7 +250,7 @@ class PDFExporter {
         resultText,
         this.pageWidth - this.margin,
         this.currentY + 6,
-        { align: "right" }
+        { align: "right" },
       );
     }
 
@@ -272,7 +287,7 @@ class PDFExporter {
     this.doc.text(
       this.options.preparedFor || "N/A",
       this.margin + 40,
-      this.currentY
+      this.currentY,
     );
     this.currentY += 5;
 
@@ -286,7 +301,7 @@ class PDFExporter {
         year: "numeric",
       }),
       this.margin + 40,
-      this.currentY
+      this.currentY,
     );
     this.currentY += 8;
 
@@ -300,7 +315,7 @@ class PDFExporter {
       12,
       2,
       2,
-      "FD"
+      "FD",
     );
     this.doc.setFontSize(8);
     this.doc.setTextColor(220, 53, 69);
@@ -308,7 +323,7 @@ class PDFExporter {
       "© This design is for 2 way exposed 24mm CBI or Phonic 1 grid only and cannot be used with any other manufacturer's grid";
     const splitWarning = this.doc.splitTextToSize(
       warningText,
-      this.pageWidth - 2 * this.margin - 6
+      this.pageWidth - 2 * this.margin - 6,
     );
     this.doc.text(splitWarning, this.margin + 3, this.currentY + 4);
     this.currentY += 15;
@@ -322,51 +337,72 @@ class PDFExporter {
     // 2. Seismic Weight
     const seismicWeight = this.getValue("seismicWeight");
     const weightResult = `${
-      typeof seismicWeight === "number" ? seismicWeight.toFixed(1) : "0.0"
+      typeof seismicWeight === "number" ? seismicWeight.toFixed(2) : "0.00"
     } kg/m²`;
     this.addBadgeSection(2, "Seismic Weight", weightResult);
 
     this.doc.setFontSize(8);
-    const gridType =
-      this.getValue("gridType") === 1
-        ? "Main Tee @ 1200 | Cross Tee @ 600"
-        : "Main Tee @ 600";
-    this.doc.text(`Grid Type`, this.margin + 5, this.currentY);
-    this.doc.text(gridType, this.margin + 50, this.currentY);
+    // Grid Mass
+    const gridMassValue = this.getValue("gridMass");
+    // Attempt to find label for grid mass if it matches a known option, otherwise descriptive text
+    // Since gridMass is a number (e.g. 1.1), we can try to find it in GRID_MASS_OPTIONS
+    const gridMassOption = GRID_MASS_OPTIONS.find(
+      (opt) => opt.value === gridMassValue,
+    );
+    const gridMassLabel = gridMassOption
+      ? gridMassOption.label
+      : "Custom Grid Mass";
+
+    this.doc.text(`Grid Mass`, this.margin + 5, this.currentY);
+    this.doc.text(
+      `${gridMassLabel} (${gridMassValue || 0} kg/m²)`,
+      this.margin + 50,
+      this.currentY,
+    );
     this.currentY += 4;
+
+    // Tile Mass
     this.doc.text(`Tile Mass`, this.margin + 5, this.currentY);
     this.doc.text(
-      `${this.getValue("tileMass") || 0} kg`,
+      `${this.getValue("tileMass") || 0} kg/m²`,
       this.margin + 50,
-      this.currentY
+      this.currentY,
     );
     this.currentY += 4;
-    this.doc.text(`Services`, this.margin + 5, this.currentY);
+
+    // Luminaires
+    this.doc.text(`Luminaires`, this.margin + 5, this.currentY);
     this.doc.text(
-      this.getValue("services") || "Luminaires",
+      `${this.getValue("luminaries") || 0} kg/m²`,
       this.margin + 50,
-      this.currentY
+      this.currentY,
     );
     this.currentY += 4;
+
+    // Insulation
     this.doc.text(`Insulation`, this.margin + 5, this.currentY);
     this.doc.text(
-      `${this.getValue("insulation") || 0} kg`,
+      `${this.getValue("insulation") || 0} kg/m²`,
       this.margin + 50,
-      this.currentY
+      this.currentY,
     );
     this.currentY += 4;
+
+    // Other
     this.doc.text(`Other`, this.margin + 5, this.currentY);
     this.doc.text(
-      `${this.getValue("other") || 0} kg`,
+      `${this.getValue("otherLoads") || 0} kg/m²`, // Corrected key from 'other' to 'otherLoads'
       this.margin + 50,
-      this.currentY
+      this.currentY,
     );
     this.currentY += 4;
+
+    // Design Distributed Load
     this.doc.text(`Design Distributed Load`, this.margin + 5, this.currentY);
     this.doc.text(
-      `${this.getValue("designDistributedLoad") || 0} kg`,
+      `${this.getValue("deadLoad") || 0} kg/m²`, // Corrected key from 'designDistributedLoad' to 'deadLoad'
       this.margin + 50,
-      this.currentY
+      this.currentY,
     );
     this.currentY += 8;
 
@@ -374,37 +410,67 @@ class PDFExporter {
     const seismicForces = this.getValue("seismicForces");
     const ulsForce = seismicForces?.uls || 0;
     const forceResult = `ULS = ${
-      typeof ulsForce === "number" ? ulsForce.toFixed(1) : "0.0"
+      typeof ulsForce === "number" ? ulsForce.toFixed(2) : "0.00"
     } kg/m²`;
     this.addBadgeSection(3, "Seismic Force", forceResult);
 
     this.doc.setFontSize(8);
+
+    // Zone Factor
+    const zoneFactorValue = this.getValue("zoneFactor");
+    const zoneFactorLabel = this.getLabel(ZONE_FACTORS, zoneFactorValue);
     this.doc.text(`Zone Factor`, this.margin + 5, this.currentY);
     this.doc.text(
-      String(this.getValue("zoneFactor") || "N/A"),
+      `${zoneFactorLabel} (Z=${zoneFactorValue})`,
       this.margin + 50,
-      this.currentY
+      this.currentY,
     );
     this.currentY += 4;
-    this.doc.text(`Type of Installation`, this.margin + 5, this.currentY);
+
+    // Importance Level
+    const importanceLevelValue = this.getValue("importanceLevel");
+    const importanceLevelLabel = this.getLabel(
+      IMPORTANCE_LEVELS,
+      importanceLevelValue,
+    );
+    this.doc.text(`Importance Level`, this.margin + 5, this.currentY);
     this.doc.text(
-      String(this.getValue("installationType") || "N/A"),
+      String(importanceLevelLabel || "N/A"),
       this.margin + 50,
-      this.currentY
+      this.currentY,
     );
     this.currentY += 4;
+
+    // Floor Height
+    const floorHeightValue = this.getValue("floorHeight");
+    const ceilingHeightValue = this.getValue("ceilingHeight");
+    this.doc.text(
+      `Floor Height / Ceiling Height`,
+      this.margin + 5,
+      this.currentY,
+    );
+    this.doc.text(
+      `${floorHeightValue || 0}m / ${ceilingHeightValue || 0}m`,
+      this.margin + 50,
+      this.currentY,
+    );
+    this.currentY += 4;
+
+    // Floor Height Factor
     this.doc.text(`Floor Height Factor`, this.margin + 5, this.currentY);
     this.doc.text(
-      String(this.getValue("floorHeightFactor") || "N/A"),
+      String(this.getValue("floorFactorValue")?.toFixed(2) || "N/A"), // Corrected key
       this.margin + 50,
-      this.currentY
+      this.currentY,
     );
     this.currentY += 4;
+
+    // ULS Ductility
     this.doc.text(`ULS Ductility`, this.margin + 5, this.currentY);
     this.doc.text(
       String(this.getValue("ductilityFactor") || "N/A"),
       this.margin + 50,
-      this.currentY
+      this.currentY,
     );
     this.currentY += 8;
 
@@ -431,7 +497,7 @@ class PDFExporter {
     this.doc.text(
       String(this.getValue("gridType") || "CBI"),
       this.margin + 50,
-      this.currentY
+      this.currentY,
     );
     this.currentY += 4;
     this.doc.text(`Connection Type`, this.margin + 5, this.currentY);
@@ -442,14 +508,14 @@ class PDFExporter {
     this.doc.text(
       String(this.getValue("maxMainTee") || 0) + " m",
       this.margin + 50,
-      this.currentY
+      this.currentY,
     );
     this.currentY += 4;
     this.doc.text(`Cross Tee Spacing`, this.margin + 5, this.currentY);
     this.doc.text(
       String(this.getValue("maxCrossTee") || 0) + " m",
       this.margin + 50,
-      this.currentY
+      this.currentY,
     );
     this.currentY += 4;
 
@@ -457,7 +523,7 @@ class PDFExporter {
     this.doc.text(
       `Maximum measured Main Tee Length as per plans supplied`,
       this.margin + 5,
-      this.currentY
+      this.currentY,
     );
     this.doc.setTextColor(...COLORS.success);
     this.doc.text("✓", this.pageWidth - this.margin - 5, this.currentY);
@@ -466,7 +532,7 @@ class PDFExporter {
     this.doc.text(
       `Maximum measured Cross Tee Length as per plans supplied`,
       this.margin + 5,
-      this.currentY
+      this.currentY,
     );
     this.doc.setTextColor(...COLORS.success);
     this.doc.text("✓", this.pageWidth - this.margin - 5, this.currentY);
@@ -477,7 +543,7 @@ class PDFExporter {
     this.doc.text(
       "No seismic breaks required. Fix two, float two.",
       this.margin + 5,
-      this.currentY
+      this.currentY,
     );
 
     this.addFooter();
@@ -560,7 +626,7 @@ class PDFExporter {
       const bullet = "• ";
       const lines = this.doc.splitTextToSize(
         req,
-        this.pageWidth - 2 * this.margin - 5
+        this.pageWidth - 2 * this.margin - 5,
       );
       this.doc.text(bullet, this.margin, this.currentY);
       this.doc.text(lines, this.margin + 5, this.currentY);
@@ -584,7 +650,7 @@ class PDFExporter {
       this.currentY - 5,
       15,
       6,
-      "F"
+      "F",
     );
     this.doc.text("MT", this.pageWidth - this.margin - 32.5, this.currentY);
     this.currentY += 8;
@@ -595,13 +661,13 @@ class PDFExporter {
     this.doc.text(
       `Main Tee = ${String(maxSpacing.maxMainTeeSpace || "6.0")} m`,
       this.margin,
-      this.currentY
+      this.currentY,
     );
     this.currentY += 5;
     this.doc.text(
       `Cross Tee = ${String(maxSpacing.maxCrossTeeSpace || "6.0")} m`,
       this.margin,
-      this.currentY
+      this.currentY,
     );
     this.currentY += 10;
 
@@ -619,7 +685,7 @@ class PDFExporter {
       "Round the required seismic clearance up to the nearest 5mm and ensure that this clearance is used on the floating edges required in the back braced design.";
     const splitClearance = this.doc.splitTextToSize(
       clearanceText,
-      this.pageWidth - 2 * this.margin
+      this.pageWidth - 2 * this.margin,
     );
     this.doc.text(splitClearance, this.margin, this.currentY);
     this.currentY += splitClearance.length * 4 + 5;
@@ -691,7 +757,7 @@ class PDFExporter {
       this.doc.setTextColor(...COLORS.text);
       const splitNotes = this.doc.splitTextToSize(
         this.options.notes,
-        this.pageWidth - 2 * this.margin
+        this.pageWidth - 2 * this.margin,
       );
       this.doc.text(splitNotes, this.margin, this.currentY);
       this.currentY += splitNotes.length * 5 + 10;
@@ -705,7 +771,7 @@ class PDFExporter {
       "© This design is for 2 way exposed 24mm CBI or Phonic 1 grid only and cannot be used with any other manufacturer's grid";
     const splitWarning = this.doc.splitTextToSize(
       warning,
-      this.pageWidth - 2 * this.margin
+      this.pageWidth - 2 * this.margin,
     );
     this.doc.text(splitWarning, this.margin, this.currentY);
     this.currentY += splitWarning.length * 5 + 8;
@@ -729,7 +795,7 @@ class PDFExporter {
     disclaimers.forEach((disclaimer) => {
       const lines = this.doc.splitTextToSize(
         disclaimer,
-        this.pageWidth - 2 * this.margin
+        this.pageWidth - 2 * this.margin,
       );
       this.doc.text(lines, this.margin, this.currentY);
       this.currentY += lines.length * 3.5 + 4;
@@ -761,7 +827,7 @@ class PDFExporter {
     this.generate();
     const fileName = `TR-Seismic-Calculator-${this.options.jobName.replace(
       /[^a-z0-9]/gi,
-      "_"
+      "_",
     )}-${new Date().toISOString().split("T")[0]}.pdf`;
     this.doc.save(fileName);
   }
@@ -803,6 +869,12 @@ class PlasterboardPDFExporter {
     return value?.value !== undefined ? value.value : value;
   }
 
+  getLabel(options, value) {
+    if (value === undefined || value === null) return "N/A";
+    const option = options.find((opt) => opt.value === value);
+    return option ? option.label : String(value);
+  }
+
   addHeader() {
     this.doc.setFontSize(24);
     this.doc.setTextColor(...COLORS.primary);
@@ -816,7 +888,7 @@ class PlasterboardPDFExporter {
     this.doc.text(
       "Suspended Plasterboard Grid System Seismic Calculator",
       this.margin,
-      this.currentY
+      this.currentY,
     );
     this.currentY += 10;
   }
@@ -863,7 +935,7 @@ class PlasterboardPDFExporter {
       badgeX + badgeSize / 2,
       this.currentY + badgeSize / 2,
       badgeSize / 2,
-      "F"
+      "F",
     );
 
     this.doc.setTextColor(...COLORS.white);
@@ -873,7 +945,7 @@ class PlasterboardPDFExporter {
       number.toString(),
       badgeX + badgeSize / 2,
       this.currentY + badgeSize / 2,
-      { align: "center", baseline: "middle" }
+      { align: "center", baseline: "middle" },
     );
 
     this.doc.setTextColor(...COLORS.primary);
@@ -887,7 +959,7 @@ class PlasterboardPDFExporter {
         resultText,
         this.pageWidth - this.margin,
         this.currentY + 6,
-        { align: "right" }
+        { align: "right" },
       );
     }
 
@@ -906,7 +978,7 @@ class PlasterboardPDFExporter {
     this.doc.text(
       "T&R Seismic Calculator - Suspended Plasterboard Grid System",
       this.margin,
-      this.currentY
+      this.currentY,
     );
     this.currentY += 8;
 
@@ -925,7 +997,7 @@ class PlasterboardPDFExporter {
     this.doc.text(
       this.options.preparedFor || "N/A",
       this.margin + 40,
-      this.currentY
+      this.currentY,
     );
     this.currentY += 5;
 
@@ -939,7 +1011,7 @@ class PlasterboardPDFExporter {
         year: "numeric",
       }),
       this.margin + 40,
-      this.currentY
+      this.currentY,
     );
     this.currentY += 8;
 
@@ -953,7 +1025,7 @@ class PlasterboardPDFExporter {
       12,
       2,
       2,
-      "FD"
+      "FD",
     );
     this.doc.setFontSize(8);
     this.doc.setTextColor(220, 53, 69);
@@ -961,7 +1033,7 @@ class PlasterboardPDFExporter {
       "© This design is for T&R Suspended Plasterboard Grid System only and cannot be used with other manufacturer's ceiling products.";
     const splitWarning = this.doc.splitTextToSize(
       warningText,
-      this.pageWidth - 2 * this.margin - 6
+      this.pageWidth - 2 * this.margin - 6,
     );
     this.doc.text(splitWarning, this.margin + 3, this.currentY + 4);
     this.currentY += 15;
@@ -987,49 +1059,49 @@ class PlasterboardPDFExporter {
     this.doc.text(
       `Main Tee @ ${mainTee}mm | Cross Tee @ ${crossTee}mm`,
       this.margin + 50,
-      this.currentY
+      this.currentY,
     );
     this.currentY += 4;
     this.doc.text(`Grid Mass`, this.margin + 5, this.currentY);
     this.doc.text(
       `${this.getValue("gridMass")?.toFixed(2) || 0} kg/m²`,
       this.margin + 50,
-      this.currentY
+      this.currentY,
     );
     this.currentY += 4;
     this.doc.text(`Lining Weight`, this.margin + 5, this.currentY);
     this.doc.text(
       `${this.getValue("liningWeight") || 0} kg/m²`,
       this.margin + 50,
-      this.currentY
+      this.currentY,
     );
     this.currentY += 4;
     this.doc.text(`Luminaires`, this.margin + 5, this.currentY);
     this.doc.text(
       `${this.getValue("luminaries") || 0} kg/m²`,
       this.margin + 50,
-      this.currentY
+      this.currentY,
     );
     this.currentY += 4;
     this.doc.text(`Insulation`, this.margin + 5, this.currentY);
     this.doc.text(
       `${this.getValue("insulation") || 0} kg/m²`,
       this.margin + 50,
-      this.currentY
+      this.currentY,
     );
     this.currentY += 4;
     this.doc.text(`Other`, this.margin + 5, this.currentY);
     this.doc.text(
       `${this.getValue("otherLoads") || 0} kg/m²`,
       this.margin + 50,
-      this.currentY
+      this.currentY,
     );
     this.currentY += 4;
     this.doc.text(`Design Distributed Load`, this.margin + 5, this.currentY);
     this.doc.text(
       `${this.getValue("deadLoad") || 3} kg/m²`,
       this.margin + 50,
-      this.currentY
+      this.currentY,
     );
     this.currentY += 8;
 
@@ -1041,25 +1113,36 @@ class PlasterboardPDFExporter {
     this.addBadgeSection(3, "Seismic Force", forceResult);
 
     this.doc.setFontSize(8);
+
+    // Zone Factor
+    const zoneFactorValue = this.getValue("zoneFactor");
+    const zoneFactorLabel = this.getLabel(ZONE_FACTORS, zoneFactorValue);
     this.doc.text(`Zone Factor`, this.margin + 5, this.currentY);
     this.doc.text(
-      String(this.getValue("zoneFactor") || "N/A"),
+      `${zoneFactorLabel} (Z=${zoneFactorValue})`,
       this.margin + 50,
-      this.currentY
+      this.currentY,
     );
     this.currentY += 4;
+
+    // Importance Level
+    const importanceLevelValue = this.getValue("importanceLevel");
+    const importanceLevelLabel = this.getLabel(
+      IMPORTANCE_LEVELS,
+      importanceLevelValue,
+    );
     this.doc.text(`Importance Level`, this.margin + 5, this.currentY);
     this.doc.text(
-      String(this.getValue("importanceLevel") || "N/A"),
+      String(importanceLevelLabel || "N/A"),
       this.margin + 50,
-      this.currentY
+      this.currentY,
     );
     this.currentY += 4;
     this.doc.text(`Height Factor`, this.margin + 5, this.currentY);
     this.doc.text(
       String(this.getValue("heightFactor") || "N/A"),
       this.margin + 50,
-      this.currentY
+      this.currentY,
     );
     this.currentY += 8;
 
@@ -1086,18 +1169,18 @@ class PlasterboardPDFExporter {
     this.doc.text(
       `${this.getValue("wallFastenerSpacing") || 600}mm`,
       this.margin + 60,
-      this.currentY
+      this.currentY,
     );
     this.currentY += 4;
     this.doc.text(
       `Plasterboard Fixing Spacing`,
       this.margin + 5,
-      this.currentY
+      this.currentY,
     );
     this.doc.text(
       `${this.getValue("plasterboardFixingSpacing") || 300}mm`,
       this.margin + 60,
-      this.currentY
+      this.currentY,
     );
     this.currentY += 6;
 
@@ -1105,14 +1188,14 @@ class PlasterboardPDFExporter {
     this.doc.text(
       `Maximum measured Main Tee Length as per plans supplied: ${this.options.maxMainTeeSupplied}m`,
       this.margin + 5,
-      this.currentY
+      this.currentY,
     );
     const mainValid = this.options.maxMainTeeSupplied <= mainTeeLength;
     this.doc.setTextColor(...(mainValid ? COLORS.success : COLORS.danger));
     this.doc.text(
       mainValid ? "✓" : "✗",
       this.pageWidth - this.margin - 5,
-      this.currentY
+      this.currentY,
     );
     this.doc.setTextColor(...COLORS.text);
     this.currentY += 4;
@@ -1120,14 +1203,14 @@ class PlasterboardPDFExporter {
     this.doc.text(
       `Maximum measured Cross Tee Length as per plans supplied: ${this.options.maxCrossTeeSupplied}m`,
       this.margin + 5,
-      this.currentY
+      this.currentY,
     );
     const crossValid = this.options.maxCrossTeeSupplied <= crossTeeLength;
     this.doc.setTextColor(...(crossValid ? COLORS.success : COLORS.danger));
     this.doc.text(
       crossValid ? "✓" : "✗",
       this.pageWidth - this.margin - 5,
-      this.currentY
+      this.currentY,
     );
     this.doc.setTextColor(...COLORS.text);
     this.currentY += 6;
@@ -1137,7 +1220,7 @@ class PlasterboardPDFExporter {
       this.doc.text(
         "No seismic breaks required. Fix two, float two.",
         this.margin + 5,
-        this.currentY
+        this.currentY,
       );
     }
 
@@ -1197,7 +1280,7 @@ class PlasterboardPDFExporter {
     this.doc.text(
       `Area per Brace = ${this.getValue("areaPerBrace")?.toFixed(1) || 0} m²`,
       this.margin,
-      this.currentY
+      this.currentY,
     );
     this.currentY += 10;
 
@@ -1214,13 +1297,13 @@ class PlasterboardPDFExporter {
     this.doc.text(
       `Total Ceiling Area: ${this.getValue("ceilingArea") || 0} m²`,
       this.margin,
-      this.currentY
+      this.currentY,
     );
     this.currentY += 5;
     this.doc.text(
       `Minimum Number of Braces: ${this.getValue("minimumBraces") || 0}`,
       this.margin,
-      this.currentY
+      this.currentY,
     );
     this.currentY += 10;
 
@@ -1287,7 +1370,7 @@ class PlasterboardPDFExporter {
       this.doc.setTextColor(...COLORS.text);
       const splitNotes = this.doc.splitTextToSize(
         this.options.notes,
-        this.pageWidth - 2 * this.margin
+        this.pageWidth - 2 * this.margin,
       );
       this.doc.text(splitNotes, this.margin, this.currentY);
       this.currentY += splitNotes.length * 5 + 10;
@@ -1301,7 +1384,7 @@ class PlasterboardPDFExporter {
       "© This design is for T&R Suspended Plasterboard Grid System only and cannot be used with other manufacturer's ceiling products.";
     const splitWarning = this.doc.splitTextToSize(
       warning,
-      this.pageWidth - 2 * this.margin
+      this.pageWidth - 2 * this.margin,
     );
     this.doc.text(splitWarning, this.margin, this.currentY);
     this.currentY += splitWarning.length * 5 + 8;
@@ -1324,7 +1407,7 @@ class PlasterboardPDFExporter {
     disclaimers.forEach((disclaimer) => {
       const lines = this.doc.splitTextToSize(
         disclaimer,
-        this.pageWidth - 2 * this.margin
+        this.pageWidth - 2 * this.margin,
       );
       this.doc.text(lines, this.margin, this.currentY);
       this.currentY += lines.length * 3.5 + 4;
@@ -1350,7 +1433,7 @@ class PlasterboardPDFExporter {
     this.generate();
     const fileName = `TR-Plasterboard-Seismic-${this.options.jobName.replace(
       /[^a-z0-9]/gi,
-      "_"
+      "_",
     )}-${new Date().toISOString().split("T")[0]}.pdf`;
     this.doc.save(fileName);
   }
@@ -1390,6 +1473,12 @@ class BafflePDFExporter {
     return value?.value !== undefined ? value.value : value;
   }
 
+  getLabel(options, value) {
+    if (value === undefined || value === null) return "N/A";
+    const option = options.find((opt) => opt.value === value);
+    return option ? option.label : String(value);
+  }
+
   addHeader() {
     this.doc.setFontSize(24);
     this.doc.setTextColor(...COLORS.primary);
@@ -1403,7 +1492,7 @@ class BafflePDFExporter {
     this.doc.text(
       "Baffle Ceiling Seismic Calculator",
       this.margin,
-      this.currentY
+      this.currentY,
     );
     this.currentY += 10;
   }
@@ -1450,7 +1539,7 @@ class BafflePDFExporter {
       badgeX + badgeSize / 2,
       this.currentY + badgeSize / 2,
       badgeSize / 2,
-      "F"
+      "F",
     );
 
     this.doc.setTextColor(...COLORS.white);
@@ -1460,7 +1549,7 @@ class BafflePDFExporter {
       number.toString(),
       badgeX + badgeSize / 2,
       this.currentY + badgeSize / 2,
-      { align: "center", baseline: "middle" }
+      { align: "center", baseline: "middle" },
     );
 
     this.doc.setTextColor(...COLORS.primary);
@@ -1474,7 +1563,7 @@ class BafflePDFExporter {
         resultText,
         this.pageWidth - this.margin,
         this.currentY + 6,
-        { align: "right" }
+        { align: "right" },
       );
     }
 
@@ -1493,7 +1582,7 @@ class BafflePDFExporter {
     this.doc.text(
       "T&R Seismic Calculator - Baffle Ceiling",
       this.margin,
-      this.currentY
+      this.currentY,
     );
     this.currentY += 8;
 
@@ -1512,7 +1601,7 @@ class BafflePDFExporter {
     this.doc.text(
       this.options.preparedFor || "N/A",
       this.margin + 40,
-      this.currentY
+      this.currentY,
     );
     this.currentY += 5;
 
@@ -1526,7 +1615,7 @@ class BafflePDFExporter {
         year: "numeric",
       }),
       this.margin + 40,
-      this.currentY
+      this.currentY,
     );
     this.currentY += 8;
 
@@ -1540,7 +1629,7 @@ class BafflePDFExporter {
       12,
       2,
       2,
-      "FD"
+      "FD",
     );
     this.doc.setFontSize(8);
     this.doc.setTextColor(220, 53, 69);
@@ -1548,7 +1637,7 @@ class BafflePDFExporter {
       "© This design is for T&R Baffle Ceiling Systems only and cannot be used with other manufacturer's ceiling products.";
     const splitWarning = this.doc.splitTextToSize(
       warningText,
-      this.pageWidth - 2 * this.margin - 6
+      this.pageWidth - 2 * this.margin - 6,
     );
     this.doc.text(splitWarning, this.margin + 3, this.currentY + 4);
     this.currentY += 15;
@@ -1572,21 +1661,21 @@ class BafflePDFExporter {
     this.doc.text(
       `${this.getValue("profileMass") || 0} kg/m`,
       this.margin + 50,
-      this.currentY
+      this.currentY,
     );
     this.currentY += 4;
     this.doc.text(`Baffle Spacing`, this.margin + 5, this.currentY);
     this.doc.text(
       `${this.getValue("baffleSpacing") || 0} m`,
       this.margin + 50,
-      this.currentY
+      this.currentY,
     );
     this.currentY += 4;
     this.doc.text(`Baffle Mass`, this.margin + 5, this.currentY);
     this.doc.text(
       `${this.getValue("baffleMass")?.toFixed(2) || 0} kg/m²`,
       this.margin + 50,
-      this.currentY
+      this.currentY,
     );
     this.currentY += 4;
     this.doc.text(`Strongback Mass`, this.margin + 5, this.currentY);
@@ -1596,21 +1685,21 @@ class BafflePDFExporter {
     this.doc.text(
       `${this.getValue("luminaries") || 0} kg/m²`,
       this.margin + 50,
-      this.currentY
+      this.currentY,
     );
     this.currentY += 4;
     this.doc.text(`Services`, this.margin + 5, this.currentY);
     this.doc.text(
       `${this.getValue("services") || 0} kg/m²`,
       this.margin + 50,
-      this.currentY
+      this.currentY,
     );
     this.currentY += 4;
     this.doc.text(`Other`, this.margin + 5, this.currentY);
     this.doc.text(
       `${this.getValue("otherLoads") || 0} kg/m²`,
       this.margin + 50,
-      this.currentY
+      this.currentY,
     );
     this.currentY += 8;
 
@@ -1622,25 +1711,36 @@ class BafflePDFExporter {
     this.addBadgeSection(3, "Seismic Force", forceResult);
 
     this.doc.setFontSize(8);
+
+    // Zone Factor
+    const zoneFactorValue = this.getValue("zoneFactor");
+    const zoneFactorLabel = this.getLabel(ZONE_FACTORS, zoneFactorValue);
     this.doc.text(`Zone Factor`, this.margin + 5, this.currentY);
     this.doc.text(
-      String(this.getValue("zoneFactor") || "N/A"),
+      `${zoneFactorLabel} (Z=${zoneFactorValue})`,
       this.margin + 50,
-      this.currentY
+      this.currentY,
     );
     this.currentY += 4;
+
+    // Importance Level
+    const importanceLevelValue = this.getValue("importanceLevel");
+    const importanceLevelLabel = this.getLabel(
+      IMPORTANCE_LEVELS,
+      importanceLevelValue,
+    );
     this.doc.text(`Importance Level`, this.margin + 5, this.currentY);
     this.doc.text(
-      String(this.getValue("importanceLevel") || "N/A"),
+      String(importanceLevelLabel || "N/A"),
       this.margin + 50,
-      this.currentY
+      this.currentY,
     );
     this.currentY += 4;
     this.doc.text(`Height Factor`, this.margin + 5, this.currentY);
     this.doc.text(
       String(this.getValue("heightFactor") || "N/A"),
       this.margin + 50,
-      this.currentY
+      this.currentY,
     );
     this.currentY += 8;
 
@@ -1649,7 +1749,7 @@ class BafflePDFExporter {
     this.addBadgeSection(
       4,
       "Area Per Brace",
-      `${areaPerBrace?.toFixed(1) || 0} m²`
+      `${areaPerBrace?.toFixed(1) || 0} m²`,
     );
     this.currentY += 3;
 
@@ -1658,7 +1758,7 @@ class BafflePDFExporter {
     this.addBadgeSection(
       5,
       "Minimum Number of Braces",
-      `${minimumBraces || 0}`
+      `${minimumBraces || 0}`,
     );
     this.currentY += 3;
 
@@ -1667,7 +1767,7 @@ class BafflePDFExporter {
     this.addBadgeSection(
       6,
       "Max Brace Spacing",
-      `${maxBraceSpacing?.toFixed(1) || 0} m`
+      `${maxBraceSpacing?.toFixed(1) || 0} m`,
     );
     this.currentY += 5;
 
@@ -1677,14 +1777,14 @@ class BafflePDFExporter {
     this.doc.text(
       `${this.getValue("plenumHeight") || 0} m`,
       this.margin + 50,
-      this.currentY
+      this.currentY,
     );
     this.currentY += 4;
     this.doc.text(`Ceiling Area`, this.margin + 5, this.currentY);
     this.doc.text(
       `${this.getValue("ceilingArea") || 0} m²`,
       this.margin + 50,
-      this.currentY
+      this.currentY,
     );
     this.currentY += 4;
     this.doc.text(`StratoBrace Capacity`, this.margin + 5, this.currentY);
@@ -1697,20 +1797,20 @@ class BafflePDFExporter {
     this.doc.text(
       `Required Seismic Clearance:`,
       this.margin + 5,
-      this.currentY
+      this.currentY,
     );
     this.doc.setFont("helvetica", "normal");
     this.currentY += 4;
     this.doc.text(
       `SLS = ${seismicClearance?.sls || 0} mm`,
       this.margin + 5,
-      this.currentY
+      this.currentY,
     );
     this.currentY += 4;
     this.doc.text(
       `ULS = ${seismicClearance?.uls || 0} mm`,
       this.margin + 5,
-      this.currentY
+      this.currentY,
     );
 
     this.addFooter();
@@ -1733,7 +1833,7 @@ class BafflePDFExporter {
       this.doc.setTextColor(...COLORS.text);
       const splitNotes = this.doc.splitTextToSize(
         this.options.notes,
-        this.pageWidth - 2 * this.margin
+        this.pageWidth - 2 * this.margin,
       );
       this.doc.text(splitNotes, this.margin, this.currentY);
       this.currentY += splitNotes.length * 5 + 10;
@@ -1747,7 +1847,7 @@ class BafflePDFExporter {
       "© This design is for T&R Baffle Ceiling Systems only and cannot be used with other manufacturer's ceiling products.";
     const splitWarning = this.doc.splitTextToSize(
       warning,
-      this.pageWidth - 2 * this.margin
+      this.pageWidth - 2 * this.margin,
     );
     this.doc.text(splitWarning, this.margin, this.currentY);
     this.currentY += splitWarning.length * 5 + 8;
@@ -1769,7 +1869,7 @@ class BafflePDFExporter {
     disclaimers.forEach((disclaimer) => {
       const lines = this.doc.splitTextToSize(
         disclaimer,
-        this.pageWidth - 2 * this.margin
+        this.pageWidth - 2 * this.margin,
       );
       this.doc.text(lines, this.margin, this.currentY);
       this.currentY += lines.length * 3.5 + 4;
@@ -1787,7 +1887,7 @@ class BafflePDFExporter {
     this.generate();
     const fileName = `TR-Baffle-Seismic-${this.options.jobName.replace(
       /[^a-z0-9]/gi,
-      "_"
+      "_",
     )}-${new Date().toISOString().split("T")[0]}.pdf`;
     this.doc.save(fileName);
   }
