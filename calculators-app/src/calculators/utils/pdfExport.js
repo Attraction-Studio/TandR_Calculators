@@ -4,6 +4,9 @@ import {
   GRID_MASS_OPTIONS,
   ZONE_FACTORS,
   IMPORTANCE_LEVELS,
+  GRID_TYPES,
+  CONNECTION_TYPES,
+  DUCTILITY_OPTIONS,
 } from "../data/suspendedCeilingData.js";
 import { BAFFLE_PROFILE_OPTIONS } from "../data/baffleCeilingData.js";
 
@@ -22,6 +25,38 @@ const COLORS = {
   warning: [255, 193, 7],
   danger: [220, 53, 69],
 };
+
+const TR_LOGO_URL =
+  "https://cdn.prod.website-files.com/68ec24dc82bba0539e7b250e/68f9601e0e77127756c8c260_tris_logo-black-p-500.png";
+
+// Cache for logo base64 data
+let logoBase64Cache = null;
+
+/**
+ * Load an image from URL and convert to base64
+ */
+async function loadImageAsBase64(url) {
+  if (logoBase64Cache) {
+    return logoBase64Cache;
+  }
+
+  try {
+    const response = await fetch(url);
+    const blob = await response.blob();
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        logoBase64Cache = reader.result;
+        resolve(reader.result);
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+  } catch (error) {
+    console.error("Failed to load logo:", error);
+    return null;
+  }
+}
 
 const OFFICE_INFO = {
   wellington: {
@@ -53,12 +88,20 @@ class PDFExporter {
       notes: options.notes || "",
       ...options,
     };
+    this.logoData = null;
 
     this.doc = new jsPDF();
     this.pageWidth = this.doc.internal.pageSize.getWidth();
     this.pageHeight = this.doc.internal.pageSize.getHeight();
     this.margin = 20;
     this.currentY = this.margin;
+  }
+
+  /**
+   * Load the logo before generating PDF
+   */
+  async loadLogo() {
+    this.logoData = await loadImageAsBase64(TR_LOGO_URL);
   }
 
   /**
@@ -79,18 +122,35 @@ class PDFExporter {
   }
 
   /**
-   * Add T&R header
+   * Add T&R header with logo
    */
   addHeader() {
-    this.doc.setFontSize(24);
-    this.doc.setTextColor(...COLORS.primary);
-    this.doc.setFont("helvetica", "bold");
-    this.doc.text("T&R INTERIOR SYSTEMS", this.margin, this.currentY);
+    // Add logo if available
+    if (this.logoData) {
+      // Logo dimensions - maintain aspect ratio (original is 500x244)
+      const logoWidth = 50;
+      const logoHeight = logoWidth * (375 / 500);
+      this.doc.addImage(
+        this.logoData,
+        "PNG",
+        this.margin,
+        this.currentY - 5,
+        logoWidth,
+        logoHeight,
+      );
+      this.currentY += logoHeight + 2;
+    } else {
+      // Fallback to text if logo fails to load
+      this.doc.setFontSize(24);
+      this.doc.setTextColor(...COLORS.primary);
+      this.doc.setFont("helvetica", "bold");
+      this.doc.text("T&R INTERIOR SYSTEMS", this.margin, this.currentY);
+      this.currentY += 8;
+    }
 
     this.doc.setFontSize(10);
     this.doc.setTextColor(...COLORS.secondary);
     this.doc.setFont("helvetica", "normal");
-    this.currentY += 8;
     this.doc.text(
       "Suspended Ceiling Seismic Calculator",
       this.margin,
@@ -329,8 +389,11 @@ class PDFExporter {
     this.currentY += 15;
 
     // 1. Limit State Type
-    const limitState =
-      this.getValue("limitStateType") === "uls_sls2" ? "ULS +SLS2" : "ULS";
+    const limitStateLogic = this.state.limitStateLogic || {};
+    // Access the .value of the computed refs within limitStateLogic
+    const limitStateMain = limitStateLogic?.limitStateMain?.value || "ULS";
+    const sls2Display = limitStateLogic?.liveCalcSLS2Display?.value || "";
+    const limitState = limitStateMain + sls2Display;
     this.addBadgeSection(1, "Limit State Type", limitState);
     this.currentY += 3;
 
@@ -466,17 +529,16 @@ class PDFExporter {
     this.currentY += 4;
 
     // ULS Ductility
+    const ductilityValue = this.getValue("ductility");
     this.doc.text(`ULS Ductility`, this.margin + 5, this.currentY);
-    this.doc.text(
-      String(this.getValue("ductilityFactor") || "N/A"),
-      this.margin + 50,
-      this.currentY,
-    );
+    this.doc.text(String(ductilityValue || 1), this.margin + 50, this.currentY);
     this.currentY += 8;
 
     // 4. Limiting Main Tee Length
-    const gridCapacityCalcs = this.getValue("gridCapacityCalculations");
-    const mainTeeLength = gridCapacityCalcs?.limitingMainTeeLength || 0;
+    const limitingLengths =
+      this.getValue("adjustedLimitingLengths") ||
+      this.getValue("limitingLengths");
+    const mainTeeLength = limitingLengths?.uls?.main || 0;
     const mainResult = `ULS = ${
       typeof mainTeeLength === "number" ? mainTeeLength.toFixed(1) : "0.0"
     } m`;
@@ -484,7 +546,7 @@ class PDFExporter {
     this.currentY += 3;
 
     // 5. Limiting Cross Tee Length
-    const crossTeeLength = gridCapacityCalcs?.limitingCrossTeeLength || 0;
+    const crossTeeLength = limitingLengths?.uls?.cross || 0;
     const crossResult = `ULS = ${
       typeof crossTeeLength === "number" ? crossTeeLength.toFixed(1) : "0.0"
     } m`;
@@ -493,49 +555,89 @@ class PDFExporter {
 
     // Grid details
     this.doc.setFontSize(8);
+
+    // Grid Type - lookup label
+    const gridTypeValue = Number(this.getValue("gridType")) || 1;
+    const gridTypeLabel = this.getLabel(GRID_TYPES, gridTypeValue);
     this.doc.text(`Grid Type`, this.margin + 5, this.currentY);
-    this.doc.text(
-      String(this.getValue("gridType") || "CBI"),
-      this.margin + 50,
-      this.currentY,
+    this.doc.text(gridTypeLabel, this.margin + 50, this.currentY);
+    this.currentY += 4;
+
+    // Connection Type - lookup label
+    const connectionTypeValue = Number(this.getValue("connectionType")) || 1;
+    const connectionTypeLabel = this.getLabel(
+      CONNECTION_TYPES,
+      connectionTypeValue,
     );
-    this.currentY += 4;
     this.doc.text(`Connection Type`, this.margin + 5, this.currentY);
-    const connType = String(this.getValue("connectionType") || "N/A");
-    this.doc.text(connType, this.margin + 50, this.currentY);
+    this.doc.text(connectionTypeLabel, this.margin + 50, this.currentY);
     this.currentY += 4;
+
+    // Tee Spacing - use gridSpacing from state
+    const gridSpacing = this.getValue("gridSpacing") || {
+      main: 1.2,
+      cross: 0.6,
+    };
     this.doc.text(`Main Tee Spacing`, this.margin + 5, this.currentY);
     this.doc.text(
-      String(this.getValue("maxMainTee") || 0) + " m",
+      String(gridSpacing.main || 1.2) + " m",
       this.margin + 50,
       this.currentY,
     );
     this.currentY += 4;
     this.doc.text(`Cross Tee Spacing`, this.margin + 5, this.currentY);
     this.doc.text(
-      String(this.getValue("maxCrossTee") || 0) + " m",
+      String(gridSpacing.cross || 0.6) + " m",
       this.margin + 50,
       this.currentY,
     );
     this.currentY += 4;
 
-    // Validation results
+    // Validation results - include supplied values from options
+    const maxMainSupplied =
+      this.options.maxMainTeeSupplied || this.getValue("maxMainTee") || 0;
+    const maxCrossSupplied =
+      this.options.maxCrossTeeSupplied || this.getValue("maxCrossTee") || 0;
+
     this.doc.text(
       `Maximum measured Main Tee Length as per plans supplied`,
       this.margin + 5,
       this.currentY,
     );
-    this.doc.setTextColor(...COLORS.success);
-    this.doc.text("✓", this.pageWidth - this.margin - 5, this.currentY);
+    this.doc.text(
+      String(maxMainSupplied) + " m",
+      this.margin + 115,
+      this.currentY,
+    );
+    // Check validation
+    const mainValid = maxMainSupplied <= mainTeeLength;
+    this.doc.setTextColor(...(mainValid ? COLORS.success : COLORS.danger));
+    this.doc.text(
+      mainValid ? "✓" : "✗",
+      this.pageWidth - this.margin - 5,
+      this.currentY,
+    );
     this.doc.setTextColor(...COLORS.text);
     this.currentY += 4;
+
     this.doc.text(
       `Maximum measured Cross Tee Length as per plans supplied`,
       this.margin + 5,
       this.currentY,
     );
-    this.doc.setTextColor(...COLORS.success);
-    this.doc.text("✓", this.pageWidth - this.margin - 5, this.currentY);
+    this.doc.text(
+      String(maxCrossSupplied) + " m",
+      this.margin + 115,
+      this.currentY,
+    );
+    // Check validation
+    const crossValid = maxCrossSupplied <= crossTeeLength;
+    this.doc.setTextColor(...(crossValid ? COLORS.success : COLORS.danger));
+    this.doc.text(
+      crossValid ? "✓" : "✗",
+      this.pageWidth - this.margin - 5,
+      this.currentY,
+    );
     this.doc.setTextColor(...COLORS.text);
     this.currentY += 6;
 
@@ -823,7 +925,8 @@ class PDFExporter {
   /**
    * Save PDF
    */
-  save() {
+  async save() {
+    await this.loadLogo();
     this.generate();
     const fileName = `TR-Seismic-Calculator-${this.options.jobName.replace(
       /[^a-z0-9]/gi,
@@ -836,9 +939,9 @@ class PDFExporter {
 /**
  * Export function to generate and download PDF
  */
-export function exportSuspendedCeilingPDF(calculatorState, options) {
+export async function exportSuspendedCeilingPDF(calculatorState, options) {
   const exporter = new PDFExporter(calculatorState, options);
-  exporter.save();
+  await exporter.save();
 }
 
 /**
@@ -856,12 +959,17 @@ class PlasterboardPDFExporter {
       maxCrossTeeSupplied: options.maxCrossTeeSupplied || 0,
       ...options,
     };
+    this.logoData = null;
 
     this.doc = new jsPDF();
     this.pageWidth = this.doc.internal.pageSize.getWidth();
     this.pageHeight = this.doc.internal.pageSize.getHeight();
     this.margin = 20;
     this.currentY = this.margin;
+  }
+
+  async loadLogo() {
+    this.logoData = await loadImageAsBase64(TR_LOGO_URL);
   }
 
   getValue(key) {
@@ -876,15 +984,30 @@ class PlasterboardPDFExporter {
   }
 
   addHeader() {
-    this.doc.setFontSize(24);
-    this.doc.setTextColor(...COLORS.primary);
-    this.doc.setFont("helvetica", "bold");
-    this.doc.text("T&R INTERIOR SYSTEMS", this.margin, this.currentY);
+    // Add logo if available
+    if (this.logoData) {
+      const logoWidth = 50;
+      const logoHeight = logoWidth * (375 / 500);
+      this.doc.addImage(
+        this.logoData,
+        "PNG",
+        this.margin,
+        this.currentY - 5,
+        logoWidth,
+        logoHeight,
+      );
+      this.currentY += logoHeight + 2;
+    } else {
+      this.doc.setFontSize(24);
+      this.doc.setTextColor(...COLORS.primary);
+      this.doc.setFont("helvetica", "bold");
+      this.doc.text("T&R INTERIOR SYSTEMS", this.margin, this.currentY);
+      this.currentY += 8;
+    }
 
     this.doc.setFontSize(10);
     this.doc.setTextColor(...COLORS.secondary);
     this.doc.setFont("helvetica", "normal");
-    this.currentY += 8;
     this.doc.text(
       "Suspended Plasterboard Grid System Seismic Calculator",
       this.margin,
@@ -1429,7 +1552,8 @@ class PlasterboardPDFExporter {
     this.generateNotesPage();
   }
 
-  save() {
+  async save() {
+    await this.loadLogo();
     this.generate();
     const fileName = `TR-Plasterboard-Seismic-${this.options.jobName.replace(
       /[^a-z0-9]/gi,
@@ -1442,9 +1566,9 @@ class PlasterboardPDFExporter {
 /**
  * Export function to generate and download PDF for Plasterboard Calculator
  */
-export function exportPlasterboardCeilingPDF(calculatorState, options) {
+export async function exportPlasterboardCeilingPDF(calculatorState, options) {
   const exporter = new PlasterboardPDFExporter(calculatorState, options);
-  exporter.save();
+  await exporter.save();
 }
 
 /**
@@ -1460,12 +1584,17 @@ class BafflePDFExporter {
       notes: options.notes || "",
       ...options,
     };
+    this.logoData = null;
 
     this.doc = new jsPDF();
     this.pageWidth = this.doc.internal.pageSize.getWidth();
     this.pageHeight = this.doc.internal.pageSize.getHeight();
     this.margin = 20;
     this.currentY = this.margin;
+  }
+
+  async loadLogo() {
+    this.logoData = await loadImageAsBase64(TR_LOGO_URL);
   }
 
   getValue(key) {
@@ -1480,15 +1609,30 @@ class BafflePDFExporter {
   }
 
   addHeader() {
-    this.doc.setFontSize(24);
-    this.doc.setTextColor(...COLORS.primary);
-    this.doc.setFont("helvetica", "bold");
-    this.doc.text("T&R INTERIOR SYSTEMS", this.margin, this.currentY);
+    // Add logo if available
+    if (this.logoData) {
+      const logoWidth = 50;
+      const logoHeight = logoWidth * (375 / 500);
+      this.doc.addImage(
+        this.logoData,
+        "PNG",
+        this.margin,
+        this.currentY - 5,
+        logoWidth,
+        logoHeight,
+      );
+      this.currentY += logoHeight + 2;
+    } else {
+      this.doc.setFontSize(24);
+      this.doc.setTextColor(...COLORS.primary);
+      this.doc.setFont("helvetica", "bold");
+      this.doc.text("T&R INTERIOR SYSTEMS", this.margin, this.currentY);
+      this.currentY += 8;
+    }
 
     this.doc.setFontSize(10);
     this.doc.setTextColor(...COLORS.secondary);
     this.doc.setFont("helvetica", "normal");
-    this.currentY += 8;
     this.doc.text(
       "Baffle Ceiling Seismic Calculator",
       this.margin,
@@ -1883,7 +2027,8 @@ class BafflePDFExporter {
     this.generateNotesPage();
   }
 
-  save() {
+  async save() {
+    await this.loadLogo();
     this.generate();
     const fileName = `TR-Baffle-Seismic-${this.options.jobName.replace(
       /[^a-z0-9]/gi,
@@ -1896,7 +2041,7 @@ class BafflePDFExporter {
 /**
  * Export function to generate and download PDF for Baffle Calculator
  */
-export function exportBaffleCeilingPDF(calculatorState, options) {
+export async function exportBaffleCeilingPDF(calculatorState, options) {
   const exporter = new BafflePDFExporter(calculatorState, options);
-  exporter.save();
+  await exporter.save();
 }

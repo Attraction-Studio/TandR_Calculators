@@ -355,6 +355,8 @@
       steps.push({ number: 7, label: "Brace Layout" });
       steps.push({ number: 8, label: "Clearance" });
       steps.push({ number: 9, label: "Download" });
+    } else {
+      steps.push({ number: 6, label: "Download" });
     }
 
     return steps;
@@ -386,8 +388,9 @@
       steps.push(BackBraceStep);
       steps.push(BackBraceLayoutStep);
       steps.push(SeismicClearanceStep);
-      steps.push(DownloadStep);
     }
+    // DownloadStep is always the last step
+    steps.push(DownloadStep);
     return steps[currentStep.value - 1];
   });
 
@@ -447,6 +450,6 @@
         currentStep.value = 6;
         scrollToTop();
       }
-    }
+    },
   );
 </script>

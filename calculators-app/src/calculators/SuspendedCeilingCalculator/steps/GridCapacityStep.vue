@@ -494,11 +494,11 @@
     </div>
 
     <!-- Download Result Button -->
-    <div class="flex justify-center mb-8">
+    <div class="flex justify-start mb-8 border-t border-gray-300 pt-8">
       <button
         v-if="state.step6Complete.value"
         type="button"
-        class="px-8 py-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
+        class="px-8 py-4 bg-[#3C999B] !text-black font-semibold hover:bg-[#3C999B]/80 transition-colors flex items-center gap-2"
         @click="showExportDialog = true"
       >
         <svg
@@ -659,7 +659,7 @@
     return getConnectionCapacity(
       Number(state.studType.value),
       Number(state.connectionType.value),
-      "uls"
+      "uls",
     );
   });
 
@@ -668,33 +668,33 @@
     console.log("handleSpecifyConnectionChange called with:", val);
     console.log(
       "Before update - specifyMainConnection.value:",
-      state.specifyMainConnection.value
+      state.specifyMainConnection.value,
     );
     state.specifyMainConnection.value = val;
     console.log(
       "After update - specifyMainConnection.value:",
-      state.specifyMainConnection.value
+      state.specifyMainConnection.value,
     );
     console.log("limitingLengths.value:", state.limitingLengths.value);
     console.log(
       "limitingLengths.value.uls.main:",
-      state.limitingLengths.value.uls.main
+      state.limitingLengths.value.uls.main,
     );
     console.log(
       "limitingLengths.value.uls.cross:",
-      state.limitingLengths.value.uls.cross
+      state.limitingLengths.value.uls.cross,
     );
     console.log(
       "adjustedLimitingLengths.value:",
-      state.adjustedLimitingLengths.value
+      state.adjustedLimitingLengths.value,
     );
     console.log(
       "adjustedLimitingLengths.value.uls.main:",
-      state.adjustedLimitingLengths.value.uls.main
+      state.adjustedLimitingLengths.value.uls.main,
     );
     console.log(
       "adjustedLimitingLengths.value.uls.cross:",
-      state.adjustedLimitingLengths.value.uls.cross
+      state.adjustedLimitingLengths.value.uls.cross,
     );
   }
 
@@ -704,7 +704,7 @@
     console.log("After update - isRaked.value:", state.isRaked.value);
     console.log(
       "adjustedLimitingLengths.value.uls.main:",
-      state.adjustedLimitingLengths.value.uls.main
+      state.adjustedLimitingLengths.value.uls.main,
     );
   }
 
@@ -714,7 +714,7 @@
     console.log("After update - rakeAngle.value:", state.rakeAngle.value);
     console.log(
       "adjustedLimitingLengths.value.uls.main:",
-      state.adjustedLimitingLengths.value.uls.main
+      state.adjustedLimitingLengths.value.uls.main,
     );
   }
 
