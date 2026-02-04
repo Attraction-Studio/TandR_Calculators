@@ -186,8 +186,8 @@
                 >
               </td>
             </tr>
-            <tr class="border-b bg-green-50">
-              <td class="py-3 pr-4">
+            <tr class="bg-green-50">
+              <td class="py-3 px-4">
                 SLS<br />
                 <span v-if="state.limitStateLogic.showSLS2Calculations.value"
                   >SLS2<br
@@ -217,25 +217,9 @@
         </table>
       </div>
 
-      <!-- Links -->
-      <div class="text-center space-y-2">
-        <a
-          href="https://cdn.prod.website-files.com/68ec24dc82bba0539e7b250e/6966b40a22b6179339172162_TandR_Plasterboard_Edge_Connections.pdf"
-          target="_blank"
-          class="text-blue-600 hover:underline block"
-          >T&R Suspended Plasterboard Typical Edge Details</a
-        >
-        <a
-          href="https://cdn.prod.website-files.com/68ec24dc82bba0539e7b250e/6966b409d9878696980d1fed_TandR_Plasterboard_Layout.pdf"
-          target="_blank"
-          class="text-blue-600 hover:underline block"
-          >T&R Suspended Plasterboard Ceiling Layout Drawing</a
-        >
-      </div>
-
       <!-- Success Message -->
-      <div class="alert alert-success mt-6">
-        <p>
+      <div class="border-t pt-6 border-color">
+        <p class="max-w-[600px]">
           If your allowable tee length is larger than the maximum tee length
           which you want to install, then your seismic design for the ceiling is
           complete.
@@ -243,15 +227,15 @@
         <p class="text-center mt-4">
           <button
             @click="downloadResult"
-            class="px-6 py-3 bg-green-600 text-white rounded hover:bg-green-700 transition-colors"
+            class="px-6 py-4 bg-[#3C999B] !text-white font-semibold hover:bg-[#3C999B]/80 transition-colors flex items-center gap-2"
           >
-            <span class="mr-2">💾</span> Download Result
+            Download Result
           </button>
         </p>
       </div>
 
       <!-- Info Message -->
-      <div class="alert alert-info mt-4">
+      <div class="mt-4">
         <p>
           If your allowable tee length is less than the maximum tee length which
           you want to install then back bracing options are available to ensure
@@ -265,7 +249,7 @@
           </p>
           <button
             @click="goToBackBrace"
-            class="px-6 py-3 bg-gray-800 text-white rounded hover:bg-gray-700 transition-colors"
+            class="px-6 py-3 bg-gray-800 !text-white font-semibold hover:bg-gray-700 transition-colors flex items-center gap-2"
           >
             Back Brace Requirements →
           </button>
@@ -354,9 +338,22 @@
 
           <button
             @click="buildPDF"
-            class="w-full px-6 py-3 bg-green-600 text-white rounded hover:bg-green-700 transition-colors"
+            class="w-full px-8 py-4 bg-[#3C999B] !text-white font-semibold hover:bg-[#3C999B]/80 transition-colors flex items-center justify-center gap-2"
           >
-            <span class="mr-2">💾</span> Build PDF
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+              />
+            </svg>
+            Download PDF
           </button>
         </div>
 

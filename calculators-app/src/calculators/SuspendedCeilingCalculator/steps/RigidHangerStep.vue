@@ -323,7 +323,7 @@
       <div class="flex justify-center mt-8">
         <button
           type="button"
-          class="px-8 py-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
+          class="px-8 py-4 bg-[#3C999B] !text-white font-semibold hover:bg-[#3C999B]/80 transition-colors flex items-center gap-2"
           @click="showExportDialog = true"
         >
           <svg
