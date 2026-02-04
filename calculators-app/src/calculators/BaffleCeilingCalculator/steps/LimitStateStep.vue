@@ -196,7 +196,7 @@
             <a
               href="#"
               @click.prevent="showAssumptions = true"
-              class="text-[#3C999B] hover:underline"
+              class="text-link"
             >
               assumptions and limitations</a
             >?</b
@@ -337,14 +337,14 @@
   const showQuestion1 = computed(() => q0Answer.value !== "");
   // Q2 shows only if Q1 = No
   const showQuestion2 = computed(
-    () => q0Answer.value !== "" && q1Answer.value === "no"
+    () => q0Answer.value !== "" && q1Answer.value === "no",
   );
   // Q3 shows only if Q1 = No AND Q2 = No
   const showQuestion3 = computed(
     () =>
       q0Answer.value !== "" &&
       q1Answer.value === "no" &&
-      q2Answer.value === "no"
+      q2Answer.value === "no",
   );
   // Q4 (assumptions) shows ONLY if Q1, Q2, Q3 are ALL No
   const showQuestion4 = computed(() => {
@@ -361,10 +361,10 @@
   const limitStateResult = computed(() => limitStateLogic.limitStateMain.value);
   const showResult = computed(() => limitStateLogic.showFooterResult.value);
   const footerSLS2Display = computed(
-    () => limitStateLogic.footerSLS2Display.value
+    () => limitStateLogic.footerSLS2Display.value,
   );
   const showMultiStateNote = computed(
-    () => limitStateLogic.showMultiStateNote.value
+    () => limitStateLogic.showMultiStateNote.value,
   );
 
   // Question handlers

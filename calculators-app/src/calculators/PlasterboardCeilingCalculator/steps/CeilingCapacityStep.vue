@@ -21,7 +21,7 @@
           <a
             href="https://cdn.prod.website-files.com/68ec24dc82bba0539e7b250e/6966b40a22b6179339172162_TandR_Plasterboard_Edge_Connections.pdf"
             target="_blank"
-            class="text-blue-600 hover:underline"
+            class="text-link"
             >T&R Suspended Plasterboard Typical Edge Details</a
           >.
         </p>
@@ -89,7 +89,7 @@
           <a
             href="https://cdn.prod.website-files.com/68ec24dc82bba0539e7b250e/6966b409d9878696980d1fed_TandR_Plasterboard_Layout.pdf"
             target="_blank"
-            class="text-blue-600 hover:underline"
+            class="text-link"
             >T&R Suspended Plasterboard Ceiling Layout Drawing</a
           >.
         </p>

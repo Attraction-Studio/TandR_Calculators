@@ -5,10 +5,7 @@
     <div class="prose max-w-none space-y-6">
       <p class="paragraph-18px">
         Calculate seismic force based on
-        <a
-          href="#"
-          @click.prevent="showZoneMap = true"
-          class="text-blue-600 hover:underline"
+        <a href="#" @click.prevent="showZoneMap = true" class="text-link"
           >seismic zone</a
         >, height above ground level, and building importance level.
       </p>

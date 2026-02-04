@@ -9,7 +9,7 @@
       </p>
 
       <!-- Brace Types Button -->
-      <div>
+      <div class="border-b border-color mb-12 pb-12">
         <button
           type="button"
           @click="showBraceTypes = true"
@@ -21,13 +21,13 @@
 
       <!-- Brace Capacity -->
       <h3 class="text-xl font-semibold">Brace Capacity</h3>
-      <table class="w-full border-collapse text-center">
-        <tbody>
+      <table class="w-full border-collapse">
+        <tbody class="bg-gray-50">
           <tr class="border-b">
-            <td class="py-3 px-4">
+            <td class="pt-6 pb-3 px-4">
               <b>Brace Type</b>
             </td>
-            <td class="py-3 px-4">
+            <td class="pt-6 pb-3 px-4">
               <select
                 v-model="braceType"
                 class="w-full border border-gray-300 rounded px-3 py-2"
@@ -67,11 +67,11 @@
               {{ state.braceCapacityResult.value.capacity }}
             </td>
           </tr>
-          <tr class="border-b">
-            <td class="py-3 px-4">
+          <tr>
+            <td class="pt-3 pb-6 px-4">
               <b>Bracing Requirement</b>
             </td>
-            <td class="py-3 px-4">
+            <td class="pt-3 pb-6 px-4">
               {{ state.braceCapacityResult.value.requirement }}
             </td>
           </tr>
@@ -80,9 +80,9 @@
 
       <!-- Area Per Brace -->
       <h3 class="text-xl font-semibold mt-8">Area Per Brace</h3>
-      <table class="w-full border-collapse text-center">
+      <table class="w-full border-collapse text-center border-color border">
         <tbody>
-          <tr class="border-b">
+          <tr>
             <td class="py-3 px-2"><b>Motion limiting factor</b></td>
             <td class="py-3 px-2" rowspan="2"><b>×</b></td>
             <td class="py-3 px-2"><b>Brace Capacity (kg)</b></td>
@@ -97,7 +97,7 @@
               >
             </td>
           </tr>
-          <tr class="border-b bg-green-50">
+          <tr class="bg-green-50">
             <td class="py-3 px-2">0.8</td>
             <td class="py-3 px-2">
               {{ state.braceCapacityResult.value.capacity }}
@@ -127,11 +127,11 @@
       </p>
 
       <!-- Bracing Connection Details Button -->
-      <div class="text-center mt-6">
+      <div class="mt-6 w-full items-start">
         <button
           type="button"
           @click="showConnectionDetails = true"
-          class="calc-button calc-button-primary"
+          class="text-link"
         >
           Bracing Connection Details
         </button>

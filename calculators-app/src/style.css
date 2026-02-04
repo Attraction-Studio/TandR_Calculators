@@ -53,6 +53,10 @@
   @apply bg-black text-white hover:bg-black/90;
 }
 
+.text-link {
+  @apply !text-[#3C999B] hover:!text-[#3C999B]/80 hover:underline transition-colors duration-200 ease-in-out;
+}
+
 .border-brand-black {
   border-color: #333;
 }

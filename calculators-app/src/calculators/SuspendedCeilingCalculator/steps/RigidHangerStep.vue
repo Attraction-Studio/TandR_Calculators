@@ -42,7 +42,7 @@
         <a
           href="https://www.tris.co.nz/uploads/pdfs/TRIS-RigidHangerDetail.pdf"
           target="_blank"
-          class="text-blue-600 hover:text-blue-800 underline"
+          class="text-link"
         >
           Typical Rigid Hanger installation example (pdf)
         </a>

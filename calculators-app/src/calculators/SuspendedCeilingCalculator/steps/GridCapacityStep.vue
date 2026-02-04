@@ -397,11 +397,7 @@
           which you want to install, then the perimeter fixing method is
           appropriate and your seismic design for the suspended ceiling is
           complete.
-          <a
-            href="#"
-            class="text-blue-600 hover:text-blue-800 underline"
-            @click.prevent
-          >
+          <a href="#" class="text-link" @click.prevent>
             Click here to learn more about perimeter fixing.
           </a>
         </p>

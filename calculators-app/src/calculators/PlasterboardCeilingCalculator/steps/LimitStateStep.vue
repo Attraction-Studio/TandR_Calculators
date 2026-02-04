@@ -198,7 +198,7 @@
             <a
               href="#"
               @click.prevent="showAssumptions = true"
-              class="text-[#3C999B] hover:underline"
+              class="text-link"
             >
               assumptions and limitations</a
             >?</b
@@ -384,13 +384,13 @@
   const showQuestion1 = computed(() => true);
   const showQuestion2 = computed(() => q1Answer.value !== "");
   const showQuestion3 = computed(
-    () => q1Answer.value !== "" && q2Answer.value === "no"
+    () => q1Answer.value !== "" && q2Answer.value === "no",
   );
   const showQuestion4 = computed(
     () =>
       q1Answer.value !== "" &&
       q2Answer.value === "no" &&
-      q3Answer.value === "no"
+      q3Answer.value === "no",
   );
   const showQuestion5 = computed(() => {
     if (q1Answer.value === "yes") return true;
