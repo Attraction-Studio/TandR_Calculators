@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2 class="global-step-title">Step Four - Overall Ceiling Capacity</h2>
+    <h2 class="global-step-title">Overall Ceiling Capacity</h2>
 
     <div class="prose max-w-none space-y-6">
       <!-- Section 4.1: Edge Connection Capacity -->

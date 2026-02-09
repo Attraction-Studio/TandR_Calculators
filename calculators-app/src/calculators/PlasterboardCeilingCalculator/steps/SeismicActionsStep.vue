@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2 class="global-step-title">Step Three - Seismic Actions</h2>
+    <h2 class="global-step-title">Seismic Actions</h2>
 
     <div class="prose max-w-none space-y-6">
       <p class="paragraph-18px">

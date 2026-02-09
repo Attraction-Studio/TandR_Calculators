@@ -1,8 +1,6 @@
 <template>
   <div>
-    <h2 class="global-step-title">
-      Step Six - Determining the Seismic Clearance
-    </h2>
+    <h2 class="global-step-title">Determining the Seismic Clearance</h2>
 
     <div class="prose max-w-none space-y-6">
       <p class="paragraph-18px">

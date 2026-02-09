@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2 class="global-step-title">Step Five - Back Bracing</h2>
+    <h2 class="global-step-title">Back Bracing</h2>
 
     <div class="prose max-w-none space-y-6">
       <p class="paragraph-18px">

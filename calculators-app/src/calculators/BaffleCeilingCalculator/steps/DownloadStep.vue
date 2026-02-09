@@ -1,20 +1,62 @@
 <template>
   <div>
-    <h2 class="global-step-title">Step Seven - Download</h2>
+    <h2 class="global-step-title">Download</h2>
 
     <div class="prose max-w-none space-y-6">
-      <hr class="my-6" />
+      <div
+        class="py-8 flex lg:flex-row flex-col bg-gray-50 rounded-lg p-6 gap-6"
+      >
+        <div
+          class="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-4"
+        >
+          <svg
+            class="w-8 h-8 text-green-600"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M5 13l4 4L19 7"
+            />
+          </svg>
+        </div>
+        <div>
+          <h2 class="text-2xl font-medium text-green-600 mb-3">All done!</h2>
+          <p class="text-gray-600 font-medium max-w-xl mb-2">
+            Your seismic assessment is ready to go. We've worked out the
+            requirements based on your project details.
+          </p>
+          <p class="text-sm text-gray-500 max-w-xl">
+            You can now download the full PDF report. It includes all your
+            seismic forces, baffle spacings, and bracing details in one place.
+          </p>
+        </div>
+      </div>
 
-      <h2 class="text-2xl font-bold text-green-600 text-center">We're done!</h2>
-
-      <p class="text-center">
+      <div class="flex justify-start">
         <button
           @click="showDownloadModal = true"
-          class="px-8 py-4 bg-green-600 !text-white rounded-lg hover:bg-green-700 transition-colors text-lg"
+          class="px-8 py-4 bg-[#3C999B] !text-white font-semibold hover:bg-[#3C999B]/80 transition-colors flex items-center gap-2"
         >
-          <span class="mr-2">💾</span> Download Result
+          <svg
+            class="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+            />
+          </svg>
+          Download Result
         </button>
-      </p>
+      </div>
 
       <!-- Download Modal -->
       <div
