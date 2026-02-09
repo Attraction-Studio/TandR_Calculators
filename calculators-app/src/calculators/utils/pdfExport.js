@@ -273,34 +273,58 @@ class PDFExporter {
   /**
    * Add numbered badge section header (like in the example PDF)
    */
-  addBadgeSection(number, title, resultText = "") {
+  addBadgeSection(number, title, resultText = "", chip = null) {
     const badgeSize = 8;
     const badgeX = this.margin;
 
-    // Draw circular badge
-    this.doc.setFillColor(...COLORS.primary);
-    this.doc.circle(
-      badgeX + badgeSize / 2,
-      this.currentY + badgeSize / 2,
-      badgeSize / 2,
-      "F",
-    );
+    if (chip) {
+      // Draw colored abbreviation chip
+      this.doc.setFontSize(5.5);
+      this.doc.setFont("helvetica", "bold");
+      const chipWidth = Math.max(8, this.doc.getTextWidth(chip.abbr) + 4);
+      const chipHeight = 4;
+      this.doc.setFillColor(...chip.color);
+      this.doc.roundedRect(
+        badgeX,
+        this.currentY + 1.5,
+        chipWidth,
+        chipHeight,
+        0.8,
+        0.8,
+        "F",
+      );
+      this.doc.setTextColor(...COLORS.white);
+      this.doc.text(chip.abbr, badgeX + chipWidth / 2, this.currentY + 4, {
+        align: "center",
+      });
 
-    // Badge number
-    this.doc.setTextColor(...COLORS.white);
-    this.doc.setFont("helvetica", "bold");
-    this.doc.setFontSize(10);
-    this.doc.text(
-      number.toString(),
-      badgeX + badgeSize / 2,
-      this.currentY + badgeSize / 2,
-      { align: "center", baseline: "middle" },
-    );
+      this.doc.setTextColor(...COLORS.primary);
+      this.doc.setFontSize(10);
+      this.doc.text(title, badgeX + chipWidth + 3, this.currentY + 5.5);
+    } else {
+      // Draw circular numbered badge
+      this.doc.setFillColor(...COLORS.primary);
+      this.doc.circle(
+        badgeX + badgeSize / 2,
+        this.currentY + badgeSize / 2,
+        badgeSize / 2,
+        "F",
+      );
 
-    // Section title
-    this.doc.setTextColor(...COLORS.primary);
-    this.doc.setFontSize(11);
-    this.doc.text(title, badgeX + badgeSize + 5, this.currentY + 6);
+      this.doc.setTextColor(...COLORS.white);
+      this.doc.setFont("helvetica", "bold");
+      this.doc.setFontSize(10);
+      this.doc.text(
+        number.toString(),
+        badgeX + badgeSize / 2,
+        this.currentY + badgeSize / 2,
+        { align: "center", baseline: "middle" },
+      );
+
+      this.doc.setTextColor(...COLORS.primary);
+      this.doc.setFontSize(11);
+      this.doc.text(title, badgeX + badgeSize + 5, this.currentY + 6);
+    }
 
     // Result text (right aligned)
     if (resultText) {
@@ -317,6 +341,12 @@ class PDFExporter {
     this.currentY += badgeSize + 5;
     this.doc.setTextColor(...COLORS.text);
     this.doc.setFont("helvetica", "normal");
+  }
+
+  ensureSpace(needed = 20) {
+    if (this.currentY + needed > this.pageHeight - 35) {
+      this.addPage();
+    }
   }
 
   /**
@@ -394,7 +424,10 @@ class PDFExporter {
     const limitStateMain = limitStateLogic?.limitStateMain?.value || "ULS";
     const sls2Display = limitStateLogic?.liveCalcSLS2Display?.value || "";
     const limitState = limitStateMain + sls2Display;
-    this.addBadgeSection(1, "Limit State Type", limitState);
+    this.addBadgeSection(1, "Limit State Type", limitState, {
+      abbr: "T",
+      color: [128, 0, 128],
+    });
     this.currentY += 3;
 
     // 2. Seismic Weight
@@ -402,7 +435,10 @@ class PDFExporter {
     const weightResult = `${
       typeof seismicWeight === "number" ? seismicWeight.toFixed(2) : "0.00"
     } kg/m²`;
-    this.addBadgeSection(2, "Seismic Weight", weightResult);
+    this.addBadgeSection(2, "Seismic Weight", weightResult, {
+      abbr: "Sw",
+      color: [101, 208, 201],
+    });
 
     this.doc.setFontSize(8);
     // Grid Mass
@@ -470,12 +506,16 @@ class PDFExporter {
     this.currentY += 8;
 
     // 3. Seismic Force
+    this.ensureSpace(30);
     const seismicForces = this.getValue("seismicForces");
     const ulsForce = seismicForces?.uls || 0;
     const forceResult = `ULS = ${
       typeof ulsForce === "number" ? ulsForce.toFixed(2) : "0.00"
     } kg/m²`;
-    this.addBadgeSection(3, "Seismic Force", forceResult);
+    this.addBadgeSection(3, "Seismic Force", forceResult, {
+      abbr: "Sf",
+      color: [0, 141, 144],
+    });
 
     this.doc.setFontSize(8);
 
@@ -535,6 +575,7 @@ class PDFExporter {
     this.currentY += 8;
 
     // 4. Limiting Main Tee Length
+    this.ensureSpace(15);
     const limitingLengths =
       this.getValue("adjustedLimitingLengths") ||
       this.getValue("limitingLengths");
@@ -542,15 +583,22 @@ class PDFExporter {
     const mainResult = `ULS = ${
       typeof mainTeeLength === "number" ? mainTeeLength.toFixed(1) : "0.0"
     } m`;
-    this.addBadgeSection(4, "Limiting Main Tee Length (max)", mainResult);
+    this.addBadgeSection(4, "Limiting Main Tee Length (max)", mainResult, {
+      abbr: "Lmt",
+      color: [246, 181, 62],
+    });
     this.currentY += 3;
 
     // 5. Limiting Cross Tee Length
+    this.ensureSpace(15);
     const crossTeeLength = limitingLengths?.uls?.cross || 0;
     const crossResult = `ULS = ${
       typeof crossTeeLength === "number" ? crossTeeLength.toFixed(1) : "0.0"
     } m`;
-    this.addBadgeSection(5, "Limiting Cross Tee Length (max)", crossResult);
+    this.addBadgeSection(5, "Limiting Cross Tee Length (max)", crossResult, {
+      abbr: "Lct",
+      color: [255, 102, 0],
+    });
     this.currentY += 5;
 
     // Grid details
@@ -1049,31 +1097,56 @@ class PlasterboardPDFExporter {
     this.addHeader();
   }
 
-  addBadgeSection(number, title, resultText = "") {
+  addBadgeSection(number, title, resultText = "", chip = null) {
     const badgeSize = 8;
     const badgeX = this.margin;
 
-    this.doc.setFillColor(...COLORS.primary);
-    this.doc.circle(
-      badgeX + badgeSize / 2,
-      this.currentY + badgeSize / 2,
-      badgeSize / 2,
-      "F",
-    );
+    if (chip) {
+      this.doc.setFontSize(5.5);
+      this.doc.setFont("helvetica", "bold");
+      const chipWidth = Math.max(8, this.doc.getTextWidth(chip.abbr) + 4);
+      const chipHeight = 4;
+      this.doc.setFillColor(...chip.color);
+      this.doc.roundedRect(
+        badgeX,
+        this.currentY + 1.5,
+        chipWidth,
+        chipHeight,
+        0.8,
+        0.8,
+        "F",
+      );
+      this.doc.setTextColor(...COLORS.white);
+      this.doc.text(chip.abbr, badgeX + chipWidth / 2, this.currentY + 4, {
+        align: "center",
+      });
 
-    this.doc.setTextColor(...COLORS.white);
-    this.doc.setFont("helvetica", "bold");
-    this.doc.setFontSize(10);
-    this.doc.text(
-      number.toString(),
-      badgeX + badgeSize / 2,
-      this.currentY + badgeSize / 2,
-      { align: "center", baseline: "middle" },
-    );
+      this.doc.setTextColor(...COLORS.primary);
+      this.doc.setFontSize(10);
+      this.doc.text(title, badgeX + chipWidth + 3, this.currentY + 5.5);
+    } else {
+      this.doc.setFillColor(...COLORS.primary);
+      this.doc.circle(
+        badgeX + badgeSize / 2,
+        this.currentY + badgeSize / 2,
+        badgeSize / 2,
+        "F",
+      );
 
-    this.doc.setTextColor(...COLORS.primary);
-    this.doc.setFontSize(11);
-    this.doc.text(title, badgeX + badgeSize + 5, this.currentY + 6);
+      this.doc.setTextColor(...COLORS.white);
+      this.doc.setFont("helvetica", "bold");
+      this.doc.setFontSize(10);
+      this.doc.text(
+        number.toString(),
+        badgeX + badgeSize / 2,
+        this.currentY + badgeSize / 2,
+        { align: "center", baseline: "middle" },
+      );
+
+      this.doc.setTextColor(...COLORS.primary);
+      this.doc.setFontSize(11);
+      this.doc.text(title, badgeX + badgeSize + 5, this.currentY + 6);
+    }
 
     if (resultText) {
       this.doc.setTextColor(...COLORS.text);
@@ -1089,6 +1162,12 @@ class PlasterboardPDFExporter {
     this.currentY += badgeSize + 5;
     this.doc.setTextColor(...COLORS.text);
     this.doc.setFont("helvetica", "normal");
+  }
+
+  ensureSpace(needed = 20) {
+    if (this.currentY + needed > this.pageHeight - 35) {
+      this.addPage();
+    }
   }
 
   generateMainPage() {
@@ -1165,7 +1244,12 @@ class PlasterboardPDFExporter {
     const limitStateLogic = this.getValue("limitStateLogic");
     const limitState = limitStateLogic?.limitStateMain?.value || "SLS";
     const sls2Display = limitStateLogic?.liveCalcSLS2Display?.value || "";
-    this.addBadgeSection(1, "Limit State Type", `${limitState} ${sls2Display}`);
+    this.addBadgeSection(
+      1,
+      "Limit State Type",
+      `${limitState} ${sls2Display}`,
+      { abbr: "T", color: [128, 0, 128] },
+    );
     this.currentY += 3;
 
     // 2. Seismic Weight
@@ -1173,7 +1257,10 @@ class PlasterboardPDFExporter {
     const weightResult = `${
       typeof seismicWeight === "number" ? seismicWeight.toFixed(2) : "0.00"
     } kg/m²`;
-    this.addBadgeSection(2, "Seismic Weight", weightResult);
+    this.addBadgeSection(2, "Seismic Weight", weightResult, {
+      abbr: "Sw",
+      color: [101, 208, 201],
+    });
 
     this.doc.setFontSize(8);
     const mainTee = this.getValue("mainTeeSpacing");
@@ -1229,11 +1316,15 @@ class PlasterboardPDFExporter {
     this.currentY += 8;
 
     // 3. Seismic Force
+    this.ensureSpace(30);
     const seismicForces = this.getValue("seismicForces");
     const forceResult = `SLS=${seismicForces?.sls || 0} | ULS=${
       seismicForces?.uls || 0
     } kg/m²`;
-    this.addBadgeSection(3, "Seismic Force", forceResult);
+    this.addBadgeSection(3, "Seismic Force", forceResult, {
+      abbr: "Sf",
+      color: [0, 141, 144],
+    });
 
     this.doc.setFontSize(8);
 
@@ -1270,20 +1361,28 @@ class PlasterboardPDFExporter {
     this.currentY += 8;
 
     // 4. Limiting Main Tee Length
+    this.ensureSpace(15);
     const maxTeeLengths = this.getValue("maxAllowableTeeLengths");
     const mainTeeLength = maxTeeLengths?.main?.uls || 0;
     const mainResult = `SLS=${
       maxTeeLengths?.main?.sls?.toFixed(2) || 0
     }m | ULS=${mainTeeLength.toFixed(2)}m`;
-    this.addBadgeSection(4, "Limiting Main Tee Length (max)", mainResult);
+    this.addBadgeSection(4, "Limiting Main Tee Length (max)", mainResult, {
+      abbr: "Mt",
+      color: [228, 44, 26],
+    });
     this.currentY += 3;
 
     // 5. Limiting Cross Tee Length
+    this.ensureSpace(15);
     const crossTeeLength = maxTeeLengths?.cross?.uls || 0;
     const crossResult = `SLS=${
       maxTeeLengths?.cross?.sls?.toFixed(2) || 0
     }m | ULS=${crossTeeLength.toFixed(2)}m`;
-    this.addBadgeSection(5, "Limiting Cross Tee Length (max)", crossResult);
+    this.addBadgeSection(5, "Limiting Cross Tee Length (max)", crossResult, {
+      abbr: "Ct",
+      color: [255, 102, 0],
+    });
     this.currentY += 5;
 
     // Capacity details
@@ -1674,31 +1773,56 @@ class BafflePDFExporter {
     this.addHeader();
   }
 
-  addBadgeSection(number, title, resultText = "") {
+  addBadgeSection(number, title, resultText = "", chip = null) {
     const badgeSize = 8;
     const badgeX = this.margin;
 
-    this.doc.setFillColor(...COLORS.primary);
-    this.doc.circle(
-      badgeX + badgeSize / 2,
-      this.currentY + badgeSize / 2,
-      badgeSize / 2,
-      "F",
-    );
+    if (chip) {
+      this.doc.setFontSize(5.5);
+      this.doc.setFont("helvetica", "bold");
+      const chipWidth = Math.max(8, this.doc.getTextWidth(chip.abbr) + 4);
+      const chipHeight = 4;
+      this.doc.setFillColor(...chip.color);
+      this.doc.roundedRect(
+        badgeX,
+        this.currentY + 1.5,
+        chipWidth,
+        chipHeight,
+        0.8,
+        0.8,
+        "F",
+      );
+      this.doc.setTextColor(...COLORS.white);
+      this.doc.text(chip.abbr, badgeX + chipWidth / 2, this.currentY + 4, {
+        align: "center",
+      });
 
-    this.doc.setTextColor(...COLORS.white);
-    this.doc.setFont("helvetica", "bold");
-    this.doc.setFontSize(10);
-    this.doc.text(
-      number.toString(),
-      badgeX + badgeSize / 2,
-      this.currentY + badgeSize / 2,
-      { align: "center", baseline: "middle" },
-    );
+      this.doc.setTextColor(...COLORS.primary);
+      this.doc.setFontSize(10);
+      this.doc.text(title, badgeX + chipWidth + 3, this.currentY + 5.5);
+    } else {
+      this.doc.setFillColor(...COLORS.primary);
+      this.doc.circle(
+        badgeX + badgeSize / 2,
+        this.currentY + badgeSize / 2,
+        badgeSize / 2,
+        "F",
+      );
 
-    this.doc.setTextColor(...COLORS.primary);
-    this.doc.setFontSize(11);
-    this.doc.text(title, badgeX + badgeSize + 5, this.currentY + 6);
+      this.doc.setTextColor(...COLORS.white);
+      this.doc.setFont("helvetica", "bold");
+      this.doc.setFontSize(10);
+      this.doc.text(
+        number.toString(),
+        badgeX + badgeSize / 2,
+        this.currentY + badgeSize / 2,
+        { align: "center", baseline: "middle" },
+      );
+
+      this.doc.setTextColor(...COLORS.primary);
+      this.doc.setFontSize(11);
+      this.doc.text(title, badgeX + badgeSize + 5, this.currentY + 6);
+    }
 
     if (resultText) {
       this.doc.setTextColor(...COLORS.text);
@@ -1714,6 +1838,12 @@ class BafflePDFExporter {
     this.currentY += badgeSize + 5;
     this.doc.setTextColor(...COLORS.text);
     this.doc.setFont("helvetica", "normal");
+  }
+
+  ensureSpace(needed = 20) {
+    if (this.currentY + needed > this.pageHeight - 35) {
+      this.addPage();
+    }
   }
 
   generateMainPage() {
@@ -1790,7 +1920,12 @@ class BafflePDFExporter {
     const limitStateLogic = this.getValue("limitStateLogic");
     const limitState = limitStateLogic?.limitStateMain?.value || "SLS";
     const sls2Display = limitStateLogic?.liveCalcSLS2Display?.value || "";
-    this.addBadgeSection(1, "Limit State Type", `${limitState} ${sls2Display}`);
+    this.addBadgeSection(
+      1,
+      "Limit State Type",
+      `${limitState} ${sls2Display}`,
+      { abbr: "T", color: [128, 0, 128] },
+    );
     this.currentY += 3;
 
     // 2. Seismic Weight
@@ -1798,7 +1933,10 @@ class BafflePDFExporter {
     const weightResult = `${
       typeof seismicWeight === "number" ? seismicWeight.toFixed(2) : "0.00"
     } kg/m²`;
-    this.addBadgeSection(2, "Seismic Weight", weightResult);
+    this.addBadgeSection(2, "Seismic Weight", weightResult, {
+      abbr: "Sw",
+      color: [101, 208, 201],
+    });
 
     this.doc.setFontSize(8);
     this.doc.text(`Profile Mass`, this.margin + 5, this.currentY);
@@ -1848,11 +1986,15 @@ class BafflePDFExporter {
     this.currentY += 8;
 
     // 3. Seismic Force
+    this.ensureSpace(30);
     const seismicForces = this.getValue("seismicForces");
     const forceResult = `SLS=${seismicForces?.sls || 0} | ULS=${
       seismicForces?.uls || 0
     } kg/m²`;
-    this.addBadgeSection(3, "Seismic Force", forceResult);
+    this.addBadgeSection(3, "Seismic Force", forceResult, {
+      abbr: "Sf",
+      color: [0, 141, 144],
+    });
 
     this.doc.setFontSize(8);
 
@@ -1889,33 +2031,40 @@ class BafflePDFExporter {
     this.currentY += 8;
 
     // 4. Area Per Brace
+    this.ensureSpace(15);
     const areaPerBrace = this.getValue("areaPerBrace");
     this.addBadgeSection(
       4,
       "Area Per Brace",
       `${areaPerBrace?.toFixed(1) || 0} m²`,
+      { abbr: "Ab", color: [246, 181, 62] },
     );
     this.currentY += 3;
 
     // 5. Minimum Braces
+    this.ensureSpace(15);
     const minimumBraces = this.getValue("minimumBraces");
     this.addBadgeSection(
       5,
       "Minimum Number of Braces",
       `${minimumBraces || 0}`,
+      { abbr: "#b", color: [255, 102, 0] },
     );
     this.currentY += 3;
 
     // 6. Max Brace Spacing
+    this.ensureSpace(15);
     const maxBraceSpacing = this.getValue("maxBraceSpacing");
     this.addBadgeSection(
       6,
       "Max Brace Spacing",
       `${maxBraceSpacing?.toFixed(1) || 0} m`,
+      { abbr: "Bs", color: [228, 44, 26] },
     );
     this.currentY += 5;
 
     // Brace details
+    this.ensureSpace(25);
     this.doc.setFontSize(8);
     this.doc.text(`Plenum Height`, this.margin + 5, this.currentY);
     this.doc.text(
@@ -1936,6 +2085,7 @@ class BafflePDFExporter {
     this.currentY += 8;
 
     // Seismic Clearance
+    this.ensureSpace(20);
     const seismicClearance = this.getValue("seismicClearance");
     this.doc.setFont("helvetica", "bold");
     this.doc.text(
