@@ -397,9 +397,13 @@
           which you want to install, then the perimeter fixing method is
           appropriate and your seismic design for the suspended ceiling is
           complete.
-          <a href="#" class="text-link" @click.prevent>
+          <button
+            type="button"
+            @click="showPerimeterFixing = true"
+            class="text-blue-600 hover:text-blue-800 underline focus:outline-none"
+          >
             Click here to learn more about perimeter fixing.
-          </a>
+          </button>
         </p>
       </InfoBox>
 
@@ -578,6 +582,70 @@
       </div>
     </Modal>
 
+    <!-- Perimeter Fixing Modal -->
+    <Modal v-model="showPerimeterFixing" title="Perimeter Fixing" size="lg">
+      <div class="space-y-4">
+        <h3 class="text-lg font-semibold">Perimeter Fixing</h3>
+        <p>
+          The T&amp;R seismic system advocates two methods of seismic edge
+          restraint. The first is a fix two sides and float two sides, while the
+          second system allows for all sides floating and the installation of
+          back braces to absorb the seismic load.
+        </p>
+        <p>
+          A fixed side is a side of the grid tee which is attached, generally
+          with a rivet, to the wall trim. A floating side is a side of grid tee
+          which is not attached through a rivet, with the tee sitting on the
+          trim (although still being supported through the wire gravity
+          supports).
+        </p>
+        <img
+          src="https://cdn.prod.website-files.com/68ec24dc82bba0539e7b250e/691ce63cd6d56bb52c09cf2f_seismicpic2.jpg"
+          alt="Perimeter fixing diagram 1"
+          class="max-w-full h-auto rounded"
+        />
+        <img
+          src="https://cdn.prod.website-files.com/68ec24dc82bba0539e7b250e/691ce63cd6d56bb52c09cf31_seismicpic1.jpg"
+          alt="Perimeter fixing diagram 2"
+          class="max-w-full h-auto rounded"
+        />
+        <p>
+          In this instance, a two sides fixed and two sides floating design is
+          appropriate based on the both the site and installation information.
+          The fix two sides and float two sides system relies on two of the
+          sides being fastened to the wall trim and the two opposite sides being
+          floated, not connected to the wall trim.
+        </p>
+        <p>
+          This system relies on two perimeter walls to add support and brace the
+          ceiling, but allows movement on the opposite side to prevent the grid
+          pulling apart or crushing under compression.
+        </p>
+        <p>
+          The T&amp;R seismic system utilizes a Z rail on the floating side to
+          suspend the grid perimeter and take the dead loads to the structure
+          above. The Z rail locks over the tees and is attached to the grid by
+          rivets at 600 centres along its length and is suspended independently.
+          This creates a 'frame' around the ceiling and allows the ceiling to
+          move with the structure above.
+        </p>
+        <p>
+          The tees stop short of the wall to provide seismic clearance. A
+          nominal 20mm is recommended but may be increased for specific design
+          requirements and building deflection. This should be assessed on a
+          case by case basis.
+        </p>
+        <p>
+          The T&amp;R Seismic System specifies a nominal 20mm seismic spacing
+          between termination of the tee and wall.
+        </p>
+        <p>
+          The expected deflection at ceiling height = the seismic spacing
+          required
+        </p>
+      </div>
+    </Modal>
+
     <!-- Seismic Joints Modal -->
     <Modal v-model="showSeismicJointsModal" title="Seismic Joints" size="lg">
       <div class="space-y-4">
@@ -648,6 +716,7 @@
   const showConnectionExplain = ref(false);
   const showStrengtheningExample = ref(false);
   const showSeismicJointsModal = ref(false);
+  const showPerimeterFixing = ref(false);
   const showExportDialog = ref(false);
 
   // Connection capacity display
