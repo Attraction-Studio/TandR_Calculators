@@ -93,7 +93,7 @@
       </p>
 
       <!-- Bracing Diagram & Connection Details Buttons -->
-      <div class="flex flex-wrap gap-4 justify-center">
+      <div class="flex flex-wrap gap-4 justify-start pt-8">
         <button
           type="button"
           @click="showBracingDiagram = true"
