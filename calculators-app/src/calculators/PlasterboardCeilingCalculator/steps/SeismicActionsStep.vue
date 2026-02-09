@@ -117,7 +117,7 @@
               <td class="py-3 pr-4 text-right" colspan="2">
                 Seismic Weight
                 <span
-                  class="badge bg-teal-500 text-white px-2 py-1 rounded text-xs ml-2"
+                  class="badge bg-teal-500 !text-white px-2 py-1 rounded text-xs ml-2"
                   >Sw</span
                 >
               </td>
@@ -131,7 +131,7 @@
               <td class="py-3 pr-4 text-right" colspan="2">
                 Total Seismic Force
                 <span
-                  class="badge bg-teal-600 text-white px-2 py-1 rounded text-xs ml-2"
+                  class="badge bg-teal-600 !text-white px-2 py-1 rounded text-xs ml-2"
                   >Sf</span
                 ><br />
                 <span class="text-sm">kg/m<sup>2</sup></span>

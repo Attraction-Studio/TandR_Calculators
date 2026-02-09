@@ -24,7 +24,7 @@
             <td class="py-3 px-4 font-semibold">
               Plenum height (m)
               <span
-                class="badge bg-green-600 text-white px-2 py-1 rounded text-xs ml-1"
+                class="badge bg-green-600 !text-white px-2 py-1 rounded text-xs ml-1"
                 >Ph</span
               >
             </td>
@@ -36,7 +36,7 @@
             <td class="py-3 px-4 font-semibold">
               Required Clearance (mm)
               <span
-                class="badge bg-blue-700 text-white px-2 py-1 rounded text-xs ml-1"
+                class="badge bg-blue-700 !text-white px-2 py-1 rounded text-xs ml-1"
                 >Sc</span
               >
             </td>

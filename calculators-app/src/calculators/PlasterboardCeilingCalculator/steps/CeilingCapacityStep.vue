@@ -174,14 +174,14 @@
               <td class="py-3 text-right font-semibold">
                 Cross Tee Length
                 <span
-                  class="badge bg-orange-500 text-white px-2 py-1 rounded text-xs ml-1"
+                  class="badge bg-orange-500 !text-white px-2 py-1 rounded text-xs ml-1"
                   >Ct</span
                 >
               </td>
               <td class="py-3 text-right font-semibold">
                 Main Tee Length
                 <span
-                  class="badge bg-red-500 text-white px-2 py-1 rounded text-xs ml-1"
+                  class="badge bg-red-500 !text-white px-2 py-1 rounded text-xs ml-1"
                   >Mt</span
                 >
               </td>

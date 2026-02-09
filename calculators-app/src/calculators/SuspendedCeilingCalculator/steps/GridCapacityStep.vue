@@ -315,8 +315,8 @@
               :class="[
                 'w-6 h-6 flex items-center justify-center border-2 border-brand-black font-bold text-sm',
                 state.designValidation.value.mainPass
-                  ? 'bg-green-500 text-white'
-                  : 'bg-red-500 text-white',
+                  ? 'bg-green-500 !text-white'
+                  : 'bg-red-500 !text-white',
               ]"
             >
               {{ state.designValidation.value.mainPass ? "✓" : "✗" }}
@@ -356,8 +356,8 @@
               :class="[
                 'w-6 h-6 flex items-center justify-center border-2 border-brand-black font-bold text-sm',
                 state.designValidation.value.crossPass
-                  ? 'bg-green-500 text-white'
-                  : 'bg-red-500 text-white',
+                  ? 'bg-green-500 !text-white'
+                  : 'bg-red-500 !text-white',
               ]"
             >
               {{ state.designValidation.value.crossPass ? "✓" : "✗" }}

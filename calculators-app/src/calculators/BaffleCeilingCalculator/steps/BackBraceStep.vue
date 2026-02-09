@@ -16,7 +16,7 @@
               <td class="py-3 pr-4">
                 <b>Maximum Plenum Height (m)</b>
                 <span
-                  class="badge bg-green-600 text-white px-2 py-1 rounded text-xs ml-1"
+                  class="badge bg-green-600 !text-white px-2 py-1 rounded text-xs ml-1"
                   >Ph</span
                 >
               </td>
@@ -72,7 +72,7 @@
               <td class="py-3 text-right font-semibold">
                 {{ state.areaPerBrace.value.toFixed(1) }}
                 <span
-                  class="badge bg-yellow-500 text-white px-2 py-1 rounded text-xs ml-1"
+                  class="badge bg-yellow-500 !text-white px-2 py-1 rounded text-xs ml-1"
                   >Ab</span
                 >
               </td>

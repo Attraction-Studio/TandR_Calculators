@@ -58,8 +58,8 @@
               :class="[
                 'w-6 h-6 flex items-center justify-center border-2 border-brand-black font-bold',
                 state.designValidation.mainPass
-                  ? 'bg-green-500 text-white'
-                  : 'bg-red-500 text-white',
+                  ? 'bg-green-500 !text-white'
+                  : 'bg-red-500 !text-white',
               ]"
             >
               {{ state.designValidation.mainPass ? "✓" : "✗" }}
@@ -76,8 +76,8 @@
               :class="[
                 'w-6 h-6 flex items-center justify-center border-2 border-brand-black font-bold',
                 state.designValidation.crossPass
-                  ? 'bg-green-500 text-white'
-                  : 'bg-red-500 text-white',
+                  ? 'bg-green-500 !text-white'
+                  : 'bg-red-500 !text-white',
               ]"
             >
               {{ state.designValidation.crossPass ? "✓" : "✗" }}
@@ -132,10 +132,10 @@
 </template>
 
 <script setup>
-import { inject } from 'vue';
-import CalculationResult from '../../../components/CalculationResult.vue';
-import InfoBox from '../../../components/InfoBox.vue';
-import ConditionalSection from '../../../components/ConditionalSection.vue';
+  import { inject } from "vue";
+  import CalculationResult from "../../../components/CalculationResult.vue";
+  import InfoBox from "../../../components/InfoBox.vue";
+  import ConditionalSection from "../../../components/ConditionalSection.vue";
 
-const state = inject('calculatorState');
+  const state = inject("calculatorState");
 </script>

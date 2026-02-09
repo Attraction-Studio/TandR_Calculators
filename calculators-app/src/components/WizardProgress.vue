@@ -11,10 +11,10 @@
           :class="[
             'w-10 h-10 rounded-full border-2 flex items-center justify-center font-bold transition-all duration-300',
             step.number < currentStep
-              ? 'bg-[#3C999B] border-[#3C999B] text-white'
+              ? 'bg-[#3C999B] border-[#3C999B] !text-white'
               : step.number === currentStep
-              ? 'bg-[#333] border-[#333] !text-white scale-110'
-              : 'bg-white border-[#333] text-[#333]',
+                ? 'bg-[#333] border-[#333] !text-white scale-110'
+                : 'bg-white border-[#333] text-[#333]',
           ]"
         >
           <span v-if="step.number < currentStep">✓</span>

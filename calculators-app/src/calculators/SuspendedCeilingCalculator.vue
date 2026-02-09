@@ -78,7 +78,14 @@
         <CalculationSidebar v-else>
           <div class="space-y-4 text-sm">
             <div>
-              <div class="font-semibold mb-1">Limit State Type</div>
+              <div class="font-semibold mb-1">
+                <span
+                  class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-light !text-white mr-1"
+                  style="background-color: #800080"
+                  >T</span
+                >
+                Limit State Type
+              </div>
               <div class="text-lg">
                 <template
                   v-if="state.limitStateLogic.liveCalcSLS2Display.value"
@@ -91,7 +98,14 @@
             </div>
 
             <div class="border-t border-gray-300 pt-4">
-              <div class="font-semibold mb-1">Seismic Weight</div>
+              <div class="font-semibold mb-1">
+                <span
+                  class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-light !text-white mr-1"
+                  style="background-color: #65d0c9"
+                  >Sw</span
+                >
+                Seismic Weight
+              </div>
               <div class="text-lg">
                 {{
                   state.step3Complete.value
@@ -103,7 +117,14 @@
             </div>
 
             <div class="border-t border-gray-300 pt-4">
-              <div class="font-semibold mb-1">Seismic Force</div>
+              <div class="font-semibold mb-1">
+                <span
+                  class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-light !text-white mr-1"
+                  style="background-color: #008d90"
+                  >Sf</span
+                >
+                Seismic Force
+              </div>
               <div class="text-lg">
                 <span v-if="state.limitStateLogic.showSLS2Calculations.value">
                   SLS2 =
@@ -126,6 +147,11 @@
 
             <div class="border-t border-gray-300 pt-4">
               <div class="font-semibold mb-1">
+                <span
+                  class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-light !text-white mr-1"
+                  style="background-color: #f6b53e"
+                  >Lmt</span
+                >
                 Limiting Main Tee Length (max)
               </div>
               <div class="text-lg">
@@ -150,6 +176,11 @@
 
             <div class="border-t border-gray-300 pt-4">
               <div class="font-semibold mb-1">
+                <span
+                  class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-light !text-white mr-1"
+                  style="background-color: #ff6600"
+                  >Lct</span
+                >
                 Limiting Cross Tee Length (max)
               </div>
               <div class="text-lg">
@@ -158,7 +189,7 @@
                   {{
                     state.adjustedLimitingLengths.value.sls2.cross > 0
                       ? state.adjustedLimitingLengths.value.sls2.cross.toFixed(
-                          1
+                          1,
                         )
                       : "-"
                   }}
@@ -175,7 +206,14 @@
             </div>
 
             <div class="border-t border-gray-300 pt-4">
-              <div class="font-semibold mb-1">Area per Brace</div>
+              <div class="font-semibold mb-1">
+                <span
+                  class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-light !text-white mr-1"
+                  style="background-color: #1f566d"
+                  >Ab</span
+                >
+                Area per Brace
+              </div>
               <div class="text-lg">
                 <template v-if="state.braceArea.value > 0">
                   {{ state.braceArea.value.toFixed(1) }} m²
@@ -185,7 +223,14 @@
             </div>
 
             <div class="border-t border-gray-300 pt-4">
-              <div class="font-semibold mb-1">Max Tee Space</div>
+              <div class="font-semibold mb-1">
+                <span
+                  class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-light !text-white mr-1"
+                  style="background-color: #009966"
+                  >MT</span
+                >
+                Max Tee Space
+              </div>
               <div class="text-lg">
                 <template v-if="state.maxTeeSpace.value.main > 0">
                   Main: {{ state.maxTeeSpace.value.main.toFixed(1) }}m<br />
@@ -413,28 +458,28 @@
     () => state.zoneFactor.value,
     (val) => {
       console.log("zoneFactor changed:", val);
-    }
+    },
   );
 
   watch(
     () => state.seismicWeight.value,
     (val) => {
       console.log("seismicWeight changed:", val);
-    }
+    },
   );
 
   watch(
     () => state.seismicForces.value,
     (val) => {
       console.log("seismicForces changed:", val);
-    }
+    },
   );
 
   watch(
     () => state.step2Complete.value,
     (val) => {
       console.log("step2Complete changed:", val);
-    }
+    },
   );
 
   // Watch for optional steps activation to auto-navigate
@@ -444,14 +489,14 @@
       if (val) {
         // Find the index of Rigid Hanger step
         const index = wizardSteps.value.findIndex(
-          (s) => s.label === "Rigid Hanger"
+          (s) => s.label === "Rigid Hanger",
         );
         if (index !== -1) {
           currentStep.value = index + 1;
           scrollToTop();
         }
       }
-    }
+    },
   );
 
   watch(
@@ -460,13 +505,13 @@
       if (val) {
         // Find the index of Back Brace step
         const index = wizardSteps.value.findIndex(
-          (s) => s.label === "Back Brace"
+          (s) => s.label === "Back Brace",
         );
         if (index !== -1) {
           currentStep.value = index + 1;
           scrollToTop();
         }
       }
-    }
+    },
   );
 </script>

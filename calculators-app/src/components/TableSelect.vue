@@ -24,7 +24,7 @@
             :class="[
               'cursor-pointer transition-colors border-b border-brand-black last:border-b-0',
               modelValue === option.value
-                ? 'bg-black text-white'
+                ? 'bg-black !text-white'
                 : 'hover:bg-gray-50',
             ]"
             @click="selectOption(option.value)"
@@ -65,7 +65,7 @@
       required: true,
       validator: (value) => {
         return value.every(
-          (option) => typeof option === "object" && "value" in option
+          (option) => typeof option === "object" && "value" in option,
         );
       },
     },

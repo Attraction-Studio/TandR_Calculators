@@ -10,7 +10,7 @@
       <p class="text-center">
         <button
           @click="showDownloadModal = true"
-          class="px-8 py-4 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-lg"
+          class="px-8 py-4 bg-green-600 !text-white rounded-lg hover:bg-green-700 transition-colors text-lg"
         >
           <span class="mr-2">💾</span> Download Result
         </button>

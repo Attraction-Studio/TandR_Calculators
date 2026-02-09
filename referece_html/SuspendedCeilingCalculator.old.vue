@@ -1088,21 +1088,21 @@
       zoneFactor.value &&
       importanceLevel.value &&
       floorHeight.value > 0 &&
-      ceilingHeight.value > 0
+      ceilingHeight.value > 0,
   );
 
   const step3Complete = computed(
-    () => gridMass.value && tileMass.value && seismicWeight.value > 0
+    () => gridMass.value && tileMass.value && seismicWeight.value > 0,
   );
 
   const step4Complete = computed(
-    () => studType.value && connectionType.value && gridType.value
+    () => studType.value && connectionType.value && gridType.value,
   );
 
   const step5Complete = computed(() => true); // Always complete
 
   const step6Complete = computed(
-    () => maxMainTee.value > 0 && maxCrossTee.value > 0
+    () => maxMainTee.value > 0 && maxCrossTee.value > 0,
   );
 
   // ============================================================================
@@ -1132,7 +1132,7 @@
 
   const gridMassNote = computed(() => {
     const option = GRID_MASS_OPTIONS.find(
-      (opt) => opt.value === Number(gridMass.value)
+      (opt) => opt.value === Number(gridMass.value),
     );
     if (option?.warning) {
       return {
@@ -1185,7 +1185,7 @@
     const connectionCap = getConnectionCapacity(
       Number(studType.value),
       Number(connectionType.value),
-      "uls"
+      "uls",
     );
 
     const gridCap = getGridCapacity(Number(gridType.value));
@@ -1219,21 +1219,21 @@
       sls: {
         main: adjustForRakeAngle(
           limitingLengths.value.sls.main,
-          rakeAngle.value
+          rakeAngle.value,
         ),
         cross: limitingLengths.value.sls.cross,
       },
       sls2: {
         main: adjustForRakeAngle(
           limitingLengths.value.sls2.main,
-          rakeAngle.value
+          rakeAngle.value,
         ),
         cross: limitingLengths.value.sls2.cross,
       },
       uls: {
         main: adjustForRakeAngle(
           limitingLengths.value.uls.main,
-          rakeAngle.value
+          rakeAngle.value,
         ),
         cross: limitingLengths.value.uls.cross,
       },
@@ -1279,12 +1279,12 @@
       connectionCapacity: getConnectionCapacity(
         Number(studType.value),
         Number(connectionType.value),
-        "uls"
+        "uls",
       ),
       wallCapacity: getConnectionCapacity(
         Number(studType.value),
         Number(connectionType.value),
-        "uls"
+        "uls",
       ),
       gridCapacityMain: getGridCapacity(Number(gridType.value)).mainTee,
       gridCapacityCross: getGridCapacity(Number(gridType.value)).crossTee1200,
@@ -1304,14 +1304,14 @@
         strengthenMain.value === "yes"
           ? calculateStrengtheningDistance(
               maxMainTee.value,
-              withoutStrengthening.uls.main
+              withoutStrengthening.uls.main,
             )
           : 0,
       cross:
         strengthenCross.value === "yes"
           ? calculateStrengtheningDistance(
               maxCrossTee.value,
-              withoutStrengthening.uls.cross
+              withoutStrengthening.uls.cross,
             )
           : 0,
     };

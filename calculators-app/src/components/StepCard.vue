@@ -12,7 +12,7 @@
           <span
             :class="[
               'flex items-center justify-center w-8 h-8 border-2 border-brand-black text-sm font-bold',
-              isComplete ? 'bg-black text-white' : 'bg-white text-black',
+              isComplete ? 'bg-black !text-white' : 'bg-white text-black',
             ]"
           >
             {{ stepNumber }}

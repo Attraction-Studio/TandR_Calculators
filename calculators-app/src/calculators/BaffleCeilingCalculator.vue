@@ -79,7 +79,14 @@
         <CalculationSidebar v-else>
           <div class="space-y-4 text-sm">
             <div>
-              <div class="font-semibold mb-1">Limit State Type</div>
+              <div class="font-semibold mb-1">
+                <span
+                  class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-light !text-white mr-1"
+                  style="background-color: #800080"
+                  >T</span
+                >
+                Limit State Type
+              </div>
               <div class="text-lg">
                 <template v-if="state.limitStateLogic.limitStateMain.value">
                   {{ state.limitStateLogic.limitStateMain.value }}
@@ -90,7 +97,14 @@
             </div>
 
             <div class="border-t border-gray-300 pt-4">
-              <div class="font-semibold mb-1">Seismic Weight</div>
+              <div class="font-semibold mb-1">
+                <span
+                  class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-light !text-white mr-1"
+                  style="background-color: #65d0c9"
+                  >Sw</span
+                >
+                Seismic Weight
+              </div>
               <div class="text-lg">
                 {{
                   state.seismicWeight.value > 0
@@ -102,7 +116,14 @@
             </div>
 
             <div class="border-t border-gray-300 pt-4">
-              <div class="font-semibold mb-1">Seismic Force</div>
+              <div class="font-semibold mb-1">
+                <span
+                  class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-light !text-white mr-1"
+                  style="background-color: #008d90"
+                  >Sf</span
+                >
+                Seismic Force
+              </div>
               <div class="text-lg">
                 <span
                   >SLS =
@@ -132,7 +153,14 @@
             </div>
 
             <div class="border-t border-gray-300 pt-4">
-              <div class="font-semibold mb-1">Area per Brace</div>
+              <div class="font-semibold mb-1">
+                <span
+                  class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-light !text-white mr-1"
+                  style="background-color: #f6b53e"
+                  >Ab</span
+                >
+                Area per Brace
+              </div>
               <div class="text-lg">
                 {{
                   state.areaPerBrace.value > 0
@@ -144,17 +172,38 @@
             </div>
 
             <div class="border-t border-gray-300 pt-4">
-              <div class="font-semibold mb-1">Ceiling Area</div>
+              <div class="font-semibold mb-1">
+                <span
+                  class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-light !text-white mr-1"
+                  style="background-color: #45b248"
+                  >Ca</span
+                >
+                Ceiling Area
+              </div>
               <div class="text-lg">{{ state.ceilingArea.value }} m²</div>
             </div>
 
             <div class="border-t border-gray-300 pt-4">
-              <div class="font-semibold mb-1">Minimum Braces</div>
+              <div class="font-semibold mb-1">
+                <span
+                  class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-light !text-white mr-1"
+                  style="background-color: #ff6600"
+                  >#b</span
+                >
+                Minimum Braces
+              </div>
               <div class="text-lg">{{ state.minimumBraces.value }}</div>
             </div>
 
             <div class="border-t border-gray-300 pt-4">
-              <div class="font-semibold mb-1">Max Brace Spacing</div>
+              <div class="font-semibold mb-1">
+                <span
+                  class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-light !text-white mr-1"
+                  style="background-color: #e42c1a"
+                  >Bs</span
+                >
+                Max Brace Spacing
+              </div>
               <div class="text-lg">
                 {{
                   state.maxBraceSpacing.value > 0
@@ -166,7 +215,14 @@
             </div>
 
             <div class="border-t border-gray-300 pt-4">
-              <div class="font-semibold mb-1">Required Seismic Clearance</div>
+              <div class="font-semibold mb-1">
+                <span
+                  class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-light !text-white mr-1"
+                  style="background-color: #1f566d"
+                  >Sc</span
+                >
+                Required Seismic Clearance
+              </div>
               <div class="text-lg">
                 SLS = {{ state.seismicClearance.value.sls }}mm<br />
                 ULS = {{ state.seismicClearance.value.uls }}mm

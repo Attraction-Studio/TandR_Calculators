@@ -26,7 +26,7 @@
             <td class="py-3 px-2">
               <b>Ceiling Area (m<sup>2</sup>)</b>
               <span
-                class="badge bg-green-500 text-white px-2 py-1 rounded text-xs ml-1"
+                class="badge bg-green-500 !text-white px-2 py-1 rounded text-xs ml-1"
                 >Ca</span
               >
             </td>
@@ -34,7 +34,7 @@
             <td class="py-3 px-2">
               <b>Area per brace (m<sup>2</sup>)</b>
               <span
-                class="badge bg-yellow-500 text-white px-2 py-1 rounded text-xs ml-1"
+                class="badge bg-yellow-500 !text-white px-2 py-1 rounded text-xs ml-1"
                 >Ab</span
               >
             </td>
@@ -42,7 +42,7 @@
             <td class="py-3 px-2">
               <b>Min. # of braces</b>
               <span
-                class="badge bg-green-600 text-white px-2 py-1 rounded text-xs ml-1"
+                class="badge bg-green-600 !text-white px-2 py-1 rounded text-xs ml-1"
                 >#b</span
               >
             </td>
@@ -74,7 +74,7 @@
             <td class="py-3 px-2">
               <b>Area per brace (m<sup>2</sup>)</b>
               <span
-                class="badge bg-yellow-500 text-white px-2 py-1 rounded text-xs ml-1"
+                class="badge bg-yellow-500 !text-white px-2 py-1 rounded text-xs ml-1"
                 >Ab</span
               >
             </td>
@@ -84,7 +84,7 @@
             <td class="py-3 px-2">
               <b>Max. Brace Spacing (m)</b>
               <span
-                class="badge bg-blue-500 text-white px-2 py-1 rounded text-xs ml-1"
+                class="badge bg-blue-500 !text-white px-2 py-1 rounded text-xs ml-1"
                 >Bs</span
               >
             </td>

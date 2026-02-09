@@ -258,7 +258,7 @@
 
   const gridMassNote = computed(() => {
     const option = GRID_MASS_OPTIONS.find(
-      (opt) => opt.value === Number(state.gridMass.value)
+      (opt) => opt.value === Number(state.gridMass.value),
     );
     if (option?.warning) {
       return {

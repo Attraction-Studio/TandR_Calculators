@@ -157,7 +157,7 @@
               <td class="py-3 pr-4 text-right font-semibold" colspan="2">
                 Total Seismic Weight
                 <span
-                  class="badge bg-teal-500 text-white px-2 py-1 rounded text-xs ml-2"
+                  class="badge bg-teal-500 !text-white px-2 py-1 rounded text-xs ml-2"
                   >Sw</span
                 >
               </td>
