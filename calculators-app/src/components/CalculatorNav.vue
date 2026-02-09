@@ -10,15 +10,15 @@
           :class="[
             'px-4 py-2 text-sm font-medium transition-colors',
             activeCalculator === calc.id
-              ? 'bg-gray-200 border border-gray-300'
-              : 'bg-white border border-gray-200 hover:bg-gray-50',
+              ? ' border-b border-brand-black'
+              : 'hover:border-brand-black',
             !calc.available
               ? 'opacity-50 cursor-not-allowed'
               : 'cursor-pointer',
           ]"
           @click="$emit('select', calc.id)"
         >
-          {{ calc.id }} {{ calc.name }}
+          {{ calc.name }}
         </button>
       </li>
     </ul>

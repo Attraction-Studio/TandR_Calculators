@@ -122,50 +122,57 @@ class PDFExporter {
   }
 
   /**
-   * Add T&R header with logo
+   * Add T&R header (logo only on first page)
    */
-  addHeader() {
-    // Add logo if available
-    if (this.logoData) {
-      // Logo dimensions - maintain aspect ratio (original is 500x244)
-      const logoWidth = 50;
-      const logoHeight = logoWidth * (375 / 500);
-      this.doc.addImage(
-        this.logoData,
-        "PNG",
+  addHeader(showLogo = true) {
+    if (showLogo) {
+      if (this.logoData) {
+        const logoWidth = 45;
+        const logoHeight = logoWidth * (375 / 500);
+        this.doc.addImage(
+          this.logoData,
+          "PNG",
+          this.margin,
+          this.currentY - 5,
+          logoWidth,
+          logoHeight,
+        );
+        this.currentY += logoHeight + 2;
+      } else {
+        this.doc.setFontSize(20);
+        this.doc.setTextColor(...COLORS.primary);
+        this.doc.setFont("helvetica", "bold");
+        this.doc.text("T&R INTERIOR SYSTEMS", this.margin, this.currentY);
+        this.currentY += 8;
+      }
+      this.doc.setFontSize(9);
+      this.doc.setTextColor(...COLORS.secondary);
+      this.doc.setFont("helvetica", "normal");
+      this.doc.text(
+        "Suspended Ceiling Seismic Calculator",
         this.margin,
-        this.currentY - 5,
-        logoWidth,
-        logoHeight,
+        this.currentY,
       );
-      this.currentY += logoHeight + 2;
-    } else {
-      // Fallback to text if logo fails to load
-      this.doc.setFontSize(24);
-      this.doc.setTextColor(...COLORS.primary);
-      this.doc.setFont("helvetica", "bold");
-      this.doc.text("T&R INTERIOR SYSTEMS", this.margin, this.currentY);
       this.currentY += 8;
     }
-
-    this.doc.setFontSize(10);
-    this.doc.setTextColor(...COLORS.secondary);
-    this.doc.setFont("helvetica", "normal");
-    this.doc.text(
-      "Suspended Ceiling Seismic Calculator",
-      this.margin,
-      this.currentY,
-    );
-    this.currentY += 10;
   }
 
   /**
-   * Add footer with office information
+   * Add footer with office information (last page only)
    */
   addFooter() {
-    const footerY = this.pageHeight - 25;
+    const footerY = this.pageHeight - 22;
 
-    this.doc.setFontSize(7);
+    this.doc.setDrawColor(200, 200, 200);
+    this.doc.setLineWidth(0.3);
+    this.doc.line(
+      this.margin,
+      footerY - 4,
+      this.pageWidth - this.margin,
+      footerY - 4,
+    );
+
+    this.doc.setFontSize(6.5);
     this.doc.setTextColor(...COLORS.secondary);
     this.doc.setFont("helvetica", "normal");
 
@@ -181,13 +188,43 @@ class PDFExporter {
       this.doc.text(office.email, xPos, footerY + 9);
       xPos += colWidth;
     });
+  }
 
-    // Page number
-    const pageNum = this.doc.internal.getCurrentPageInfo().pageNumber;
-    this.doc.setFont("helvetica", "italic");
-    this.doc.text(`Page ${pageNum}`, this.pageWidth / 2, this.pageHeight - 10, {
-      align: "center",
-    });
+  /**
+   * Add page numbers to all pages and footer to last page
+   */
+  finalize() {
+    const totalPages = this.doc.internal.getNumberOfPages();
+    for (let i = 1; i <= totalPages; i++) {
+      this.doc.setPage(i);
+      this.doc.setFontSize(7);
+      this.doc.setFont("helvetica", "normal");
+      this.doc.setTextColor(...COLORS.secondary);
+      this.doc.text(
+        `Page ${i} of ${totalPages}`,
+        this.pageWidth / 2,
+        this.pageHeight - 8,
+        { align: "center" },
+      );
+      if (i === totalPages) {
+        this.addFooter();
+      }
+    }
+  }
+
+  /**
+   * Add a subtle gray divider line
+   */
+  addDivider() {
+    this.doc.setDrawColor(215, 215, 215);
+    this.doc.setLineWidth(0.3);
+    this.doc.line(
+      this.margin,
+      this.currentY,
+      this.pageWidth - this.margin,
+      this.currentY,
+    );
+    this.currentY += 5;
   }
 
   /**
@@ -196,7 +233,6 @@ class PDFExporter {
   addPage() {
     this.doc.addPage();
     this.currentY = this.margin;
-    this.addHeader();
   }
 
   /**
@@ -431,6 +467,7 @@ class PDFExporter {
     this.currentY += 3;
 
     // 2. Seismic Weight
+    this.addDivider();
     const seismicWeight = this.getValue("seismicWeight");
     const weightResult = `${
       typeof seismicWeight === "number" ? seismicWeight.toFixed(2) : "0.00"
@@ -506,6 +543,7 @@ class PDFExporter {
     this.currentY += 8;
 
     // 3. Seismic Force
+    this.addDivider();
     this.ensureSpace(30);
     const seismicForces = this.getValue("seismicForces");
     const ulsForce = seismicForces?.uls || 0;
@@ -575,6 +613,7 @@ class PDFExporter {
     this.currentY += 8;
 
     // 4. Limiting Main Tee Length
+    this.addDivider();
     this.ensureSpace(15);
     const limitingLengths =
       this.getValue("adjustedLimitingLengths") ||
@@ -590,6 +629,7 @@ class PDFExporter {
     this.currentY += 3;
 
     // 5. Limiting Cross Tee Length
+    this.addDivider();
     this.ensureSpace(15);
     const crossTeeLength = limitingLengths?.uls?.cross || 0;
     const crossResult = `ULS = ${
@@ -695,8 +735,6 @@ class PDFExporter {
       this.margin + 5,
       this.currentY,
     );
-
-    this.addFooter();
   }
 
   /**
@@ -883,8 +921,6 @@ class PDFExporter {
       },
       margin: { left: this.margin, right: this.margin },
     });
-
-    this.addFooter();
   }
 
   /**
@@ -950,24 +986,18 @@ class PDFExporter {
       this.doc.text(lines, this.margin, this.currentY);
       this.currentY += lines.length * 3.5 + 4;
     });
-
-    this.addFooter();
   }
 
   /**
    * Generate complete PDF (consolidated layout)
    */
   generate() {
-    // Page 1: All main calculations
     this.generateMainPage();
-
-    // Page 2: Back bracing (if applicable)
     if (this.getValue("showBackBrace")) {
       this.generateBackBracePage();
     }
-
-    // Page 3: Notes and disclaimers
     this.generateNotesPage();
+    this.finalize();
   }
 
   /**
@@ -1031,43 +1061,52 @@ class PlasterboardPDFExporter {
     return option ? option.label : String(value);
   }
 
-  addHeader() {
-    // Add logo if available
-    if (this.logoData) {
-      const logoWidth = 50;
-      const logoHeight = logoWidth * (375 / 500);
-      this.doc.addImage(
-        this.logoData,
-        "PNG",
+  addHeader(showLogo = true) {
+    if (showLogo) {
+      if (this.logoData) {
+        const logoWidth = 45;
+        const logoHeight = logoWidth * (375 / 500);
+        this.doc.addImage(
+          this.logoData,
+          "PNG",
+          this.margin,
+          this.currentY - 5,
+          logoWidth,
+          logoHeight,
+        );
+        this.currentY += logoHeight + 2;
+      } else {
+        this.doc.setFontSize(20);
+        this.doc.setTextColor(...COLORS.primary);
+        this.doc.setFont("helvetica", "bold");
+        this.doc.text("T&R INTERIOR SYSTEMS", this.margin, this.currentY);
+        this.currentY += 8;
+      }
+      this.doc.setFontSize(9);
+      this.doc.setTextColor(...COLORS.secondary);
+      this.doc.setFont("helvetica", "normal");
+      this.doc.text(
+        "Suspended Plasterboard Grid System Seismic Calculator",
         this.margin,
-        this.currentY - 5,
-        logoWidth,
-        logoHeight,
+        this.currentY,
       );
-      this.currentY += logoHeight + 2;
-    } else {
-      this.doc.setFontSize(24);
-      this.doc.setTextColor(...COLORS.primary);
-      this.doc.setFont("helvetica", "bold");
-      this.doc.text("T&R INTERIOR SYSTEMS", this.margin, this.currentY);
       this.currentY += 8;
     }
-
-    this.doc.setFontSize(10);
-    this.doc.setTextColor(...COLORS.secondary);
-    this.doc.setFont("helvetica", "normal");
-    this.doc.text(
-      "Suspended Plasterboard Grid System Seismic Calculator",
-      this.margin,
-      this.currentY,
-    );
-    this.currentY += 10;
   }
 
   addFooter() {
-    const footerY = this.pageHeight - 25;
+    const footerY = this.pageHeight - 22;
 
-    this.doc.setFontSize(7);
+    this.doc.setDrawColor(200, 200, 200);
+    this.doc.setLineWidth(0.3);
+    this.doc.line(
+      this.margin,
+      footerY - 4,
+      this.pageWidth - this.margin,
+      footerY - 4,
+    );
+
+    this.doc.setFontSize(6.5);
     this.doc.setTextColor(...COLORS.secondary);
     this.doc.setFont("helvetica", "normal");
 
@@ -1083,18 +1122,42 @@ class PlasterboardPDFExporter {
       this.doc.text(office.email, xPos, footerY + 9);
       xPos += colWidth;
     });
+  }
 
-    const pageNum = this.doc.internal.getCurrentPageInfo().pageNumber;
-    this.doc.setFont("helvetica", "italic");
-    this.doc.text(`Page ${pageNum}`, this.pageWidth / 2, this.pageHeight - 10, {
-      align: "center",
-    });
+  finalize() {
+    const totalPages = this.doc.internal.getNumberOfPages();
+    for (let i = 1; i <= totalPages; i++) {
+      this.doc.setPage(i);
+      this.doc.setFontSize(7);
+      this.doc.setFont("helvetica", "normal");
+      this.doc.setTextColor(...COLORS.secondary);
+      this.doc.text(
+        `Page ${i} of ${totalPages}`,
+        this.pageWidth / 2,
+        this.pageHeight - 8,
+        { align: "center" },
+      );
+      if (i === totalPages) {
+        this.addFooter();
+      }
+    }
+  }
+
+  addDivider() {
+    this.doc.setDrawColor(215, 215, 215);
+    this.doc.setLineWidth(0.3);
+    this.doc.line(
+      this.margin,
+      this.currentY,
+      this.pageWidth - this.margin,
+      this.currentY,
+    );
+    this.currentY += 5;
   }
 
   addPage() {
     this.doc.addPage();
     this.currentY = this.margin;
-    this.addHeader();
   }
 
   addBadgeSection(number, title, resultText = "", chip = null) {
@@ -1253,6 +1316,7 @@ class PlasterboardPDFExporter {
     this.currentY += 3;
 
     // 2. Seismic Weight
+    this.addDivider();
     const seismicWeight = this.getValue("seismicWeight");
     const weightResult = `${
       typeof seismicWeight === "number" ? seismicWeight.toFixed(2) : "0.00"
@@ -1316,6 +1380,7 @@ class PlasterboardPDFExporter {
     this.currentY += 8;
 
     // 3. Seismic Force
+    this.addDivider();
     this.ensureSpace(30);
     const seismicForces = this.getValue("seismicForces");
     const forceResult = `SLS=${seismicForces?.sls || 0} | ULS=${
@@ -1361,6 +1426,7 @@ class PlasterboardPDFExporter {
     this.currentY += 8;
 
     // 4. Limiting Main Tee Length
+    this.addDivider();
     this.ensureSpace(15);
     const maxTeeLengths = this.getValue("maxAllowableTeeLengths");
     const mainTeeLength = maxTeeLengths?.main?.uls || 0;
@@ -1374,6 +1440,7 @@ class PlasterboardPDFExporter {
     this.currentY += 3;
 
     // 5. Limiting Cross Tee Length
+    this.addDivider();
     this.ensureSpace(15);
     const crossTeeLength = maxTeeLengths?.cross?.uls || 0;
     const crossResult = `SLS=${
@@ -1445,8 +1512,6 @@ class PlasterboardPDFExporter {
         this.currentY,
       );
     }
-
-    this.addFooter();
   }
 
   generateBackBracePage() {
@@ -1571,8 +1636,6 @@ class PlasterboardPDFExporter {
       },
       margin: { left: this.margin, right: this.margin },
     });
-
-    this.addFooter();
   }
 
   generateNotesPage() {
@@ -1634,21 +1697,15 @@ class PlasterboardPDFExporter {
       this.doc.text(lines, this.margin, this.currentY);
       this.currentY += lines.length * 3.5 + 4;
     });
-
-    this.addFooter();
   }
 
   generate() {
-    // Page 1: All main calculations
     this.generateMainPage();
-
-    // Page 2: Back bracing (if applicable)
     if (this.getValue("showBackBrace")) {
       this.generateBackBracePage();
     }
-
-    // Page 3: Notes and disclaimers
     this.generateNotesPage();
+    this.finalize();
   }
 
   async save() {
@@ -1707,43 +1764,52 @@ class BafflePDFExporter {
     return option ? option.label : String(value);
   }
 
-  addHeader() {
-    // Add logo if available
-    if (this.logoData) {
-      const logoWidth = 50;
-      const logoHeight = logoWidth * (375 / 500);
-      this.doc.addImage(
-        this.logoData,
-        "PNG",
+  addHeader(showLogo = true) {
+    if (showLogo) {
+      if (this.logoData) {
+        const logoWidth = 45;
+        const logoHeight = logoWidth * (375 / 500);
+        this.doc.addImage(
+          this.logoData,
+          "PNG",
+          this.margin,
+          this.currentY - 5,
+          logoWidth,
+          logoHeight,
+        );
+        this.currentY += logoHeight + 2;
+      } else {
+        this.doc.setFontSize(20);
+        this.doc.setTextColor(...COLORS.primary);
+        this.doc.setFont("helvetica", "bold");
+        this.doc.text("T&R INTERIOR SYSTEMS", this.margin, this.currentY);
+        this.currentY += 8;
+      }
+      this.doc.setFontSize(9);
+      this.doc.setTextColor(...COLORS.secondary);
+      this.doc.setFont("helvetica", "normal");
+      this.doc.text(
+        "Baffle Ceiling Seismic Calculator",
         this.margin,
-        this.currentY - 5,
-        logoWidth,
-        logoHeight,
+        this.currentY,
       );
-      this.currentY += logoHeight + 2;
-    } else {
-      this.doc.setFontSize(24);
-      this.doc.setTextColor(...COLORS.primary);
-      this.doc.setFont("helvetica", "bold");
-      this.doc.text("T&R INTERIOR SYSTEMS", this.margin, this.currentY);
       this.currentY += 8;
     }
-
-    this.doc.setFontSize(10);
-    this.doc.setTextColor(...COLORS.secondary);
-    this.doc.setFont("helvetica", "normal");
-    this.doc.text(
-      "Baffle Ceiling Seismic Calculator",
-      this.margin,
-      this.currentY,
-    );
-    this.currentY += 10;
   }
 
   addFooter() {
-    const footerY = this.pageHeight - 25;
+    const footerY = this.pageHeight - 22;
 
-    this.doc.setFontSize(7);
+    this.doc.setDrawColor(200, 200, 200);
+    this.doc.setLineWidth(0.3);
+    this.doc.line(
+      this.margin,
+      footerY - 4,
+      this.pageWidth - this.margin,
+      footerY - 4,
+    );
+
+    this.doc.setFontSize(6.5);
     this.doc.setTextColor(...COLORS.secondary);
     this.doc.setFont("helvetica", "normal");
 
@@ -1759,18 +1825,42 @@ class BafflePDFExporter {
       this.doc.text(office.email, xPos, footerY + 9);
       xPos += colWidth;
     });
+  }
 
-    const pageNum = this.doc.internal.getCurrentPageInfo().pageNumber;
-    this.doc.setFont("helvetica", "italic");
-    this.doc.text(`Page ${pageNum}`, this.pageWidth / 2, this.pageHeight - 10, {
-      align: "center",
-    });
+  finalize() {
+    const totalPages = this.doc.internal.getNumberOfPages();
+    for (let i = 1; i <= totalPages; i++) {
+      this.doc.setPage(i);
+      this.doc.setFontSize(7);
+      this.doc.setFont("helvetica", "normal");
+      this.doc.setTextColor(...COLORS.secondary);
+      this.doc.text(
+        `Page ${i} of ${totalPages}`,
+        this.pageWidth / 2,
+        this.pageHeight - 8,
+        { align: "center" },
+      );
+      if (i === totalPages) {
+        this.addFooter();
+      }
+    }
+  }
+
+  addDivider() {
+    this.doc.setDrawColor(215, 215, 215);
+    this.doc.setLineWidth(0.3);
+    this.doc.line(
+      this.margin,
+      this.currentY,
+      this.pageWidth - this.margin,
+      this.currentY,
+    );
+    this.currentY += 5;
   }
 
   addPage() {
     this.doc.addPage();
     this.currentY = this.margin;
-    this.addHeader();
   }
 
   addBadgeSection(number, title, resultText = "", chip = null) {
@@ -1929,6 +2019,7 @@ class BafflePDFExporter {
     this.currentY += 3;
 
     // 2. Seismic Weight
+    this.addDivider();
     const seismicWeight = this.getValue("seismicWeight");
     const weightResult = `${
       typeof seismicWeight === "number" ? seismicWeight.toFixed(2) : "0.00"
@@ -1986,6 +2077,7 @@ class BafflePDFExporter {
     this.currentY += 8;
 
     // 3. Seismic Force
+    this.addDivider();
     this.ensureSpace(30);
     const seismicForces = this.getValue("seismicForces");
     const forceResult = `SLS=${seismicForces?.sls || 0} | ULS=${
@@ -2031,6 +2123,7 @@ class BafflePDFExporter {
     this.currentY += 8;
 
     // 4. Area Per Brace
+    this.addDivider();
     this.ensureSpace(15);
     const areaPerBrace = this.getValue("areaPerBrace");
     this.addBadgeSection(
@@ -2042,6 +2135,7 @@ class BafflePDFExporter {
     this.currentY += 3;
 
     // 5. Minimum Braces
+    this.addDivider();
     this.ensureSpace(15);
     const minimumBraces = this.getValue("minimumBraces");
     this.addBadgeSection(
@@ -2053,6 +2147,7 @@ class BafflePDFExporter {
     this.currentY += 3;
 
     // 6. Max Brace Spacing
+    this.addDivider();
     this.ensureSpace(15);
     const maxBraceSpacing = this.getValue("maxBraceSpacing");
     this.addBadgeSection(
@@ -2064,6 +2159,7 @@ class BafflePDFExporter {
     this.currentY += 5;
 
     // Brace details
+    this.addDivider();
     this.ensureSpace(25);
     this.doc.setFontSize(8);
     this.doc.text(`Plenum Height`, this.margin + 5, this.currentY);
@@ -2085,6 +2181,7 @@ class BafflePDFExporter {
     this.currentY += 8;
 
     // Seismic Clearance
+    this.addDivider();
     this.ensureSpace(20);
     const seismicClearance = this.getValue("seismicClearance");
     this.doc.setFont("helvetica", "bold");
@@ -2106,8 +2203,6 @@ class BafflePDFExporter {
       this.margin + 5,
       this.currentY,
     );
-
-    this.addFooter();
   }
 
   generateNotesPage() {
@@ -2168,13 +2263,12 @@ class BafflePDFExporter {
       this.doc.text(lines, this.margin, this.currentY);
       this.currentY += lines.length * 3.5 + 4;
     });
-
-    this.addFooter();
   }
 
   generate() {
     this.generateMainPage();
     this.generateNotesPage();
+    this.finalize();
   }
 
   async save() {
