@@ -16,9 +16,9 @@
             </button>
           </div>
 
-          <div v-if="isExporting" class="text-center py-8">
-            <div class="animate-spin text-4xl mb-4">⏳</div>
-            <p>Generating PDF...</p>
+          <div v-if="isExporting" class="flex flex-col items-center py-8">
+            <div class="w-4 h-4 bg-black animate-pulse mb-4"></div>
+            <p class="text-sm text-gray-500">Generating PDF...</p>
           </div>
 
           <div v-else>
