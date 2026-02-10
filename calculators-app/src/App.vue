@@ -9,7 +9,7 @@
       />
 
       <!-- Active Calculator Component -->
-      <div class="mt-8">
+      <div>
         <component :is="activeComponent" />
       </div>
     </div>
