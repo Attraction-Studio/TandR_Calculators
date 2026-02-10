@@ -1,10 +1,14 @@
 <template>
   <nav aria-label="Calculator navigation">
     <div class="tab-scroll">
-      <div class="tab-track">
+      <div class="tab-track" ref="trackRef">
+        <!-- Sliding background -->
+        <span class="tab-slider" :style="sliderStyle" />
+
         <button
           v-for="calc in calculators"
           :key="calc.id"
+          :ref="(el) => setTabRef(calc.id, el)"
           :id="`calc-nav-${calc.id}`"
           :aria-pressed="activeCalculator === calc.id"
           :aria-label="`Switch to ${calc.name} calculator`"
@@ -30,7 +34,9 @@
 </template>
 
 <script setup>
-  defineProps({
+  import { ref, computed, watch, onMounted, onUnmounted, nextTick } from "vue";
+
+  const props = defineProps({
     calculators: {
       type: Array,
       required: true,
@@ -42,13 +48,65 @@
   });
 
   defineEmits(["select"]);
+
+  const trackRef = ref(null);
+  const tabRefs = {};
+
+  function setTabRef(id, el) {
+    if (el) tabRefs[id] = el;
+  }
+
+  const sliderLeft = ref(0);
+  const sliderTop = ref(0);
+  const sliderWidth = ref(0);
+  const sliderHeight = ref(0);
+  const hasInitialized = ref(false);
+
+  function updateSlider() {
+    const activeTab = tabRefs[props.activeCalculator];
+    const track = trackRef.value;
+    if (activeTab && track) {
+      const trackRect = track.getBoundingClientRect();
+      const tabRect = activeTab.getBoundingClientRect();
+      sliderLeft.value = tabRect.left - trackRect.left;
+      sliderTop.value = tabRect.top - trackRect.top;
+      sliderWidth.value = tabRect.width;
+      sliderHeight.value = tabRect.height;
+      hasInitialized.value = true;
+    }
+  }
+
+  const sliderStyle = computed(() => ({
+    transform: `translate(${sliderLeft.value}px, ${sliderTop.value}px)`,
+    width: `${sliderWidth.value}px`,
+    height: `${sliderHeight.value}px`,
+    transition: hasInitialized.value
+      ? "transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), width 0.4s cubic-bezier(0.4, 0, 0.2, 1), height 0.4s cubic-bezier(0.4, 0, 0.2, 1)"
+      : "none",
+  }));
+
+  watch(
+    () => props.activeCalculator,
+    () => nextTick(updateSlider),
+  );
+
+  onMounted(() => {
+    nextTick(updateSlider);
+    window.addEventListener("resize", updateSlider);
+  });
+
+  onUnmounted(() => {
+    window.removeEventListener("resize", updateSlider);
+  });
 </script>
 
 <style scoped>
   .tab-track {
     display: flex;
     flex-direction: column;
-    gap: 3px;
+    gap: 0;
+    position: relative;
+    background-color: black;
   }
 
   @media (min-width: 1024px) {
@@ -57,8 +115,18 @@
     }
   }
 
+  .tab-slider {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: #fff;
+    pointer-events: none;
+    z-index: 0;
+  }
+
   .tab {
     position: relative;
+    z-index: 1;
     padding: 0.625rem 1rem;
     font-size: 0.75rem;
     font-weight: 500;
@@ -66,16 +134,13 @@
     text-align: left;
     cursor: pointer;
     border: none;
-    background-color: black;
+    background-color: transparent;
     color: white !important;
-    transition:
-      background-color 0.3s ease,
-      color 0.3s ease;
+    transition: color 0.4s ease;
   }
 
   .tab:hover:not(.tab--active):not(.tab--disabled) {
-    background-color: #e4e4e4;
-    color: black !important;
+    color: #ccc !important;
   }
 
   @media (min-width: 1024px) {
@@ -86,7 +151,6 @@
   }
 
   .tab--active {
-    background-color: #fff;
     color: black !important;
     font-weight: 600 !important;
   }
