@@ -175,7 +175,7 @@
   }
 
   .tab:hover:not(.tab--active) .tab-indicator {
-    background-color: #1a1a1a;
+    background-color: white;
     transform: rotate(45deg);
   }
 
